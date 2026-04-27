@@ -27,16 +27,22 @@ export default function OwnerDashboard() {
 
       <View style={styles.actionSection}>
         <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Inventory Management
+          Operational Control
         </Text>
         
+        {/* New Button to Manage Orders */}
         <PremiumButton 
-          title="Add New Item" 
+          title="Incoming Orders" 
+          onPress={() => router.push('/owner/manage-orders')} 
+        />
+
+        <PremiumButton 
+          title="Add New Product" 
           onPress={() => router.push('/owner/add-item')} 
         />
         
         <PremiumButton 
-          title="View Orders" 
+          title="Inventory List" 
           onPress={() => {}} 
         />
       </View>
