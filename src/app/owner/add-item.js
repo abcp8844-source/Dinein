@@ -17,7 +17,7 @@ export default function AddItem() {
 
   const handleAddItem = async () => {
     if (!name || !price || !description) {
-      Alert.alert("Error", "Please fill all fields");
+      Alert.alert("Input Error", "All fields are required to continue.");
       return;
     }
 
@@ -27,38 +27,40 @@ export default function AddItem() {
         price,
         description,
       });
-      Alert.alert("Success", "Item added to your menu!");
+      Alert.alert("Success", "Product has been added successfully.");
       router.back();
     } catch (error) {
-      Alert.alert("Error", error.message);
+      Alert.alert("Database Error", error.message);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.secondary }]}>Add New Item</Text>
+      <Text style={[styles.title, { color: colors.secondary }]}>New Product Entry</Text>
       
       <PremiumInput 
-        placeholder="Item Name (e.g. Special Pasta)" 
+        placeholder="Product Title" 
         value={name} 
         onChangeText={setName} 
       />
       
       <PremiumInput 
-        placeholder="Price (e.g. 25.00)" 
+        placeholder="Price Tag" 
         value={price} 
         onChangeText={setPrice} 
+        keyboardType="numeric"
       />
 
       <PremiumInput 
-        placeholder="Short Description" 
+        placeholder="Product Description" 
         value={description} 
         onChangeText={setDescription} 
+        multiline={true}
       />
 
-      <View style={{ width: '100%', alignItems: 'center', marginTop: 20 }}>
-        <PremiumButton title="Save to Menu" onPress={handleAddItem} />
-        <PremiumButton title="Cancel" type="outline" onPress={() => router.back()} />
+      <View style={styles.buttonContainer}>
+        <PremiumButton title="Confirm & Save" onPress={handleAddItem} />
+        <PremiumButton title="Go Back" type="outline" onPress={() => router.back()} />
       </View>
     </ScrollView>
   );
@@ -75,5 +77,10 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 30,
+  },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20
   }
 });
