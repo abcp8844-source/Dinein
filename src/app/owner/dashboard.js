@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -12,88 +12,74 @@ export default function OwnerDashboard() {
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.secondary }]}>
-        Business Dashboard
-      </Text>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: colors.secondary }]}>Business Suite</Text>
+        <Text style={{ color: colors.textDim }}>Manage your operations with precision.</Text>
+      </View>
       
-      <View style={[styles.statsCard, { borderColor: colors.primary }]}>
+      {/* Business Info Card */}
+      <View style={[styles.bizCard, { backgroundColor: '#1A1A1A', borderColor: colors.primary }]}>
         <Text style={[styles.bizName, { color: colors.textMain }]}>
-          {userData?.country || 'Business Account'}
+          {userData?.email?.split('@')[0].toUpperCase() || 'Partner Store'}
         </Text>
-        <Text style={[styles.bizEmail, { color: colors.textDim }]}>
-          {userData?.email}
-        </Text>
+        <Text style={{ color: colors.primary, fontSize: 12 }}>Status: Verified Partner ✅</Text>
       </View>
 
       <View style={styles.actionSection}>
-        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Operational Control
-        </Text>
+        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>CORE OPERATIONS</Text>
         
-        {/* New Button to Manage Orders */}
         <PremiumButton 
-          title="Incoming Orders" 
+          title="Incoming Orders 🔔" 
           onPress={() => router.push('/owner/manage-orders')} 
         />
 
         <PremiumButton 
-          title="Add New Product" 
+          title="Add New Product +" 
           onPress={() => router.push('/owner/add-item')} 
+        />
+
+        <Text style={[styles.sectionTitle, { color: colors.secondary, marginTop: 20 }]}>GROWTH TOOLS</Text>
+
+        <PremiumButton 
+          title="Promotions & Ads 📈" 
+          type="outline"
+          onPress={() => router.push('/owner/promotion')} 
         />
         
         <PremiumButton 
-          title="Inventory List" 
+          title="Business Insights" 
+          type="outline"
           onPress={() => {}} 
         />
       </View>
 
-      <PremiumButton 
-        title="Sign Out" 
-        type="outline" 
-        onPress={logout} 
-      />
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
+          <Text style={{ color: '#dc3545', fontWeight: 'bold' }}>Terminate Session (Sign Out)</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginTop: 40,
-    marginBottom: 20,
-  },
-  statsCard: {
-    width: '100%',
-    padding: 20,
+  container: { flexGrow: 1, paddingBottom: 40 },
+  header: { padding: 30, marginTop: 20 },
+  title: { fontSize: 32, fontWeight: 'bold' },
+  bizCard: {
+    margin: 20,
+    padding: 25,
+    borderRadius: 20,
     borderWidth: 1,
-    borderRadius: 15,
-    backgroundColor: 'rgba(128, 0, 0, 0.1)',
-    marginBottom: 30,
     alignItems: 'center',
+    shadowColor: '#D4AF37',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5
   },
-  bizName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  bizEmail: {
-    fontSize: 14,
-    marginTop: 5,
-  },
-  actionSection: {
-    width: '100%',
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    alignSelf: 'flex-start',
-    marginBottom: 15,
-    fontWeight: '600',
-  },
+  bizName: { fontSize: 22, fontWeight: 'bold', letterSpacing: 1 },
+  actionSection: { width: '100%', paddingHorizontal: 25 },
+  sectionTitle: { fontSize: 13, fontWeight: 'bold', letterSpacing: 2, marginBottom: 15, opacity: 0.7 },
+  footer: { marginTop: 40, alignItems: 'center' },
+  logoutBtn: { padding: 15, borderTopWidth: 0.5, borderTopColor: '#333', width: '100%', alignItems: 'center' }
 });
