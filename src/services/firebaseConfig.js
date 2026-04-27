@@ -1,18 +1,16 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBwV-dummy-key-your-actual-key-is-saved",
-  authDomain: "ab-cp-official.firebaseapp.com",
-  projectId: "ab-cp-official",
-  storageBucket: "ab-cp-official.appspot.com",
-  messagingSenderId: "1036815340058",
-  appId: "1:1036815340058:web:7f6d..."
+  apiKey: "AIzaSyAs-v6A_H8l1pGzXz_Xf6M0v1u2Y3Z4",
+  authDomain: "dinein-8844.firebaseapp.com",
+  projectId: "dinein-8844",
+  storageBucket: "dinein-8844.appspot.com",
+  messagingSenderId: "1056585055465",
+  appId: "1:1056585055465:web:866847864f14798305c6d3"
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const db = getFirestore(app);
