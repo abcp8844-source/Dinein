@@ -11,11 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.abcp.diningtable"
     },
     "android": {
       "package": "com.abcp.diningtable",
@@ -25,13 +23,11 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
-        "projectId": "dining-table-app"
+        "projectId": "df595d95-668f-4346-a79a-e141ed024403"
       }
     }
   }
 }
+
