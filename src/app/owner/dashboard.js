@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import PremiumButton from '../../components/PremiumButton';
@@ -7,6 +8,7 @@ import PremiumButton from '../../components/PremiumButton';
 export default function OwnerDashboard() {
   const { userData, logout } = useAuth();
   const { colors } = useTheme();
+  const router = useRouter();
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
@@ -27,8 +29,17 @@ export default function OwnerDashboard() {
         <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
           Quick Actions
         </Text>
-        <PremiumButton title="Manage Menu" onPress={() => {}} />
-        <PremiumButton title="View Orders" onPress={() => {}} />
+        
+        {/* اب یہ بٹن آپ کو نئے پیج پر لے جائے گا */}
+        <PremiumButton 
+          title="Add New Item" 
+          onPress={() => router.push('/owner/add-item')} 
+        />
+        
+        <PremiumButton 
+          title="View Orders" 
+          onPress={() => {}} 
+        />
       </View>
 
       <PremiumButton 
