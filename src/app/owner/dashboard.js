@@ -18,7 +18,7 @@ export default function OwnerDashboard() {
       
       <View style={[styles.statsCard, { borderColor: colors.primary }]}>
         <Text style={[styles.bizName, { color: colors.textMain }]}>
-          {userData?.country || 'Your Business'}
+          {userData?.country || 'Business Account'}
         </Text>
         <Text style={[styles.bizEmail, { color: colors.textDim }]}>
           {userData?.email}
@@ -27,10 +27,9 @@ export default function OwnerDashboard() {
 
       <View style={styles.actionSection}>
         <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Quick Actions
+          Inventory Management
         </Text>
         
-        {/* اب یہ بٹن آپ کو نئے پیج پر لے جائے گا */}
         <PremiumButton 
           title="Add New Item" 
           onPress={() => router.push('/owner/add-item')} 
@@ -43,7 +42,7 @@ export default function OwnerDashboard() {
       </View>
 
       <PremiumButton 
-        title="Logout" 
+        title="Sign Out" 
         type="outline" 
         onPress={logout} 
       />
