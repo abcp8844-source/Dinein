@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Dining Table",
+    "slug": "dining-table",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000080"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.abid8844.diningtable"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000080"
+      },
+      "package": "com.abid8844.diningtable"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "df595d95-668f-4346-a79a-e141ed024403"
+      }
+    }
+  }
+}
