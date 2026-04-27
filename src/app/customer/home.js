@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { dbService } from '../../services/dbService';
@@ -10,6 +11,7 @@ export default function CustomerHome() {
   const { colors } = useTheme();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     loadMenu();
@@ -20,29 +22,47 @@ export default function CustomerHome() {
       const data = await dbService.getMenuItems();
       setItems(data);
     } catch (error) {
-      console.error("Error loading menu:", error);
+      console.error("Fetch Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const renderItem = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: '#1A1A1A', borderColor: colors.primary }]}>
+    <TouchableOpacity 
+      activeOpacity={0.8}
+      onPress={() => router.push({
+        pathname: '/customer/item-details',
+        params: { 
+          id: item.id, 
+          name: item.name, 
+          price: item.price, 
+          description: item.description 
+        }
+      })}
+      style={[styles.card, { backgroundColor: '#121212', borderColor: colors.primary }]}
+    >
       <View style={styles.cardInfo}>
         <Text style={[styles.itemName, { color: colors.secondary }]}>{item.name}</Text>
-        <Text style={[styles.itemDesc, { color: colors.textDim }]}>{item.description}</Text>
+        <Text numberOfLines={2} style={[styles.itemDesc, { color: colors.textDim }]}>{item.description}</Text>
       </View>
-      <View style={styles.priceTag}>
+      <View style={styles.priceContainer}>
         <Text style={[styles.priceText, { color: colors.primary }]}>{item.price} THB</Text>
+        <Text style={{ color: colors.secondary, fontSize: 10, marginTop: 4 }}>View Details</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.welcomeText, { color: colors.textMain }]}>Welcome to AB&CP</Text>
-        <Text style={[styles.locationText, { color: colors.primary }]}>📍 {userData?.country || 'Thailand'}</Text>
+        <View>
+          <Text style={[styles.welcomeText, { color: colors.textMain }]}>AB&CP Premium</Text>
+          <Text style={[styles.locationText, { color: colors.primary }]}>📍 {userData?.country || 'Thailand'}</Text>
+        </View>
+        <TouchableOpacity onPress={loadMenu} style={styles.refreshBtn}>
+          <Text style={{ color: colors.primary }}>Refresh</Text>
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -53,8 +73,9 @@ export default function CustomerHome() {
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <Text style={[styles.emptyText, { color: colors.textDim }]}>No items available yet.</Text>
+            <Text style={[styles.emptyText, { color: colors.textDim }]}>No items available in your area.</Text>
           }
         />
       )}
@@ -68,24 +89,28 @@ export default function CustomerHome() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 20, marginTop: 20 },
-  welcomeText: { fontSize: 24, fontWeight: 'bold' },
-  locationText: { fontSize: 14, marginTop: 5, fontWeight: '600' },
-  listContent: { padding: 20 },
+  header: { padding: 25, marginTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  welcomeText: { fontSize: 26, fontWeight: 'bold', letterSpacing: 1 },
+  locationText: { fontSize: 13, marginTop: 4, opacity: 0.8 },
+  refreshBtn: { padding: 8, borderRadius: 20, borderWidth: 1, borderColor: '#D4AF37' },
+  listContent: { paddingHorizontal: 20, paddingBottom: 30 },
   card: {
     flexDirection: 'row',
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 15,
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    padding: 20,
+    borderRadius: 15,
+    borderWidth: 0.5,
+    marginBottom: 18,
+    shadowColor: '#D4AF37',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  cardInfo: { flex: 1, marginRight: 10 },
-  itemName: { fontSize: 18, fontWeight: 'bold' },
-  itemDesc: { fontSize: 12, marginTop: 4 },
-  priceTag: { padding: 8, borderRadius: 8, backgroundColor: 'rgba(212, 175, 55, 0.1)' },
-  priceText: { fontWeight: 'bold', fontSize: 16 },
-  emptyText: { textAlign: 'center', marginTop: 50 },
-  footer: { padding: 20 }
+  cardInfo: { flex: 1, justifyContent: 'center' },
+  itemName: { fontSize: 20, fontWeight: '700', marginBottom: 6 },
+  itemDesc: { fontSize: 13, lineHeight: 18 },
+  priceContainer: { alignItems: 'flex-end', justifyContent: 'center', marginLeft: 10 },
+  priceText: { fontWeight: 'bold', fontSize: 18 },
+  emptyText: { textAlign: 'center', marginTop: 100, fontSize: 16 },
+  footer: { padding: 20, borderTopWidth: 0.5, borderTopColor: '#333' }
 });
