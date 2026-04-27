@@ -1,30 +1,36 @@
 {
   "expo": {
-    "name": "Dining Table",
-    "slug": "dining-table",
+    "name": "Dining Table App",
+    "slug": "dining-table-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#000080"
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.abid8844.diningtable"
+      "supportsTablet": true
     },
     "android": {
+      "package": "com.abcp.diningtable",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#000080"
-      },
-      "package": "com.abid8844.diningtable"
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "df595d95-668f-4346-a79a-e141ed024403"
+        "projectId": "dining-table-app"
       }
     }
   }
