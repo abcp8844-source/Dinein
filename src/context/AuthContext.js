@@ -1,65 +1,51 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../services/firebaseConfig';
-import { 
-    onAuthStateChanged, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    signOut 
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (authenticatedUser) => {
-            if (authenticatedUser) {
-                setUser(authenticatedUser);
-                const docRef = doc(db, "users", authenticatedUser.uid);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    setUserData(docSnap.data());
-                }
-            } else {
-                setUser(null);
-                setUserData(null);
-            }
-            setLoading(false);
-        });
-        return unsubscribe;
-    }, []);
+  // Your Master Admin Email
+  const MASTER_ADMIN_EMAIL = "abcp8844@gmail.com"; 
 
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
-    };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user);
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserData(data);
+          // Check if user is Admin by email or role
+          if (user.email === MASTER_ADMIN_EMAIL || data.role === 'admin') {
+            setIsAdmin(true);
+          }
+        }
+      } else {
+        setUser(null);
+        setUserData(null);
+        setIsAdmin(false);
+      }
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
-    const register = async (email, password, role, country) => {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        const newUser = {
-            uid: res.user.uid,
-            email: email,
-            role: role,
-            country: country,
-            theme: role === 'owner' ? 'red' : 'pink',
-            createdAt: new Date().toISOString()
-        };
-        await setDoc(doc(db, "users", res.user.uid), newUser);
-        return res;
-    };
+  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  const logout = () => signOut(auth);
 
-    const logout = () => {
-        return signOut(auth);
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, userData, login, register, logout, loading }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, userData, isAdmin, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
