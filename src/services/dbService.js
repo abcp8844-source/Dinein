@@ -1,5 +1,5 @@
 import { db } from './firebaseConfig';
-import { collection, addDoc, getDocs, query, where, orderBy, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, orderBy, doc, updateDoc, getDoc, setDoc, increment } from 'firebase/firestore';
 
 export const dbService = {
   // Menu Management
@@ -22,7 +22,7 @@ export const dbService = {
     } catch (error) { throw error; }
   },
 
-  // Wallet Management
+  // Wallet Management (Secure Banking Logic)
   getWalletBalance: async (userId) => {
     try {
       const walletRef = doc(db, "wallets", userId);
@@ -30,9 +30,23 @@ export const dbService = {
       if (walletSnap.exists()) {
         return walletSnap.data().balance;
       } else {
-        await setDoc(walletRef, { balance: 0 }); // Initialize if doesn't exist
+        await setDoc(walletRef, { balance: 0 }); 
         return 0;
       }
+    } catch (error) { throw error; }
+  },
+
+  deductFromWallet: async (userId, amount) => {
+    try {
+      const walletRef = doc(db, "wallets", userId);
+      const walletSnap = await getDoc(walletRef);
+      if (walletSnap.exists() && walletSnap.data().balance >= amount) {
+        await updateDoc(walletRef, {
+          balance: increment(-amount)
+        });
+        return true;
+      }
+      throw new Error("Insufficient Wallet Balance");
     } catch (error) { throw error; }
   },
 
