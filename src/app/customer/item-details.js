@@ -16,7 +16,8 @@ export default function ItemDetails() {
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
-      await dbService.placeOrder({
+      // Placing order in database
+      const orderId = await dbService.placeOrder({
         customerId: userData.uid,
         customerEmail: userData.email,
         itemId: id,
@@ -25,8 +26,12 @@ export default function ItemDetails() {
         deliveryStatus: 'pending'
       });
       
-      Alert.alert("Success", "Your order has been placed successfully!");
-      router.replace('/customer/home');
+      // Moving to the Premium Success/Receipt screen
+      router.replace({
+        pathname: '/customer/order-success',
+        params: { orderId: orderId, itemName: name, amount: price }
+      });
+
     } catch (error) {
       Alert.alert("Order Error", error.message);
     } finally {
@@ -42,12 +47,12 @@ export default function ItemDetails() {
         
         <View style={[styles.divider, { backgroundColor: colors.primary }]} />
         
-        <Text style={[styles.descTitle, { color: colors.textMain }]}>Details</Text>
+        <Text style={[styles.descTitle, { color: colors.textMain }]}>Product Details</Text>
         <Text style={[styles.description, { color: colors.textDim }]}>{description}</Text>
 
         <View style={styles.footer}>
           <PremiumButton 
-            title={loading ? "Processing..." : "Confirm Order Now"} 
+            title={loading ? "Processing Payment..." : "Confirm & Pay Now"} 
             onPress={handlePlaceOrder} 
             disabled={loading}
           />
