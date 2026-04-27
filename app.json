@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Dining Table App",
-    "slug": "dining-table-app",
+    "slug": "dining-table",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,10 +10,6 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.abcp.diningtable"
     },
     "android": {
       "package": "com.abcp.diningtable",
@@ -30,4 +26,3 @@
     }
   }
 }
-
