@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../context/ThemeContext';
 import { globalCountries } from '../services/countryProvider';
@@ -10,77 +10,98 @@ export default function Register() {
   
   const [role, setRole] = useState('customer');
   const [email, setEmail] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(globalCountries[0]);
+  const [password, setPassword] = useState('');
   const [idNumber, setIdNumber] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(globalCountries[0]);
 
-  const handleRegister = () => {
-    if (!email) {
-      Alert.alert("Privacy Check", "Email is required for secure global access.");
+  const handleRegistration = () => {
+    if (!email || !password) {
+      Alert.alert("Authentication", "Credentials are required.");
       return;
     }
     if (role === 'owner' && !idNumber) {
-      Alert.alert("Global Verification", `A valid ${selectedCountry.idType} is mandatory for ${selectedCountry.name}.`);
+      Alert.alert("Compliance", "Verification ID is mandatory.");
       return;
     }
-    Alert.alert("Global System", "Identity verification in progress for " + selectedCountry.name);
-    router.replace('/auth/login');
+    router.replace('/login');
   };
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.primary }]}>DINING TABLE</Text>
-      <Text style={{ color: colors.textDim, fontSize: 10, letterSpacing: 2, marginBottom: 30 }}>GLOBAL ACCESS TERMINAL</Text>
-      
-      <View style={styles.roleContainer}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.logoCircle}>
+          <Text style={styles.brandText}>F&B</Text>
+        </View>
+        <Text style={styles.tagline}>DINING TABLE</Text>
+      </View>
+
+      <View style={styles.roleSwitch}>
         <TouchableOpacity 
-          style={[styles.roleBtn, role === 'customer' && { borderColor: colors.primary, borderWidth: 1 }]} 
+          style={[styles.roleOption, role === 'customer' && styles.activeTab]}
           onPress={() => setRole('customer')}
         >
-          <Text style={{ color: role === 'customer' ? colors.primary : '#666', fontSize: 11 }}>CUSTOMER</Text>
+          <Text style={[styles.roleText, { color: role === 'customer' ? '#D4AF37' : '#A68D5F' }]}>CUSTOMER</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.roleBtn, role === 'owner' && { borderColor: colors.primary, borderWidth: 1 }]} 
+          style={[styles.roleOption, role === 'owner' && styles.activeTab]}
           onPress={() => setRole('owner')}
         >
-          <Text style={{ color: role === 'owner' ? colors.primary : '#666', fontSize: 11 }}>SHOP OWNER</Text>
+          <Text style={[styles.roleText, { color: role === 'owner' ? '#D4AF37' : '#A68D5F' }]}>OWNER</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Country Selector Placeholder */}
-      <View style={[styles.input, { borderBottomColor: colors.border, justifyContent: 'center' }]}>
-        <Text style={{ color: colors.textDim, fontSize: 10 }}>SELECTED REGION: <Text style={{ color: colors.primary }}>{selectedCountry.name} ({selectedCountry.code})</Text></Text>
-      </View>
-
-      <TextInput 
-        style={[styles.input, { color: '#fff', borderBottomColor: colors.border }]} 
-        placeholder="Global Identity (Email)" placeholderTextColor="#444" 
-        value={email} onChangeText={setEmail}
-      />
-
-      {role === 'owner' && (
+      <View style={styles.formArea}>
         <TextInput 
-          style={[styles.input, { color: '#fff', borderBottomColor: colors.primary }]} 
-          placeholder={`${selectedCountry.idType} Number`}
-          placeholderTextColor="#444" 
-          value={idNumber} onChangeText={setIdNumber}
+          style={styles.input}
+          placeholder="Email Address"
+          placeholderTextColor="#A68D5F"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
         />
-      )}
+        <TextInput 
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#A68D5F"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      <TouchableOpacity 
-        style={[styles.mainBtn, { backgroundColor: colors.primary }]} 
-        onPress={handleRegister}
-      >
-        <Text style={{ fontWeight: 'bold', letterSpacing: 2, color: '#000' }}>INITIALIZE REGISTRATION</Text>
-      </TouchableOpacity>
+        {role === 'owner' && (
+          <View>
+            <Text style={styles.regionText}>REGION: {selectedCountry.name}</Text>
+            <TextInput 
+              style={styles.input}
+              placeholder={selectedCountry.idType}
+              placeholderTextColor="#A68D5F"
+              value={idNumber}
+              onChangeText={setIdNumber}
+            />
+          </View>
+        )}
+
+        <TouchableOpacity style={styles.mainBtn} onPress={handleRegistration}>
+          <Text style={styles.btnText}>REGISTER</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 40, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 32, letterSpacing: 8, fontWeight: '300' },
-  roleContainer: { flexDirection: 'row', gap: 15, marginBottom: 40 },
-  roleBtn: { paddingVertical: 12, paddingHorizontal: 20, borderRadius: 2, backgroundColor: '#111' },
-  input: { width: '100%', height: 60, borderBottomWidth: 1, marginBottom: 20 },
-  mainBtn: { width: '100%', height: 55, justifyContent: 'center', alignItems: 'center', marginTop: 30, borderRadius: 2 }
+  container: { flexGrow: 1, backgroundColor: '#8B0000', padding: 40, alignItems: 'center', justifyContent: 'center' },
+  header: { alignItems: 'center', marginBottom: 40 },
+  logoCircle: { width: 110, height: 110, borderRadius: 55, backgroundColor: '#660000', borderWidth: 3, borderColor: '#D4AF37', justifyContent: 'center', alignItems: 'center' },
+  brandText: { fontSize: 40, fontWeight: 'bold', color: '#D4AF37' },
+  tagline: { color: '#D4AF37', letterSpacing: 4, marginTop: 10, fontSize: 10 },
+  roleSwitch: { flexDirection: 'row', width: '100%', marginBottom: 30 },
+  roleOption: { flex: 1, paddingVertical: 12, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#660000' },
+  activeTab: { borderBottomColor: '#D4AF37', borderBottomWidth: 2 },
+  roleText: { fontSize: 12, fontWeight: 'bold' },
+  formArea: { width: '100%' },
+  input: { height: 55, borderBottomWidth: 1, borderBottomColor: '#D4AF37', color: '#FFFFFF', marginBottom: 20, fontSize: 15 },
+  regionText: { color: '#D4AF37', fontSize: 10, marginBottom: 5 },
+  mainBtn: { backgroundColor: '#D4AF37', height: 55, justifyContent: 'center', alignItems: 'center', marginTop: 20, borderRadius: 4 },
+  btnText: { color: '#660000', fontWeight: 'bold', letterSpacing: 2 }
 });
