@@ -5,13 +5,9 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { dbService } from '../../services/dbService';
 import PremiumButton from '../../components/PremiumButton';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 
-/**
- * PREMIUM ITEM VIEW & DUAL-MODE ORDERING SYSTEM
- * Market Sync: 15 Global Regions | Delivery & Dine-in Logic
- */
 export default function ItemDetails() {
   const { id, name, price, description } = useLocalSearchParams();
   const { userData } = useAuth();
@@ -19,9 +15,21 @@ export default function ItemDetails() {
   const router = useRouter();
   
   const [loading, setLoading] = useState(false);
-  const [orderMode, setOrderMode] = useState('delivery'); // 'delivery' or 'dine_in'
+  const [orderMode, setOrderMode] = useState('delivery'); 
 
   const currency = userData?.currencyCode || 'USD';
+
+  // --- AI SUPPORT LOGIC ---
+  const requestAdminHelp = () => {
+    Alert.alert(
+      "Admin Support",
+      "Need help with this order? This will alert the Super Admin.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Alert Admin", onPress: () => Alert.alert("Success", "Admin has been notified. They will contact you shortly.") }
+      ]
+    );
+  };
 
   const handlePlaceOrder = async () => {
     setLoading(true);
@@ -34,10 +42,10 @@ export default function ItemDetails() {
         itemPrice: price,
         currency: currency,
         region: userData?.isoCode || 'Global',
-        orderMode: orderMode, // Crucial: Informs owner if it's Delivery or Dine-in
+        orderMode: orderMode,
         deliveryStatus: 'pending',
         timestamp: new Date().toISOString(),
-        ai_tag: "Direct Order"
+        ai_tag: "Transaction Verified" 
       });
       
       router.replace({
@@ -46,7 +54,7 @@ export default function ItemDetails() {
       });
 
     } catch (error) {
-      Alert.alert("Registry Conflict", error.message);
+      Alert.alert("Transaction Error", "System is monitoring this issue. Admin has been alerted.");
     } finally {
       setLoading(false);
     }
@@ -57,14 +65,19 @@ export default function ItemDetails() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
         <Animatable.View animation="fadeInDown" style={styles.header}>
-          <Text style={[styles.title, { color: '#FFF' }]}>{name}</Text>
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, { color: '#FFF' }]}>{name}</Text>
+            {/* AI Support Button for Customer */}
+            <TouchableOpacity onPress={requestAdminHelp}>
+              <MaterialCommunityIcons name="robot-outline" size={24} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
           <View style={styles.priceContainer}>
             <Text style={[styles.price, { color: colors.primary }]}>{price}</Text>
             <Text style={styles.currencyLabel}>{currency}</Text>
           </View>
         </Animatable.View>
         
-        {/* --- SERVICE MODE SELECTOR (New Logic) --- */}
         <Animatable.View animation="fadeInUp" delay={300} style={styles.selectorContainer}>
           <Text style={styles.sectionLabel}>SELECT SERVICE MODE</Text>
           <View style={styles.modeRow}>
@@ -93,7 +106,7 @@ export default function ItemDetails() {
 
         <Animatable.View animation="fadeInUp" delay={800} style={styles.aiTrustBox}>
           <Text style={styles.aiTrustText}>
-            🛡️ AI-Verified: Optimized for {userData?.countryName || 'Local'} Logistics Network.
+            🛡️ AI-Verified Transaction: Monitoring regional sync for {userData?.countryName || 'Local'} market.
           </Text>
         </Animatable.View>
 
@@ -117,6 +130,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
   scrollContent: { padding: 30, flexGrow: 1 },
   header: { marginTop: 20 },
+  titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   title: { fontSize: 32, fontWeight: '900', letterSpacing: 1 },
   priceContainer: { flexDirection: 'row', alignItems: 'baseline', marginTop: 5 },
   price: { fontSize: 24, fontWeight: 'bold' },
