@@ -5,44 +5,75 @@ import { doc, getDoc } from 'firebase/firestore';
 
 const AuthContext = createContext({});
 
+/**
+ * GLOBAL AUTHENTICATION & ROLE ENGINE
+ * Security: Master Admin Logic (Email + Hardcoded Password)
+ * Context: 15-Market Regional Synchronization
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Your Master Admin Email
+  // MASTER SECURITY CREDENTIALS
   const MASTER_ADMIN_EMAIL = "abcp8844@gmail.com"; 
+  const MASTER_ADMIN_PASS = "7863811"; 
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setUserData(data);
-          // Check if user is Admin by email or role
-          if (user.email === MASTER_ADMIN_EMAIL || data.role === 'admin') {
-            setIsAdmin(true);
-          }
-        }
-      } else {
-        setUser(null);
-        setUserData(null);
-        setIsAdmin(false);
-      }
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      try {
+        if (firebaseUser) {
+          setUser(firebaseUser);
+          
+          const docRef = doc(db, "users", firebaseUser.uid);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            let data = docSnap.data();
 
-  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+            // ROLE CLASSIFICATION
+            // Force 'admin' role if the Master Email is detected
+            if (firebaseUser.email === MASTER_ADMIN_EMAIL) {
+              data.role = 'admin'; 
+            }
+
+            setUserData(data);
+          }
+        } else {
+          setUser(null);
+          setUserData(null);
+        }
+      } catch (error) {
+        console.error("[AUTH ERROR]: Regional Node Sync Failure", error);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return unsubscribe;
+  } , []);
+
+  /**
+   * ENHANCED LOGIN GATEWAY
+   * Prevents unauthorized access to Admin nodes via password validation
+   */
+  const login = async (email, password) => {
+    if (email === MASTER_ADMIN_EMAIL && password !== MASTER_ADMIN_PASS) {
+      throw new Error("Invalid Administrative Credentials");
+    }
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
   const logout = () => signOut(auth);
 
   return (
-    <AuthContext.Provider value={{ user, userData, isAdmin, login, logout, loading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      userData, 
+      loading, 
+      login, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
