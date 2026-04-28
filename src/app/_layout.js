@@ -12,26 +12,26 @@ function RootLayoutNav() {
   useEffect(() => {
     if (loading) return;
 
-    const inAuthGroup = segments[0] === 'auth';
-    const inAdminGroup = segments[0] === 'admin';
-    const inOwnerGroup = segments[0] === 'owner';
+    const inAuthGroup = segments[0] === '(auth)';
+    const inAdminGroup = segments[0] === '(admin)';
+    const inOwnerGroup = segments[0] === '(owner)';
 
-    if (!user && !inAuthGroup) {
-      router.replace('/auth/login');
+    if (!user) {
+      if (!inAuthGroup) router.replace('/(auth)/login');
     } 
     else if (user && userData) {
-      // SECURITY: Kick out unauthorized role access
+      // 🛡️ ROLE PROTECTION: Ensuring no cross-access
       if (inAdminGroup && userData.role !== 'admin') {
-        router.replace('/customer/home');
+        router.replace('/(customer)/home');
       }
       else if (inOwnerGroup && userData.role !== 'owner') {
-        router.replace('/customer/home');
+        router.replace('/(customer)/home');
       }
-      // AUTO-ROUTE: Send to correct dashboard from login
+      // 🚀 GLOBAL ROUTING: Directing to specific market nodes
       else if (inAuthGroup) {
-        if (userData.role === 'admin') router.replace('/admin/home');
-        else if (userData.role === 'owner') router.replace('/owner/wallet-dashboard');
-        else router.replace('/customer/home');
+        if (userData.role === 'admin') router.replace('/(admin)/dashboard');
+        else if (userData.role === 'owner') router.replace('/(owner)/owner-wallet');
+        else router.replace('/(customer)/home');
       }
     }
   }, [user, userData, loading, segments]);
@@ -40,13 +40,13 @@ function RootLayoutNav() {
     <Stack screenOptions={{ 
       headerShown: false,
       contentStyle: { backgroundColor: '#000' },
-      animation: 'fade'
+      animation: 'fade_from_bottom'
     }}>
-      <Stack.Screen name="auth/login" />
-      <Stack.Screen name="auth/register" />
-      <Stack.Screen name="admin" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="owner" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="customer" options={{ gestureEnabled: false }} />
+      {/* Defined Routes for 15 Markets Ecosystem */}
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(admin)" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="(owner)" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="(customer)" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
