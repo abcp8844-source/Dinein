@@ -4,8 +4,13 @@ import { useRouter, useSegments } from 'expo-router';
 import { ThemeProvider } from '../context/ThemeContext';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
+/**
+ * ROOT NAVIGATION SYSTEM
+ * Roles: Admin (System Monitor) | Owner (Business) | Customer (User)
+ * Market: 15-Country Integrated Infrastructure
+ */
 function RootLayoutNav() {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, userData, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
@@ -15,27 +20,38 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === 'auth';
 
     if (!user && !inAuthGroup) {
-      // Direct unauthorized users to login
       router.replace('/auth/login');
-    } else if (user && inAuthGroup) {
-      // Direct logged-in users based on their role
-      if (isAdmin) {
+    } 
+    else if (user && inAuthGroup) {
+      // Logic for Role-Based Redirection
+      if (userData?.role === 'admin') {
         router.replace('/admin/home');
-      } else {
-        router.replace('/(tabs)/home');
+      } 
+      else if (userData?.role === 'owner') {
+        router.replace('/owner/wallet-dashboard');
+      } 
+      else {
+        router.replace('/customer/home');
       }
     }
-  }, [user, loading, segments, isAdmin]);
+  }, [user, userData, loading, segments]);
 
   return (
     <Stack screenOptions={{ 
       headerShown: false,
-      contentStyle: { backgroundColor: '#0A0A0A' } 
+      contentStyle: { backgroundColor: '#000' },
+      animation: 'fade'
     }}>
-      <Stack.Screen name="auth/login" options={{ animation: 'fade' }} />
-      <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
-      <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-      <Stack.Screen name="admin" options={{ animation: 'slide_from_bottom' }} />
+      {/* Authentication Flow */}
+      <Stack.Screen name="auth/login" />
+      <Stack.Screen name="auth/register" />
+      
+      {/* Central Admin Panel (Monitoring & Support) */}
+      <Stack.Screen name="admin" options={{ gestureEnabled: false }} />
+      
+      {/* Business & Consumer Panels */}
+      <Stack.Screen name="owner" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="customer" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
