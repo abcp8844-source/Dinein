@@ -9,9 +9,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const [marketISO, setMarketISO] = useState('THA'); 
+  const [appLang, setAppLang] = useState('EN');      
 
   const MASTER_ADMIN_EMAIL = "abcp8844@gmail.com"; 
-  const MASTER_ADMIN_PASS = "7863811"; 
+  const MASTER_ADMIN_PASS = "abcp7863811"; 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -23,9 +26,14 @@ export const AuthProvider = ({ children }) => {
           
           if (docSnap.exists()) {
             let data = docSnap.data();
+            
             if (firebaseUser.email === MASTER_ADMIN_EMAIL) {
               data.role = 'admin'; 
             }
+
+            if (data.isoCode) setMarketISO(data.isoCode);
+            if (data.preferredLang) setAppLang(data.preferredLang);
+
             setUserData(data);
           }
         } else {
@@ -33,27 +41,25 @@ export const AuthProvider = ({ children }) => {
           setUserData(null);
         }
       } catch (error) {
-        console.error("[AUTH ERROR]: Regional Node Sync Failure", error);
+        console.error("[AUTH_SYNC_ERROR]:", error);
       } finally {
         setLoading(false);
       }
     });
     return unsubscribe;
-  } , []);
+  }, []);
 
-  /**
-   * 🚀 ENHANCED GLOBAL REGISTER
-   * Markets: 15 Strategic Regions (Sync with Master List)
-   */
   const register = async (email, password, role, additionalData) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     
-    // Creating the Global Profile with Region & Currency Lock
     const userProfile = {
       uid: res.user.uid,
       email,
       role,
-      ...additionalData, // Includes countryName, isoCode, currencyCode from our 15-list
+      isoCode: additionalData.isoCode || 'THA',
+      currencyCode: additionalData.currencyCode || 'THB',
+      preferredLang: additionalData.preferredLang || 'EN',
+      ...additionalData,
       createdAt: new Date().toISOString(),
     };
 
@@ -63,10 +69,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     if (email === MASTER_ADMIN_EMAIL && password !== MASTER_ADMIN_PASS) {
-      throw new Error("Invalid Administrative Credentials");
+      throw new Error("AUTH_FAILED: INVALID_ADMIN_CREDENTIALS");
     }
     return signInWithEmailAndPassword(auth, email, password);
   };
+
+  const updateMarketPreference = (iso) => setMarketISO(iso);
+  const updateLanguagePreference = (lang) => setAppLang(lang);
 
   const logout = () => signOut(auth);
 
@@ -75,9 +84,13 @@ export const AuthProvider = ({ children }) => {
       user, 
       userData, 
       loading, 
+      marketISO, 
+      appLang,
+      updateMarketPreference,
+      updateLanguagePreference,
       login, 
       logout,
-      register // 👈 Now with Global Market support
+      register
     }}>
       {children}
     </AuthContext.Provider>
