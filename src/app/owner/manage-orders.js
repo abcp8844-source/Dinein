@@ -4,6 +4,10 @@ import { dbService } from '../../services/dbService';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
+/**
+ * SMART ORDER MANAGEMENT SYSTEM
+ * Built for 15 Global Markets | AI-Ready Structure
+ */
 export default function ManageOrders() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -14,54 +18,79 @@ export default function ManageOrders() {
   }, []);
 
   const loadIncomingOrders = async () => {
-    // Logic to fetch orders for this specific owner
-    // For now, let's assume we fetch all and filter
-    const allOrders = await dbService.getCustomerOrders(userData.uid); 
-    setOrders(allOrders);
+    try {
+      // 🛡️ Anchoring: Fetching orders specific to the owner's regional ISO code
+      const allOrders = await dbService.getOwnerOrders(userData.uid); 
+      setOrders(allOrders);
+    } catch (error) {
+      console.log("Order Fetch Error:", error.message);
+    }
   };
 
   const updateStatus = async (orderId, status) => {
     try {
       await dbService.updateOrderStatus(orderId, status);
-      Alert.alert("Success", `Order is now ${status}`);
+      Alert.alert("System Notification", `Order status synchronized to: ${status.toUpperCase()}`);
       loadIncomingOrders();
     } catch (error) {
-      Alert.alert("Error", error.message);
+      Alert.alert("Process Failed", error.message);
     }
   };
 
   const renderOrder = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: '#1A1A1A', borderColor: colors.primary }]}>
-      <Text style={{ color: colors.secondary, fontSize: 18, fontWeight: 'bold' }}>{item.itemName}</Text>
-      <Text style={{ color: colors.textDim }}>Customer: {item.customerEmail}</Text>
-      <Text style={{ color: colors.primary, marginTop: 5 }}>Status: {item.status.toUpperCase()}</Text>
+    <View style={[styles.card, { backgroundColor: '#0A0A0A', borderColor: colors.primary }]}>
+      <View style={styles.cardHeader}>
+        <Text style={[styles.itemTitle, { color: colors.secondary }]}>{item.itemName}</Text>
+        <Text style={styles.priceTag}>{item.price} {item.currency || 'USD'}</Text>
+      </View>
+
+      {/* 📍 PRECISION DELIVERY DATA (The "Door-to-Door" Logic) */}
+      <View style={styles.addressBox}>
+        <Text style={styles.addressLabel}>DELIVERY TO:</Text>
+        <Text style={styles.addressText}>
+          📍 {item.customerLocation?.street || 'N/A'}, {item.customerLocation?.area || 'N/A'}
+        </Text>
+        <Text style={styles.cityText}>{item.customerLocation?.city}, {item.customerLocation?.country}</Text>
+      </View>
+      
+      <View style={styles.statusRow}>
+        <Text style={{ color: '#666', fontSize: 12 }}>Current Phase:</Text>
+        <Text style={[styles.statusText, { color: colors.primary }]}>{item.status.toUpperCase()}</Text>
+      </View>
       
       <View style={styles.btnRow}>
         <TouchableOpacity 
-          style={[styles.actionBtn, { backgroundColor: '#28a745' }]} 
+          activeOpacity={0.8}
+          style={[styles.actionBtn, { backgroundColor: '#111', borderColor: '#28a745', borderWidth: 1 }]} 
           onPress={() => updateStatus(item.id, 'preparing')}
         >
-          <Text style={styles.btnText}>Accept</Text>
+          <Text style={[styles.btnText, { color: '#28a745' }]}>ACCEPT</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
-          style={[styles.actionBtn, { backgroundColor: '#dc3545' }]} 
+          activeOpacity={0.8}
+          style={[styles.actionBtn, { backgroundColor: '#111', borderColor: '#dc3545', borderWidth: 1 }]} 
           onPress={() => updateStatus(item.id, 'cancelled')}
         >
-          <Text style={styles.btnText}>Reject</Text>
+          <Text style={[styles.btnText, { color: '#dc3545' }]}>REJECT</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.header, { color: colors.secondary }]}>Incoming Orders</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#000' }]}>
+      <View style={styles.topHeader}>
+        <Text style={[styles.headerText, { color: colors.secondary }]}>Incoming Orders</Text>
+        <Text style={styles.marketTag}>Monitoring: {userData?.countryName || 'Global'}</Text>
+      </View>
+      
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id}
         renderItem={renderOrder}
         contentContainerStyle={{ padding: 20 }}
+        ListEmptyComponent={<Text style={styles.emptyText}>No active orders in this region.</Text>}
       />
     </SafeAreaView>
   );
@@ -69,9 +98,21 @@ export default function ManageOrders() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { fontSize: 28, fontWeight: 'bold', padding: 20 },
-  card: { padding: 20, borderRadius: 15, borderWidth: 1, marginBottom: 15 },
-  btnRow: { flexDirection: 'row', marginTop: 15, justifyContent: 'space-between' },
-  actionBtn: { paddingVertical: 10, paddingHorizontal: 25, borderRadius: 8, flex: 0.48, alignItems: 'center' },
-  btnText: { color: 'white', fontWeight: 'bold' }
+  topHeader: { padding: 25, paddingTop: 40 },
+  headerText: { fontSize: 32, fontWeight: '900', letterSpacing: 1 },
+  marketTag: { color: '#444', fontSize: 10, fontWeight: 'bold', letterSpacing: 2, marginTop: 5 },
+  card: { padding: 20, borderRadius: 20, borderWidth: 1, marginBottom: 20, shadowColor: '#000', shadowOpacity: 0.5, elevation: 10 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  itemTitle: { fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5 },
+  priceTag: { color: '#FFF', fontSize: 14, fontWeight: 'bold' },
+  addressBox: { backgroundColor: '#111', padding: 12, borderRadius: 10, marginBottom: 15 },
+  addressLabel: { color: '#444', fontSize: 8, fontWeight: 'bold', letterSpacing: 1, marginBottom: 4 },
+  addressText: { color: '#CCC', fontSize: 13, fontWeight: '600' },
+  cityText: { color: '#666', fontSize: 11, marginTop: 2 },
+  statusRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
+  statusText: { fontWeight: '900', fontSize: 12, letterSpacing: 1 },
+  btnRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  actionBtn: { paddingVertical: 12, borderRadius: 12, flex: 0.47, alignItems: 'center' },
+  btnText: { fontSize: 12, fontWeight: 'bold', letterSpacing: 1 },
+  emptyText: { color: '#333', textAlign: 'center', marginTop: 50, letterSpacing: 1 }
 });
