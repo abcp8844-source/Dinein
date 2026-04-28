@@ -1,8 +1,14 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
-import { useRouter, useSegments } from 'expo-router';
-import { ThemeProvider } from '../context/ThemeContext';
+import { StatusBar, LogBox } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
+import { CartProvider } from '../context/CartContext';
+import { LocationProvider } from '../context/LocationContext';
+
+LogBox.ignoreAllLogs();
 
 function RootLayoutNav() {
   const { user, userData, loading } = useAuth();
@@ -20,14 +26,12 @@ function RootLayoutNav() {
       if (!inAuthGroup) router.replace('/(auth)/login');
     } 
     else if (user && userData) {
-      // 🛡️ ROLE PROTECTION: Ensuring no cross-access
       if (inAdminGroup && userData.role !== 'admin') {
         router.replace('/(customer)/home');
       }
       else if (inOwnerGroup && userData.role !== 'owner') {
         router.replace('/(customer)/home');
       }
-      // 🚀 GLOBAL ROUTING: Directing to specific market nodes
       else if (inAuthGroup) {
         if (userData.role === 'admin') router.replace('/(admin)/dashboard');
         else if (userData.role === 'owner') router.replace('/(owner)/owner-wallet');
@@ -40,9 +44,8 @@ function RootLayoutNav() {
     <Stack screenOptions={{ 
       headerShown: false,
       contentStyle: { backgroundColor: '#000' },
-      animation: 'fade_from_bottom'
+      animation: 'fade'
     }}>
-      {/* Defined Routes for 15 Markets Ecosystem */}
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(admin)" options={{ gestureEnabled: false }} />
       <Stack.Screen name="(owner)" options={{ gestureEnabled: false }} />
@@ -53,10 +56,17 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <RootLayoutNav />
-      </ThemeProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <LocationProvider>
+          <ThemeProvider>
+            <CartProvider>
+              <StatusBar barStyle="light-content" backgroundColor="#000000" />
+              <RootLayoutNav />
+            </CartProvider>
+          </ThemeProvider>
+        </LocationProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
