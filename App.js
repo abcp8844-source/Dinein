@@ -4,20 +4,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { initializeApp, getApps } from 'firebase/app';
 
-// Corrected Paths based on your SRC structure
 import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/context/AuthContext';
-import { ThemeProvider } from './src/theme/ThemeContext'; // Path fixed
-import { CartProvider } from './src/context/CartContext'; // Path fixed
-import { LocationProvider } from './src/context/LocationContext'; // Path fixed
+import { ThemeProvider } from './src/theme/ThemeContext';
+import { CartProvider } from './src/context/CartContext';
+import { LocationProvider } from './src/context/LocationContext';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAs-v6A_H8l1pGzXz_Xf6M0v1u2Y3Z4",
-  authDomain: "dining-table-app.firebaseapp.com",
-  projectId: "dining-table-app",
-  storageBucket: "dining-table-app.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef123456789"
+  apiKey: "AIzaSyC-hd2bvzT8per09QebyrzatFxcz1Yqj50",
+  authDomain: "dining-table-official.firebaseapp.com",
+  projectId: "dining-table-official",
+  storageBucket: "dining-table-official.firebasestorage.app",
+  messagingSenderId: "817071467031",
+  appId: "1:817071467031:android:d99aa1d244c981163bca52"
 };
 
 if (!getApps().length) {
@@ -34,7 +33,7 @@ export default function App() {
           <ThemeProvider>
             <CartProvider>
               <View style={styles.root}>
-                <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+                <StatusBar barStyle="light-content" backgroundColor="#000000" translucent={false} />
                 <NavigationContainer>
                   <AppNavigator />
                 </NavigationContainer>
