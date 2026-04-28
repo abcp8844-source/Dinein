@@ -1,9 +1,8 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
-// Your Actual Firebase Configuration from the JSON file
 const firebaseConfig = {
   apiKey: "AIzaSyC-hd2bvzT8per09QebyrzatFxcz1Yqj50",
   authDomain: "dining-table-official.firebaseapp.com",
@@ -13,12 +12,10 @@ const firebaseConfig = {
   appId: "1:817071467031:android:d99aa1d244c981163bca52"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// Clean Exports for your App
-export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export default app;
