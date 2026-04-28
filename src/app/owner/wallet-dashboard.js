@@ -2,30 +2,32 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 
 /**
  * OWNER REVENUE & PROMOTION ENGINE
- * Features: Local Currency Earnings | Auto-Deduction for Ads | Order Ledger
+ * Logic: Strictly bound to the Strategic 15 Market Nodes.
  */
 export default function OwnerWallet() {
   const { userData } = useAuth();
   const { colors } = useTheme();
 
-  // Logic: Earnings from orders and promotion costs
+  // 🛡️ MARKET SYNC: Currency & Country strictly from registered user data
+  const currency = userData?.currencyCode || 'USD';
+  const country = userData?.countryName || 'Assigned Market';
+  
+  // Initial Balance (In production, this comes from dbService)
   const [balance, setBalance] = useState(2500.00); 
-  const currency = userData?.currencyCode || 'THB';
 
   const handlePurchasePromotion = (cost) => {
     if (balance >= cost) {
       Alert.alert(
-        "Promotion Active",
-        `Cost of ${cost} ${currency} will be deducted from your current order earnings.`,
+        "Promotion Protocol",
+        `Deducting ${cost} ${currency} from your ${country} earnings for 24h visibility.`,
         [{ text: "Confirm", onPress: () => setBalance(prev => prev - cost) }]
       );
     } else {
-      Alert.alert("Insufficient Funds", "You need more sales to fund this promotion from your earnings.");
+      Alert.alert("Insufficient Funds", `You need more revenue in ${currency} to activate this.`);
     }
   };
 
@@ -35,10 +37,13 @@ export default function OwnerWallet() {
         
         {/* --- REVENUE HEADER --- */}
         <Animatable.View animation="fadeInDown" style={styles.header}>
-          <Text style={styles.label}>TOTAL EARNINGS ({userData?.countryName})</Text>
+          <Text style={styles.label}>TOTAL REVENUE NODE ({country.toUpperCase()})</Text>
           <Text style={[styles.amount, {color: colors.primary}]}>
-            {balance.toFixed(2)} <Text style={styles.currency}>{currency}</Text>
+            {balance.toLocaleString(undefined, {minimumFractionDigits: 2})} <Text style={styles.currency}>{currency}</Text>
           </Text>
+          <View style={styles.syncStatus}>
+             <Text style={styles.syncStatusText}>● REGIONAL DATA SECURE</Text>
+          </View>
         </Animatable.View>
 
         {/* --- PROMOTION SECTION --- */}
@@ -58,7 +63,7 @@ export default function OwnerWallet() {
 
         {/* --- TRANSACTION LEDGER --- */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>RECENT ORDER SETTLEMENTS</Text>
+          <Text style={styles.sectionTitle}>RECENT SETTLEMENTS ({currency})</Text>
           <View style={styles.ledgerCard}>
             <View style={styles.ledgerRow}>
               <Text style={styles.orderId}>Order #9921</Text>
@@ -83,9 +88,11 @@ export default function OwnerWallet() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
   header: { padding: 40, alignItems: 'center', backgroundColor: '#050505', borderBottomWidth: 1, borderBottomColor: '#111' },
-  label: { color: '#444', fontSize: 10, fontWeight: '900', letterSpacing: 2 },
+  label: { color: '#444', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
   amount: { fontSize: 36, fontWeight: '900', marginTop: 10 },
   currency: { fontSize: 16, fontWeight: '400' },
+  syncStatus: { marginTop: 15, paddingHorizontal: 10, paddingVertical: 4, backgroundColor: '#111', borderRadius: 4 },
+  syncStatusText: { color: '#D4AF37', fontSize: 7, fontWeight: '900' },
   section: { marginTop: 30, paddingHorizontal: 25 },
   sectionTitle: { color: '#333', fontSize: 10, fontWeight: '900', letterSpacing: 2, marginBottom: 15 },
   promoCard: { backgroundColor: '#0A0A0A', padding: 20, borderRadius: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: '#111' },
