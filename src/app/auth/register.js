@@ -1,137 +1,183 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../context/AuthContext'; // 🛡️ Using our Secure Auth
+import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
-// 🌍 The Strategic 15 Markets - Fixed to prevent conflicts
+// 🛡️ Strategic 15 Market Anchor
 const GLOBAL_MARKETS = [
-  { id: 'USA', name: 'United States', currency: 'USD', idType: 'SSN / Passport' },
-  { id: 'CHN', name: 'China', currency: 'CNY', idType: 'Resident ID / Passport' },
-  { id: 'GBR', name: 'United Kingdom', currency: 'GBP', idType: 'National Insurance / Passport' },
-  { id: 'DEU', name: 'Germany', currency: 'EUR', idType: 'ID Card / Passport' },
-  { id: 'FRA', name: 'France', currency: 'EUR', idType: 'ID Card / Passport' },
-  { id: 'JPN', name: 'Japan', currency: 'JPY', idType: 'My Number Card / Passport' },
-  { id: 'KOR', name: 'South Korea', currency: 'KRW', idType: 'Resident Registration / Passport' },
-  { id: 'THA', name: 'Thailand', currency: 'THB', idType: 'Thai ID / Passport' },
-  { id: 'SGP', name: 'Singapore', currency: 'SGD', idType: 'NRIC / Passport' },
-  { id: 'MYS', name: 'Malaysia', currency: 'MYR', idType: 'MyKad / Passport' },
-  { id: 'IDN', name: 'Indonesia', currency: 'IDR', idType: 'KTP / Passport' },
-  { id: 'VNM', name: 'Vietnam', currency: 'VND', idType: 'Citizen ID / Passport' },
-  { id: 'ARE', name: 'UAE', currency: 'AED', idType: 'Emirates ID / Passport' },
-  { id: 'SAU', name: 'Saudi Arabia', currency: 'SAR', idType: 'Iqama / Passport' },
-  { id: 'HKG', name: 'Hong Kong', currency: 'HKD', idType: 'HKID / Passport' },
+  { id: 'USA', name: 'United States', currency: 'USD', localIdName: 'SSN' },
+  { id: 'CHN', name: 'China', currency: 'CNY', localIdName: 'Resident ID' },
+  { id: 'GBR', name: 'United Kingdom', currency: 'GBP', localIdName: 'National Insurance' },
+  { id: 'DEU', name: 'Germany', currency: 'EUR', localIdName: 'ID Card' },
+  { id: 'FRA', name: 'France', currency: 'EUR', localIdName: 'ID Card' },
+  { id: 'JPN', name: 'Japan', currency: 'JPY', localIdName: 'My Number' },
+  { id: 'KOR', name: 'South Korea', currency: 'KRW', localIdName: 'Resident Reg' },
+  { id: 'THA', name: 'Thailand', currency: 'THB', localIdName: 'Thai ID' },
+  { id: 'SGP', name: 'Singapore', currency: 'SGD', localIdName: 'NRIC' },
+  { id: 'MYS', name: 'Malaysia', currency: 'MYR', localIdName: 'MyKad' },
+  { id: 'IDN', name: 'Indonesia', currency: 'IDR', localIdName: 'KTP' },
+  { id: 'VNM', name: 'Vietnam', currency: 'VND', localIdName: 'Citizen ID' },
+  { id: 'ARE', name: 'UAE', currency: 'AED', localIdName: 'Emirates ID' },
+  { id: 'SAU', name: 'Saudi Arabia', currency: 'SAR', localIdName: 'Iqama' },
+  { id: 'HKG', name: 'Hong Kong', currency: 'HKD', localIdName: 'HKID' },
 ];
 
 export default function Register() {
   const { colors } = useTheme();
-  const { register } = useAuth(); // 🛡️ Hooking into our global register engine
+  const { register } = useAuth();
   const router = useRouter();
-  
-  const [role, setRole] = useState('customer');
+
+  // Basic States
+  const [role, setRole] = useState('customer'); // 'customer' or 'owner'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(GLOBAL_MARKETS[7]); // Default Thailand
+
+  // Owner Smart Detection States
+  const [verificationType, setVerificationType] = useState('local'); // 'local' or 'passport'
   const [idNumber, setIdNumber] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(GLOBAL_MARKETS[7]); // Default to Thailand
+  const [passportOrigin, setPassportOrigin] = useState('');
 
   const handleRegistration = async () => {
     if (!email || !password) {
-      Alert.alert("Authentication", "Credentials are required.");
+      Alert.alert("Required", "Please provide email and password.");
       return;
     }
-    
+
     if (role === 'owner' && !idNumber) {
-      Alert.alert("Compliance", `${selectedCountry.idType} is mandatory for Owners.`);
+      Alert.alert("Compliance", "Identification is mandatory for Business Owners.");
       return;
     }
 
     try {
-      // 🚀 Registering with 15-Market Metadata
-      await register(email, password, role, {
-        countryName: selectedCountry.name,
-        isoCode: selectedCountry.id,
-        currencyCode: selectedCountry.currency,
-        idVerification: role === 'owner' ? idNumber : 'N/A'
-      });
+      // 🚀 Injecting Logic: Detecting origin vs target market
+      const registrationData = {
+        market: selectedCountry.name,
+        iso: selectedCountry.id,
+        currency: selectedCountry.currency,
+        verification: {
+          method: verificationType,
+          id: idNumber,
+          // Detects if it's a global passport or local ID
+          origin: verificationType === 'passport' ? passportOrigin : selectedCountry.name,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      await register(email, password, role, registrationData);
       
-      Alert.alert("Success", "Account established within the global node.");
+      Alert.alert("Success", `Registered in ${selectedCountry.name} node.`);
       router.replace(role === 'owner' ? '/owner/dashboard' : '/customer/home');
     } catch (error) {
-      Alert.alert("Registry Conflict", error.message);
+      Alert.alert("Error", error.message);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      
+      {/* --- Header Section --- */}
       <View style={styles.header}>
-        <View style={styles.logoCircle}>
-          <Text style={styles.brandText}>F&B</Text>
+        <View style={styles.logoBox}>
+          <Text style={styles.logoText}>F&B</Text>
         </View>
-        <Text style={styles.tagline}>DINING TABLE</Text>
+        <Text style={styles.tagline}>GLOBAL DINING NETWORK</Text>
       </View>
 
-      <View style={styles.roleSwitch}>
+      {/* --- Role Selection Tabs --- */}
+      <View style={styles.tabContainer}>
         <TouchableOpacity 
-          style={[styles.roleOption, role === 'customer' && styles.activeTab]}
-          onPress={() => setRole('customer')}
+          onPress={() => setRole('customer')} 
+          style={[styles.tab, role === 'customer' && styles.activeTab]}
         >
-          <Text style={[styles.roleText, { color: role === 'customer' ? '#D4AF37' : '#A68D5F' }]}>CUSTOMER</Text>
+          <Text style={[styles.tabText, role === 'customer' && {color: '#D4AF37'}]}>CUSTOMER</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.roleOption, role === 'owner' && styles.activeTab]}
-          onPress={() => setRole('owner')}
+          onPress={() => setRole('owner')} 
+          style={[styles.tab, role === 'owner' && styles.activeTab]}
         >
-          <Text style={[styles.roleText, { color: role === 'owner' ? '#D4AF37' : '#A68D5F' }]}>OWNER</Text>
+          <Text style={[styles.tabText, role === 'owner' && {color: '#D4AF37'}]}>BUSINESS OWNER</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.formArea}>
-        {/* --- Market Selection Dropdown Logic --- */}
-        <Text style={styles.regionLabel}>TARGET MARKET:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.marketList}>
+      {/* --- Form Section --- */}
+      <View style={styles.form}>
+        
+        {/* Market Selection (Horizontal List) */}
+        <Text style={styles.inputLabel}>OPERATIONAL REGION</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.marketScroll}>
           {GLOBAL_MARKETS.map((m) => (
             <TouchableOpacity 
               key={m.id} 
               onPress={() => setSelectedCountry(m)}
-              style={[styles.marketChip, selectedCountry.id === m.id && styles.activeMarket]}
+              style={[styles.marketChip, selectedCountry.id === m.id && {backgroundColor: '#D4AF37'}]}
             >
-              <Text style={[styles.marketChipText, selectedCountry.id === m.id && {color: '#660000'}]}>{m.name}</Text>
+              <Text style={[styles.chipText, selectedCountry.id === m.id && {color: '#600'}]}>{m.name}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
         <TextInput 
-          style={styles.input}
-          placeholder="Email Address"
-          placeholderTextColor="#A68D5F"
+          style={styles.input} 
+          placeholder="Corporate Email" 
+          placeholderTextColor="#666"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
         />
+        
         <TextInput 
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#A68D5F"
+          style={styles.input} 
+          placeholder="Secure Password" 
+          placeholderTextColor="#666"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
+        {/* --- Dynamic Owner Detection Panel --- */}
         {role === 'owner' && (
-          <View>
-            <Text style={styles.regionText}>IDENTITY PROOF ({selectedCountry.currency})</Text>
+          <View style={styles.ownerPanel}>
+            <Text style={styles.inputLabel}>VERIFICATION DOCUMENT</Text>
+            <View style={styles.methodToggle}>
+              <TouchableOpacity 
+                onPress={() => setVerificationType('local')}
+                style={[styles.methodBtn, verificationType === 'local' && styles.methodActive]}
+              >
+                <Text style={styles.methodBtnText}>{selectedCountry.localIdName}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => setVerificationType('passport')}
+                style={[styles.methodBtn, verificationType === 'passport' && styles.methodActive]}
+              >
+                <Text style={styles.methodBtnText}>PASSPORT (GLOBAL)</Text>
+              </TouchableOpacity>
+            </View>
+
             <TextInput 
-              style={styles.input}
-              placeholder={selectedCountry.idType}
-              placeholderTextColor="#A68D5F"
+              style={styles.input} 
+              placeholder={verificationType === 'local' ? `Enter ${selectedCountry.localIdName} Number` : "Enter Passport Number"} 
+              placeholderTextColor="#666"
               value={idNumber}
               onChangeText={setIdNumber}
             />
+
+            {verificationType === 'passport' && (
+              <TextInput 
+                style={styles.input} 
+                placeholder="Passport Issuing Country (e.g. Pakistan, India, UK)" 
+                placeholderTextColor="#666"
+                value={passportOrigin}
+                onChangeText={setPassportOrigin}
+              />
+            )}
+            <Text style={styles.hint}>* System will record origin for ${selectedCountry.name} market access.</Text>
           </View>
         )}
 
-        <TouchableOpacity style={styles.mainBtn} onPress={handleRegistration}>
-          <Text style={styles.btnText}>REGISTER IN {selectedCountry.id}</Text>
+        <TouchableOpacity style={styles.submitBtn} onPress={handleRegistration}>
+          <Text style={styles.submitBtnText}>CREATE {role.toUpperCase()} ACCOUNT</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -139,23 +185,27 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#8B0000', padding: 40, alignItems: 'center' },
-  header: { alignItems: 'center', marginBottom: 30, marginTop: 40 },
-  logoCircle: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#660000', borderWidth: 3, borderColor: '#D4AF37', justifyContent: 'center', alignItems: 'center' },
-  brandText: { fontSize: 36, fontWeight: 'bold', color: '#D4AF37' },
-  tagline: { color: '#D4AF37', letterSpacing: 4, marginTop: 10, fontSize: 10 },
-  roleSwitch: { flexDirection: 'row', width: '100%', marginBottom: 20 },
-  roleOption: { flex: 1, paddingVertical: 12, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#660000' },
-  activeTab: { borderBottomColor: '#D4AF37', borderBottomWidth: 2 },
-  roleText: { fontSize: 11, fontWeight: 'bold' },
-  formArea: { width: '100%' },
-  regionLabel: { color: '#D4AF37', fontSize: 9, fontWeight: '900', marginBottom: 10 },
-  marketList: { flexDirection: 'row', marginBottom: 20 },
-  marketChip: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: '#D4AF37', marginRight: 10 },
-  activeMarket: { backgroundColor: '#D4AF37' },
-  marketChipText: { color: '#D4AF37', fontSize: 10, fontWeight: 'bold' },
-  input: { height: 50, borderBottomWidth: 1, borderBottomColor: '#D4AF37', color: '#FFFFFF', marginBottom: 15, fontSize: 14 },
-  regionText: { color: '#D4AF37', fontSize: 9, marginBottom: 5, fontWeight: 'bold' },
-  mainBtn: { backgroundColor: '#D4AF37', height: 55, justifyContent: 'center', alignItems: 'center', marginTop: 20, borderRadius: 4 },
-  btnText: { color: '#660000', fontWeight: 'bold', letterSpacing: 2, fontSize: 12 }
+  container: { flexGrow: 1, backgroundColor: '#800000', padding: 30 },
+  header: { alignItems: 'center', marginTop: 40, marginBottom: 30 },
+  logoBox: { width: 80, height: 80, backgroundColor: '#600', borderRadius: 12, borderWidth: 2, borderColor: '#D4AF37', justifyContent: 'center', alignItems: 'center' },
+  logoText: { color: '#D4AF37', fontSize: 28, fontWeight: '900' },
+  tagline: { color: '#D4AF37', fontSize: 8, letterSpacing: 2, marginTop: 10, fontWeight: 'bold' },
+  tabContainer: { flexDirection: 'row', marginBottom: 30, borderBottomWidth: 1, borderBottomColor: '#600' },
+  tab: { flex: 1, paddingVertical: 15, alignItems: 'center' },
+  activeTab: { borderBottomWidth: 3, borderBottomColor: '#D4AF37' },
+  tabText: { color: '#A68D5F', fontSize: 11, fontWeight: 'bold' },
+  form: { width: '100%' },
+  inputLabel: { color: '#D4AF37', fontSize: 9, fontWeight: 'bold', marginBottom: 10, letterSpacing: 1 },
+  marketScroll: { flexDirection: 'row', marginBottom: 20 },
+  marketChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4, borderWidth: 1, borderColor: '#D4AF37', marginRight: 8 },
+  chipText: { color: '#D4AF37', fontSize: 9, fontWeight: 'bold' },
+  input: { height: 50, borderBottomWidth: 1, borderBottomColor: '#D4AF37', color: '#FFF', marginBottom: 20, fontSize: 14 },
+  ownerPanel: { backgroundColor: 'rgba(0,0,0,0.15)', padding: 15, borderRadius: 10, marginBottom: 20 },
+  methodToggle: { flexDirection: 'row', gap: 10, marginBottom: 15 },
+  methodBtn: { flex: 1, padding: 10, borderWidth: 1, borderColor: '#D4AF37', borderRadius: 5, alignItems: 'center' },
+  methodActive: { backgroundColor: '#D4AF37' },
+  methodBtnText: { color: '#FFF', fontSize: 9, fontWeight: 'bold' },
+  hint: { color: '#D4AF37', fontSize: 8, fontStyle: 'italic', opacity: 0.7 },
+  submitBtn: { backgroundColor: '#D4AF37', height: 55, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 10 },
+  submitBtnText: { color: '#600', fontWeight: '900', letterSpacing: 1, fontSize: 13 }
 });
