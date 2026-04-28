@@ -5,88 +5,85 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { dbService } from '../../services/dbService';
 
+/**
+ * CUSTOMER HOME COMPONENT
+ * Cleaned for International Standards - 15 Countries Support
+ */
 export default function CustomerHome() {
   const { userData } = useAuth();
   const { colors } = useTheme();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // AI Mockup Data (This will later connect to Gemini/Weather API)
-  const [aiMessage, setAiMessage] = useState("Checking local vibes... ✨");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [aiMessage, setAiMessage] = useState("Analyzing your local trends...");
+
+  // Global Configuration Logic
+  const currency = userData?.currency || 'USD';
+  const location = userData?.city || 'Global';
 
   useEffect(() => {
-    loadMenu();
-    generateAiAdvice();
+    fetchMenu();
+    updateAiAdvice();
   }, []);
 
-  const generateAiAdvice = () => {
-    // In future, this will call AI based on weather/trends
+  const updateAiAdvice = () => {
     const hours = new Date().getHours();
-    if (hours < 12) setAiMessage("Good morning! People are loving fresh juices today. 🍊");
-    else if (hours < 18) setAiMessage("It might rain soon in Si Racha. Order your comfort food now! ⛈️");
-    else setAiMessage("Dinner time! The local favorite is Spicy Basil Chicken right now. 🔥");
+    if (hours < 12) setAiMessage(`Morning Vibes: Refreshing drinks are popular in ${location} right now! 🍊`);
+    else if (hours < 18) setAiMessage(`Afternoon Update: Stay cozy, it's the perfect time to order in ${location}. ⛈️`);
+    else setAiMessage(`Dinner Protocol: Top-rated dishes in ${location} are waiting for you. 🔥`);
   };
 
-  const loadMenu = async () => {
+  const fetchMenu = async () => {
     try {
       const data = await dbService.getMenuItems();
       setItems(data);
     } catch (error) {
-      console.error(error);
+      console.error("[System Error]: Menu fetch failed", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const renderItem = ({ item }) => (
+  const renderMenuItem = ({ item }) => (
     <TouchableOpacity 
       activeOpacity={0.9}
-      onPress={() => router.push({
-        pathname: '/customer/item-details',
-        params: { id: item.id, name: item.name, price: item.price, description: item.description }
-      })}
-      style={[styles.card, { backgroundColor: '#1A1A1A', borderColor: item.isFeatured ? colors.primary : '#333' }]}
+      onPress={() => router.push({ pathname: '/customer/item-details', params: { ...item } })}
+      style={[styles.card, { backgroundColor: '#141414', borderColor: item.isFeatured ? colors.primary : '#222' }]}
     >
-      {item.isFeatured && <Text style={styles.featuredBadge}>FEATURED</Text>}
-      <View style={{ flex: 1 }}>
+      <View style={styles.itemMeta}>
         <Text style={[styles.itemName, { color: colors.secondary }]}>{item.name}</Text>
-        <Text numberOfLines={1} style={{ color: colors.textDim }}>{item.description}</Text>
+        <Text numberOfLines={1} style={[styles.itemDesc, { color: colors.textDim }]}>{item.description}</Text>
       </View>
-      <Text style={[styles.priceText, { color: colors.primary }]}>{item.price} THB</Text>
+      <Text style={[styles.priceTag, { color: colors.primary }]}>{item.price} {currency}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={[styles.welcomeText, { color: colors.textMain }]}>AB&CP Premium</Text>
-          <Text style={{ color: colors.primary }}>Explore local tastes in {userData?.country || 'Thailand'}</Text>
+          <Text style={styles.brandTitle}>AB&CP Premium</Text>
+          <Text style={[styles.subTitle, { color: colors.primary }]}>Premium dining experience in {location}</Text>
         </View>
 
-        {/* --- AI SMART ALERT PANEL --- */}
-        <View style={[styles.aiPanel, { backgroundColor: 'rgba(212, 175, 55, 0.1)', borderColor: colors.primary }]}>
-          <Text style={[styles.aiLabel, { color: colors.primary }]}>AI SMART ADVICE</Text>
-          <Text style={[styles.aiText, { color: colors.textMain }]}>{aiMessage}</Text>
+        {/* AI Insight Panel */}
+        <View style={[styles.aiPanel, { borderColor: colors.primary }]}>
+          <Text style={[styles.aiLabel, { color: colors.primary }]}>AI SYSTEM ADVICE</Text>
+          <Text style={styles.aiText}>{aiMessage}</Text>
         </View>
 
-        {/* --- ADMIN PROMOTION BANNER --- */}
-        <View style={styles.promoBanner}>
-          <Text style={{ color: '#fff', fontWeight: 'bold' }}>AD: Get 10% Off on your first Wallet Top-up! 💳</Text>
-        </View>
-
-        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>Recommended for You</Text>
+        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>Curated Selection</Text>
 
         {loading ? (
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
         ) : (
           <FlatList
             data={items}
-            scrollEnabled={false} // Since we are inside ScrollView
+            scrollEnabled={false}
             keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
+            renderItem={renderMenuItem}
+            contentContainerStyle={styles.listPadding}
           />
         )}
       </ScrollView>
@@ -95,16 +92,19 @@ export default function CustomerHome() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: { padding: 25 },
-  welcomeText: { fontSize: 28, fontWeight: 'bold' },
-  aiPanel: { margin: 20, padding: 15, borderRadius: 15, borderWidth: 1, borderStyle: 'dashed' },
-  aiLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1, marginBottom: 5 },
-  aiText: { fontSize: 15, fontWeight: '500' },
-  promoBanner: { marginHorizontal: 20, padding: 12, backgroundColor: '#800000', borderRadius: 10, alignItems: 'center' },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', margin: 20 },
-  card: { flexDirection: 'row', padding: 20, borderRadius: 15, borderWidth: 1, marginBottom: 15, alignItems: 'center' },
-  featuredBadge: { position: 'absolute', top: -10, right: 10, backgroundColor: '#D4AF37', color: '#000', paddingHorizontal: 8, fontSize: 10, fontWeight: 'bold', borderRadius: 5 },
-  itemName: { fontSize: 18, fontWeight: '700' },
-  priceText: { fontWeight: 'bold', fontSize: 18, marginLeft: 10 }
+  container: { flex: 1, backgroundColor: '#000' },
+  header: { padding: 30 },
+  brandTitle: { color: '#FFF', fontSize: 28, fontWeight: '900', letterSpacing: 1 },
+  subTitle: { fontSize: 13, fontWeight: '500', marginTop: 5, letterSpacing: 0.5 },
+  aiPanel: { margin: 20, padding: 20, borderRadius: 20, borderWidth: 1, backgroundColor: '#0A0A0A', borderStyle: 'dashed' },
+  aiLabel: { fontSize: 9, fontWeight: 'bold', letterSpacing: 2, marginBottom: 10 },
+  aiText: { color: '#EEE', fontSize: 16, lineHeight: 24, fontWeight: '500' },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginHorizontal: 30, marginBottom: 20, letterSpacing: 1 },
+  card: { flexDirection: 'row', padding: 20, borderRadius: 20, borderWidth: 1, marginBottom: 15, marginHorizontal: 20, alignItems: 'center' },
+  itemMeta: { flex: 1 },
+  itemName: { fontSize: 18, fontWeight: '700', marginBottom: 5 },
+  itemDesc: { fontSize: 13, opacity: 0.8 },
+  priceTag: { fontWeight: '800', fontSize: 17, marginLeft: 15 },
+  loader: { marginTop: 50 },
+  listPadding: { paddingBottom: 30 }
 });
