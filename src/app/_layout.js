@@ -4,11 +4,6 @@ import { useRouter, useSegments } from 'expo-router';
 import { ThemeProvider } from '../context/ThemeContext';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
-/**
- * ROOT NAVIGATION SYSTEM
- * Roles: Admin (System Monitor) | Owner (Business) | Customer (User)
- * Market: 15-Country Integrated Infrastructure
- */
 function RootLayoutNav() {
   const { user, userData, loading } = useAuth();
   const segments = useSegments();
@@ -21,19 +16,18 @@ function RootLayoutNav() {
     const inAdminGroup = segments[0] === 'admin';
     const inOwnerGroup = segments[0] === 'owner';
 
-    // 1. If not logged in, force to Login
     if (!user && !inAuthGroup) {
       router.replace('/auth/login');
     } 
-    // 2. Prevent Cross-Role Access (Security Guard)
     else if (user && userData) {
+      // SECURITY: Kick out unauthorized role access
       if (inAdminGroup && userData.role !== 'admin') {
-        router.replace('/customer/home'); // Kick out non-admins
+        router.replace('/customer/home');
       }
       else if (inOwnerGroup && userData.role !== 'owner') {
-        router.replace('/customer/home'); // Kick out non-owners
+        router.replace('/customer/home');
       }
-      // 3. Auto-redirect from Login page if already authenticated
+      // AUTO-ROUTE: Send to correct dashboard from login
       else if (inAuthGroup) {
         if (userData.role === 'admin') router.replace('/admin/home');
         else if (userData.role === 'owner') router.replace('/owner/wallet-dashboard');
@@ -46,13 +40,10 @@ function RootLayoutNav() {
     <Stack screenOptions={{ 
       headerShown: false,
       contentStyle: { backgroundColor: '#000' },
-      animation: 'fade_from_bottom'
+      animation: 'fade'
     }}>
-      {/* Auth Flow */}
       <Stack.Screen name="auth/login" />
       <Stack.Screen name="auth/register" />
-      
-      {/* Role-Specific Nodes */}
       <Stack.Screen name="admin" options={{ gestureEnabled: false }} />
       <Stack.Screen name="owner" options={{ gestureEnabled: false }} />
       <Stack.Screen name="customer" options={{ gestureEnabled: false }} />
