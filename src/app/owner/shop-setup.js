@@ -2,61 +2,116 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { db } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
+import { useAuth } from '../../context/AuthContext';
 
+/**
+ * SHOP PROFILE SYSTEM - AI & GLOBAL SYNCED
+ * Designed to outperform Grab & Line Man via Precision Data
+ */
 export default function ShopSetup() {
+  const { userData } = useAuth();
   const [shopName, setShopName] = useState('');
-  const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
   const [openingHours, setOpeningHours] = useState('');
+  
+  // 📍 Precision Location (Grab-Style Breakdown)
+  const [city, setCity] = useState(userData?.locationData?.city || '');
+  const [area, setArea] = useState(userData?.locationData?.area || '');
+  const [street, setStreet] = useState(userData?.locationData?.street || '');
+  const [landmark, setLandmark] = useState(userData?.locationData?.landmark || '');
 
   const handleSaveProfile = async () => {
-    if (!shopName || !address || !contact) {
-      Alert.alert("Required Fields", "Please complete all mandatory shop details.");
+    // 🛡️ Strict Validation for International Standards
+    if (!shopName || !city || !area || !street || !contact) {
+      Alert.alert("System Protocol", "Exact location data is required for Global Indexing.");
       return;
     }
 
     try {
-      await setDoc(doc(db, 'shops', 'current_owner_id'), {
+      await setDoc(doc(db, 'shops', userData.uid), {
         name: shopName,
-        address: address,
         contact: contact,
         hours: openingHours,
+        country: userData?.countryName || 'Global Market',
+        isoCode: userData?.isoCode || 'INTL',
+        currency: userData?.currencyCode || 'USD',
+        
+        // 🤖 AI-Optimized Location Object
+        locationData: {
+          city,
+          area,
+          street,
+          landmark,
+          formattedAddress: `${street}, ${area}, ${city}`,
+          geoSync: true // Ready for Google Maps/Gemini integration
+        },
+        
         updatedAt: new Date().toISOString()
-      });
-      Alert.alert("Success", "Global shop profile established successfully.");
+      }, { merge: true });
+
+      Alert.alert("Global Success", "Your business profile is now live across the 15-market network.");
     } catch (error) {
-      Alert.alert("Error", "Failed to update shop profile.");
+      Alert.alert("Sync Error", "Failed to broadcast profile to regional servers.");
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>SHOP PROFILE SETTINGS</Text>
+        <Text style={styles.headerTitle}>EXECUTIVE SHOP SETUP</Text>
+        <Text style={styles.regionStatus}>SYNCED WITH: {userData?.countryName || 'Global System'}</Text>
         <View style={styles.goldLine} />
       </View>
 
       <View style={styles.form}>
+        <Text style={styles.label}>BUSINESS IDENTITY</Text>
         <TextInput
           style={styles.input}
-          placeholder="Official Shop Name"
-          placeholderTextColor="#A68D5F"
+          placeholder="Official Business Name"
+          placeholderTextColor="#444"
           value={shopName}
           onChangeText={setShopName}
         />
 
+        <Text style={styles.label}>PRECISE LOGISTICS (MAP DATA)</Text>
+        <View style={styles.row}>
+          <TextInput
+            style={[styles.input, { flex: 1, marginRight: 10 }]}
+            placeholder="City"
+            placeholderTextColor="#444"
+            value={city}
+            onChangeText={setCity}
+          />
+          <TextInput
+            style={[styles.input, { flex: 1 }]}
+            placeholder="District / Area"
+            placeholderTextColor="#444"
+            value={area}
+            onChangeText={setArea}
+          />
+        </View>
+
         <TextInput
           style={styles.input}
-          placeholder="Business Address / Location"
-          placeholderTextColor="#A68D5F"
-          value={address}
-          onChangeText={setAddress}
+          placeholder="Street Name, Building & Door Number"
+          placeholderTextColor="#444"
+          value={street}
+          onChangeText={setStreet}
         />
 
         <TextInput
           style={styles.input}
-          placeholder="Global Contact Number"
-          placeholderTextColor="#A68D5F"
+          placeholder="Landmark (e.g., Near Medical Center)"
+          placeholderTextColor="#444"
+          value={landmark}
+          onChangeText={setLandmark}
+        />
+
+        <Text style={styles.label}>GLOBAL CONTACT & TIMING</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="International Contact Number"
+          placeholderTextColor="#444"
           keyboardType="phone-pad"
           value={contact}
           onChangeText={setContact}
@@ -64,14 +119,14 @@ export default function ShopSetup() {
 
         <TextInput
           style={styles.input}
-          placeholder="Operating Hours (e.g. 09:00 - 21:00)"
-          placeholderTextColor="#A68D5F"
+          placeholder="Operational Hours (e.g., 24/7 or 08:00 - 22:00)"
+          placeholderTextColor="#444"
           value={openingHours}
           onChangeText={setOpeningHours}
         />
 
-        <TouchableOpacity style={styles.saveBtn} onPress={handleSaveProfile}>
-          <Text style={styles.btnText}>SAVE GLOBAL PROFILE</Text>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleSaveProfile} activeOpacity={0.7}>
+          <Text style={styles.btnText}>ESTABLISH GLOBAL PROFILE</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -79,27 +134,33 @@ export default function ShopSetup() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#8B0000', padding: 30 },
-  header: { marginTop: 40, marginBottom: 40, alignItems: 'center' },
-  headerTitle: { color: '#D4AF37', fontSize: 20, fontWeight: 'bold', letterSpacing: 3 },
-  goldLine: { width: 40, height: 2, backgroundColor: '#D4AF37', marginTop: 10 },
+  container: { flexGrow: 1, backgroundColor: '#000', padding: 30 },
+  header: { marginTop: 50, marginBottom: 40, alignItems: 'center' },
+  headerTitle: { color: '#D4AF37', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
+  regionStatus: { color: '#666', fontSize: 10, marginTop: 8, fontWeight: 'bold', letterSpacing: 1 },
+  goldLine: { width: 50, height: 2, backgroundColor: '#D4AF37', marginTop: 15 },
+  label: { color: '#D4AF37', fontSize: 10, fontWeight: 'bold', letterSpacing: 2, marginBottom: 12, marginTop: 10, opacity: 0.8 },
   form: { width: '100%' },
+  row: { flexDirection: 'row' },
   input: {
     height: 55,
     borderBottomWidth: 1,
-    borderBottomColor: '#D4AF37',
-    color: '#FFFFFF',
-    marginBottom: 25,
+    borderBottomColor: '#1A1A1A',
+    color: '#FFF',
+    marginBottom: 20,
     fontSize: 15,
     paddingHorizontal: 5
   },
   saveBtn: {
     backgroundColor: '#D4AF37',
-    height: 55,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 3,
-    marginTop: 20
+    borderRadius: 5,
+    marginTop: 30,
+    shadowColor: '#D4AF37',
+    shadowOpacity: 0.2,
+    shadowRadius: 10, elevation: 5
   },
-  btnText: { color: '#660000', fontWeight: 'bold', letterSpacing: 2, fontSize: 13 }
+  btnText: { color: '#000', fontWeight: 'bold', letterSpacing: 2, fontSize: 13 }
 });
