@@ -2,26 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 /**
- * SUPER ADMIN CONTROL PANEL
- * Features: Regional Owner Monitoring | Help & Support Alerts
- * Security: Restricted to Admin Role Only
+ * SUPER ADMIN PARTNER MONITOR
+ * Clean Architecture: 15-Market Global Sync
+ * No Urdu/Non-English characters to prevent system crashes
  */
 export default function ManageOwners() {
   const { colors } = useTheme();
+  const router = useRouter();
   
-  // Logic: Extended to include Region and Support Alerts
+  // Mock Data: Syncs with Global Partner Node
   const [partners, setPartners] = useState([
     { id: '1', email: 'owner1@th.com', shopName: 'Thai Delight', status: 'active', region: 'Thailand', pendingHelp: true },
     { id: '2', email: 'owner2@ae.com', shopName: 'Dubai Grill', status: 'active', region: 'UAE', pendingHelp: false }
   ]);
 
   const togglePartnerStatus = (id, currentStatus) => {
-    const nextStatus = currentStatus === 'active' ? 'suspended' : 'active';
-    Alert.alert("System Control", `Proceed to ${nextStatus} this partner?`, [
+    const nextAction = currentStatus === 'active' ? 'BLOCK' : 'ACTIVATE';
+    Alert.alert("Partner Control", `Are you sure you want to ${nextAction} this owner?`, [
       { text: "Cancel", style: "cancel" },
-      { text: "Confirm", onPress: () => console.log(`${id} status updated`) }
+      { text: "Confirm", onPress: () => console.log(`Partner ${id} status changed to ${nextAction}`) }
     ]);
   };
 
@@ -33,23 +35,28 @@ export default function ManageOwners() {
           <Text style={styles.metaText}>{item.email} • {item.region}</Text>
         </View>
         {item.pendingHelp && (
-          <View style={styles.alertBadge}>
-            <Ionicons name="alert-circle" size={14} color="#000" />
-            <Text style={styles.alertText}>HELP NEEDED</Text>
+          <View style={[styles.alertBadge, { backgroundColor: colors.primary }]}>
+            <Ionicons name="alert-circle" size={12} color="#000" />
+            <Text style={styles.alertText}>HELP REQUEST</Text>
           </View>
         )}
       </View>
 
       <View style={styles.actionRow}>
         <TouchableOpacity 
-          style={[styles.actionBtn, { backgroundColor: item.status === 'active' ? '#1a1a1a' : '#FF4444' }]}
+          style={[styles.statusBtn, { backgroundColor: item.status === 'active' ? '#1a1a1a' : '#dc3545' }]}
           onPress={() => togglePartnerStatus(item.id, item.status)}
         >
-          <Text style={styles.btnText}>{item.status.toUpperCase()}</Text>
+          <Text style={[styles.btnText, { color: item.status === 'active' ? '#FFF' : '#FFF' }]}>
+            {item.status === 'active' ? 'BLOCK PARTNER' : 'ACTIVATE'}
+          </Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.supportBtn}>
-          <Text style={[styles.btnText, { color: colors.primary }]}>VIEW REQUEST</Text>
+        <TouchableOpacity 
+          style={styles.supportBtn}
+          onPress={() => router.push('/admin/support-view')}
+        >
+          <Text style={[styles.btnText, { color: colors.primary }]}>VIEW DETAILS</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -68,6 +75,7 @@ export default function ManageOwners() {
         renderItem={renderPartner}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<Text style={styles.emptyText}>No partners registered in this region.</Text>}
       />
     </SafeAreaView>
   );
@@ -79,34 +87,15 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '900', letterSpacing: 2 },
   subTitle: { color: '#444', fontSize: 10, fontWeight: 'bold', marginTop: 5, letterSpacing: 1 },
   list: { paddingHorizontal: 25, paddingBottom: 100 },
-  card: { backgroundColor: '#050505', padding: 20, borderRadius: 22, marginBottom: 15, borderWidth: 1 },
+  card: { backgroundColor: '#050505', padding: 20, borderRadius: 20, marginBottom: 15, borderWidth: 1 },
   partnerDetails: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  shopName: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
+  shopName: { color: '#FFF', fontSize: 16, fontWeight: 'bold', letterSpacing: 0.5 },
   metaText: { color: '#444', fontSize: 10, marginTop: 4, fontWeight: '600' },
-  alertBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#D4AF37', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+  alertBadge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   alertText: { color: '#000', fontSize: 8, fontWeight: '900', marginLeft: 4 },
-  actionRow: { flexDirection: 'row', marginTop: 20, borderTopWidth: 1, borderTopColor: '#111', paddingTop: 15 },
-  actionBtn: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 8, marginRight: 10 },
-  supportBtn: { paddingVertical: 8, justifyContent: 'center' },
-  btnText: { fontSize: 10, fontWeight: '900', letterSpacing: 1 }
-});
-              style={[styles.statusBtn, { backgroundColor: item.status === 'active' ? '#dc3545' : '#28a745' }]}
-            >
-              <Text style={styles.btnText}>{item.status === 'active' ? 'Block' : 'Activate'}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: { padding: 25 },
-  title: { fontSize: 28, fontWeight: 'bold' },
-  card: { margin: 15, padding: 20, backgroundColor: '#111', borderRadius: 15, borderWidth: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  shopName: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  statusBtn: { paddingVertical: 8, paddingHorizontal: 15, borderRadius: 8 },
-  btnText: { color: '#fff', fontWeight: 'bold', fontSize: 12 }
+  actionRow: { flexDirection: 'row', marginTop: 20, borderTopWidth: 1, borderTopColor: '#111', paddingTop: 15, justifyContent: 'space-between' },
+  statusBtn: { paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10 },
+  supportBtn: { justifyContent: 'center', paddingRight: 10 },
+  btnText: { fontSize: 9, fontWeight: '900', letterSpacing: 1 },
+  emptyText: { color: '#222', textAlign: 'center', marginTop: 50, fontWeight: 'bold' }
 });
