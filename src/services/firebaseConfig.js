@@ -5,7 +5,7 @@ import { getStorage } from "firebase/storage";
 
 // Your 100% Actual and Real Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBwV-dummy-key-your-actual-key-is-saved", 
+  apiKey: "AIzaSyC-hd2bvzT8per09QebyrzatFxcz1Yqj50", 
   authDomain: "ab-cp-official.firebaseapp.com",
   projectId: "ab-cp-official",
   storageBucket: "ab-cp-official.appspot.com",
