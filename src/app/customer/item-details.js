@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Alert, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { dbService } from '../../services/dbService';
 import PremiumButton from '../../components/PremiumButton';
-import * as Animatable from 'react-native-animatable'; // ✨ Cinematic feel
+import { Ionicons } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
 
 /**
- * PREMIUM ITEM VIEW & ORDERING SYSTEM
- * Market Sync: 15 Global Regions | AI-Optimized Data
+ * PREMIUM ITEM VIEW & DUAL-MODE ORDERING SYSTEM
+ * Market Sync: 15 Global Regions | Delivery & Dine-in Logic
  */
 export default function ItemDetails() {
   const { id, name, price, description } = useLocalSearchParams();
   const { userData } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
+  
   const [loading, setLoading] = useState(false);
+  const [orderMode, setOrderMode] = useState('delivery'); // 'delivery' or 'dine_in'
 
-  // 🛡️ Global Currency Alignment
   const currency = userData?.currencyCode || 'USD';
 
   const handlePlaceOrder = async () => {
@@ -32,14 +34,15 @@ export default function ItemDetails() {
         itemPrice: price,
         currency: currency,
         region: userData?.isoCode || 'Global',
+        orderMode: orderMode, // Crucial: Informs owner if it's Delivery or Dine-in
         deliveryStatus: 'pending',
         timestamp: new Date().toISOString(),
-        ai_tag: "Direct Order" // Prepping for AI preference learning
+        ai_tag: "Direct Order"
       });
       
       router.replace({
         pathname: '/customer/order-success',
-        params: { orderId: orderId, itemName: name, amount: price }
+        params: { orderId: orderId, itemName: name, amount: price, mode: orderMode }
       });
 
     } catch (error) {
@@ -53,40 +56,55 @@ export default function ItemDetails() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {/* ✨ Animated Product Header */}
-        <Animatable.View animation="fadeInDown" duration={1000} style={styles.header}>
+        <Animatable.View animation="fadeInDown" style={styles.header}>
           <Text style={[styles.title, { color: '#FFF' }]}>{name}</Text>
           <View style={styles.priceContainer}>
             <Text style={[styles.price, { color: colors.primary }]}>{price}</Text>
             <Text style={styles.currencyLabel}>{currency}</Text>
           </View>
-          <View style={[styles.divider, { backgroundColor: colors.primary }]} />
         </Animatable.View>
         
-        {/* ✨ Emotional Description Section */}
-        <Animatable.View animation="fadeIn" delay={500} style={styles.detailsBox}>
+        {/* --- SERVICE MODE SELECTOR (New Logic) --- */}
+        <Animatable.View animation="fadeInUp" delay={300} style={styles.selectorContainer}>
+          <Text style={styles.sectionLabel}>SELECT SERVICE MODE</Text>
+          <View style={styles.modeRow}>
+            <TouchableOpacity 
+              onPress={() => setOrderMode('delivery')}
+              style={[styles.modeBtn, orderMode === 'delivery' && { borderColor: colors.primary, backgroundColor: '#0A0A0A' }]}
+            >
+              <Ionicons name="bicycle" size={20} color={orderMode === 'delivery' ? colors.primary : '#444'} />
+              <Text style={[styles.modeText, { color: orderMode === 'delivery' ? '#FFF' : '#444' }]}>DELIVERY</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              onPress={() => setOrderMode('dine_in')}
+              style={[styles.modeBtn, orderMode === 'dine_in' && { borderColor: colors.primary, backgroundColor: '#0A0A0A' }]}
+            >
+              <Ionicons name="restaurant" size={20} color={orderMode === 'dine_in' ? colors.primary : '#444'} />
+              <Text style={[styles.modeText, { color: orderMode === 'dine_in' ? '#FFF' : '#444' }]}>DINE-IN</Text>
+            </TouchableOpacity>
+          </View>
+        </Animatable.View>
+
+        <Animatable.View animation="fadeIn" delay={600} style={styles.detailsBox}>
           <Text style={[styles.descTitle, { color: colors.primary }]}>CHEF'S DESCRIPTION</Text>
           <Text style={[styles.description, { color: '#AAA' }]}>{description}</Text>
         </Animatable.View>
 
-        {/* ✨ AI Trust Indicator */}
         <Animatable.View animation="fadeInUp" delay={800} style={styles.aiTrustBox}>
           <Text style={styles.aiTrustText}>
-            🛡️ AI-Verified Security: This order is encrypted and synced with the {userData?.countryName || 'Global'} Logistics Network.
+            🛡️ AI-Verified: Optimized for {userData?.countryName || 'Local'} Logistics Network.
           </Text>
         </Animatable.View>
 
         <View style={styles.footer}>
-          <Animatable.View animation="bounceIn" delay={1200}>
-            <PremiumButton 
-              title={loading ? "SYNCING ORDER..." : "CONFIRM & EXECUTE ORDER"} 
-              onPress={handlePlaceOrder} 
-              disabled={loading}
-            />
-          </Animatable.View>
-          
+          <PremiumButton 
+            title={loading ? "SYNCING..." : "CONFIRM ORDER"} 
+            onPress={handlePlaceOrder} 
+            disabled={loading}
+          />
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Text style={{ color: '#444', fontWeight: 'bold', letterSpacing: 1 }}>CANCEL & RETURN</Text>
+            <Text style={styles.cancelText}>CANCEL & RETURN</Text>
           </TouchableOpacity>
         </View>
 
@@ -97,18 +115,23 @@ export default function ItemDetails() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
-  scrollContent: { padding: 35, flexGrow: 1 },
-  header: { marginTop: 40 },
-  title: { fontSize: 36, fontWeight: '900', letterSpacing: 1, marginBottom: 5 },
-  priceContainer: { flexDirection: 'row', alignItems: 'baseline', marginBottom: 20 },
-  price: { fontSize: 28, fontWeight: 'bold' },
-  currencyLabel: { fontSize: 12, color: '#444', marginLeft: 5, fontWeight: 'bold' },
-  divider: { height: 3, width: 40, borderRadius: 2 },
+  scrollContent: { padding: 30, flexGrow: 1 },
+  header: { marginTop: 20 },
+  title: { fontSize: 32, fontWeight: '900', letterSpacing: 1 },
+  priceContainer: { flexDirection: 'row', alignItems: 'baseline', marginTop: 5 },
+  price: { fontSize: 24, fontWeight: 'bold' },
+  currencyLabel: { fontSize: 10, color: '#444', marginLeft: 5, fontWeight: 'bold' },
+  selectorContainer: { marginTop: 30 },
+  sectionLabel: { color: '#333', fontSize: 9, fontWeight: '900', letterSpacing: 2, marginBottom: 15 },
+  modeRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  modeBtn: { flex: 0.48, height: 60, borderRadius: 15, borderWidth: 1, borderColor: '#111', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' },
+  modeText: { fontSize: 10, fontWeight: '900', marginLeft: 10, letterSpacing: 1 },
   detailsBox: { marginTop: 40 },
-  descTitle: { fontSize: 10, fontWeight: 'bold', letterSpacing: 2, marginBottom: 15 },
-  description: { fontSize: 16, lineHeight: 26, fontWeight: '400' },
-  aiTrustBox: { marginTop: 40, padding: 20, backgroundColor: '#050505', borderRadius: 15, borderWidth: 1, borderColor: '#111' },
-  aiTrustText: { color: '#444', fontSize: 11, fontStyle: 'italic', textAlign: 'center', lineHeight: 18 },
-  footer: { marginTop: 'auto', paddingTop: 40 },
-  backBtn: { marginTop: 20, alignItems: 'center', padding: 15 }
+  descTitle: { fontSize: 9, fontWeight: 'bold', letterSpacing: 2, marginBottom: 10 },
+  description: { fontSize: 15, lineHeight: 24 },
+  aiTrustBox: { marginTop: 30, padding: 15, backgroundColor: '#050505', borderRadius: 12, borderWidth: 1, borderColor: '#111' },
+  aiTrustText: { color: '#444', fontSize: 10, textAlign: 'center' },
+  footer: { marginTop: 'auto', paddingTop: 30 },
+  backBtn: { marginTop: 20, alignItems: 'center' },
+  cancelText: { color: '#222', fontSize: 10, fontWeight: 'bold', letterSpacing: 1 }
 });
