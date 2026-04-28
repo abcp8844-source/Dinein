@@ -6,12 +6,14 @@
     "production": {
       "credentialsSource": "remote",
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     },
     "preview": {
       "credentialsSource": "remote",
-      "extends": "production"
+      "android": {
+        "buildType": "apk"
+      }
     }
   }
 }
