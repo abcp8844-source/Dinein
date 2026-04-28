@@ -10,19 +10,25 @@ export default function OwnerDashboard() {
   const { colors } = useTheme();
   const router = useRouter();
 
+  // 🛡️ Data Safety Check: Using existing data without breaking the layout
+  const country = userData?.countryName || 'Global';
+  const isoCode = userData?.isoCode || 'INTL';
+
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.secondary }]}>Business Suite</Text>
-        <Text style={{ color: colors.textDim }}>Manage your operations with precision.</Text>
+        <Text style={{ color: colors.textDim }}>{country} Operation Center | {isoCode}</Text>
       </View>
       
-      {/* Business Info Card */}
+      {/* Existing Business Info Card - Enhanced but kept original structure */}
       <View style={[styles.bizCard, { backgroundColor: '#1A1A1A', borderColor: colors.primary }]}>
         <Text style={[styles.bizName, { color: colors.textMain }]}>
           {userData?.email?.split('@')[0].toUpperCase() || 'Partner Store'}
         </Text>
-        <Text style={{ color: colors.primary, fontSize: 12 }}>Status: Verified Partner ✅</Text>
+        <Text style={{ color: colors.primary, fontSize: 12, fontWeight: 'bold' }}>
+          Status: Verified {isoCode} Partner ✅
+        </Text>
       </View>
 
       <View style={styles.actionSection}>
@@ -32,7 +38,7 @@ export default function OwnerDashboard() {
           title="Incoming Orders 🔔" 
           onPress={() => router.push('/owner/manage-orders')} 
         />
-
+        <View style={{ height: 10 }} />
         <PremiumButton 
           title="Add New Product +" 
           onPress={() => router.push('/owner/add-item')} 
@@ -45,7 +51,7 @@ export default function OwnerDashboard() {
           type="outline"
           onPress={() => router.push('/owner/promotion')} 
         />
-        
+        <View style={{ height: 10 }} />
         <PremiumButton 
           title="Business Insights" 
           type="outline"
@@ -55,7 +61,7 @@ export default function OwnerDashboard() {
 
       <View style={styles.footer}>
         <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Text style={{ color: '#dc3545', fontWeight: 'bold' }}>Terminate Session (Sign Out)</Text>
+          <Text style={{ color: '#dc3545', fontWeight: 'bold', letterSpacing: 1 }}>SIGN OUT FROM SYSTEM</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
