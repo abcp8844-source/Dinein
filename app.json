@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Dining Table App",
+    "name": "Dining Table",
     "slug": "dining-table",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "package": "com.abcp.diningtable",
       "versionCode": 1,
