@@ -1,21 +1,36 @@
+# Dependencies
 node_modules/
 .expo/
 dist/
+
+# Debug logs
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# Expo/EAS specific
+# Expo/EAS Build Specifics
 .eas/
 web-build/
+.expo-shared/
 
-# Android/iOS specific
+# Build Outputs (Android/iOS)
 android/
 ios/
 *.apk
 *.aab
 *.bundle
+*.gz
 
-# Sensitive information
+# Local Environment & Secrets
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MacOS System Files
+.DS_Store
+
+# User-specific tools
+.vscode/
+.idea/
