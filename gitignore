@@ -4,3 +4,18 @@ dist/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+
+# Expo/EAS specific
+.eas/
+web-build/
+
+# Android/iOS specific
+android/
+ios/
+*.apk
+*.aab
+*.bundle
+
+# Sensitive information
+.env
+.env.local
