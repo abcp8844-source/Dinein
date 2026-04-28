@@ -6,7 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import PremiumButton from '../../components/PremiumButton';
 import PremiumInput from '../../components/PremiumInput';
 
-// 🛡️ Global Anchor: The Strategic 15 Markets (Sync with Turkey)
+// 🛡️ GLOBAL ANCHOR: The Strategic 15 Markets (Final List - No Conflicts)
 const GLOBAL_MARKETS = [
   { id: 'USA', name: 'United States', currency: 'USD' },
   { id: 'CHN', name: 'China', currency: 'CNY' },
@@ -16,12 +16,12 @@ const GLOBAL_MARKETS = [
   { id: 'JPN', name: 'Japan', currency: 'JPY' },
   { id: 'KOR', name: 'South Korea', currency: 'KRW' },
   { id: 'THA', name: 'Thailand', currency: 'THB' },
+  { id: 'SGP', name: 'Singapore', currency: 'SGD' },
+  { id: 'MYS', name: 'Malaysia', currency: 'MYR' },
+  { id: 'IDN', name: 'Indonesia', currency: 'IDR' },
+  { id: 'VNM', name: 'Vietnam', currency: 'VND' },
   { id: 'ARE', name: 'UAE', currency: 'AED' },
   { id: 'SAU', name: 'Saudi Arabia', currency: 'SAR' },
-  { id: 'TUR', name: 'Türkiye', currency: 'TRY' }, // 👈 Turkey Added
-  { id: 'IDN', name: 'Indonesia', currency: 'IDR' },
-  { id: 'MYS', name: 'Malaysia', currency: 'MYR' },
-  { id: 'SGP', name: 'Singapore', currency: 'SGD' },
   { id: 'HKG', name: 'Hong Kong', currency: 'HKD' },
 ];
 
@@ -30,7 +30,6 @@ export default function OwnerRegister() {
   const [password, setPassword] = useState('');
   const [businessName, setBusinessName] = useState('');
   
-  // 📍 Precise Location States
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [city, setCity] = useState('');
   const [area, setArea] = useState('');
@@ -43,12 +42,12 @@ export default function OwnerRegister() {
 
   const handleRegister = async () => {
     if (!email || !password || !businessName || !selectedCountry || !city || !area || !street) {
-      Alert.alert("Registration Protocol", "Please complete all fields. Precision location is mandatory for global listing.");
+      Alert.alert("Registry Protocol", "Please complete all fields. Precision location is mandatory.");
       return;
     }
     
     try {
-      // 🚀 Injecting all metadata into the Auth profile
+      // 🚀 Injecting precise market & currency data to prevent conflicts
       await register(email, password, 'owner', {
         businessName,
         countryName: selectedCountry.name,
@@ -72,10 +71,9 @@ export default function OwnerRegister() {
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.secondary }]}>Global Partner Entry</Text>
-        <Text style={styles.subtitle}>Register your business across 15 strategic markets.</Text>
+        <Text style={styles.subtitle}>Register business across 15 strategic markets.</Text>
       </View>
       
-      {/* --- BUSINESS IDENTITY --- */}
       <View style={styles.section}>
         <Text style={styles.label}>BUSINESS IDENTITY</Text>
         <PremiumInput placeholder="Legal Business Name" value={businessName} onChangeText={setBusinessName} />
@@ -83,9 +81,8 @@ export default function OwnerRegister() {
         <PremiumInput placeholder="Access Password" value={password} onChangeText={setPassword} secureTextEntry={true} />
       </View>
 
-      {/* --- 🌍 REGIONAL ANCHOR --- */}
       <View style={styles.section}>
-        <Text style={styles.label}>MARKET SELECTION</Text>
+        <Text style={styles.label}>MARKET SELECTION (CURRENCY LOCK)</Text>
         <View style={styles.countryGrid}>
           {GLOBAL_MARKETS.map((c) => (
             <TouchableOpacity 
@@ -98,14 +95,13 @@ export default function OwnerRegister() {
               ]}
             >
               <Text style={{ color: selectedCountry?.id === c.id ? colors.primary : '#666', fontSize: 10, fontWeight: 'bold' }}>
-                {c.name}
+                {c.name} ({c.currency})
               </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
-      {/* --- 📍 PRECISION LOCATION (THE GRAB/FOODPANDA KILLER) --- */}
       <View style={styles.section}>
         <Text style={[styles.label, { color: colors.primary }]}>PRECISE STORE LOCATION</Text>
         <View style={styles.row}>
@@ -122,11 +118,6 @@ export default function OwnerRegister() {
 
       <View style={styles.footer}>
         <PremiumButton title="Finalize Registration" onPress={handleRegister} />
-        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 20 }}>
-          <Text style={{ color: '#666', textAlign: 'center', fontSize: 12 }}>
-            Already a partner? <Text style={{ color: colors.primary, fontWeight: 'bold' }}>Sign In</Text>
-          </Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
