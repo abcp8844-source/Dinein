@@ -3,14 +3,14 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
 /**
- * ENTRY POINT ROUTER
- * Purpose: Initial session verification and global redirection.
- * Theme: Premium Dark (15-Market Infrastructure)
+ * ENTRY POINT ROUTER (MASTER NODE)
+ * Purpose: Initial session verification & global role-based redirection.
+ * Infrastructure: 15-Market Integrated Security Logic
  */
 export default function Index() {
-  const { loading, user } = useAuth();
+  const { loading, user, userData } = useAuth();
 
-  // Show a high-performance loader while verifying session state
+  // Show high-performance loader while checking system state
   if (loading) {
     return (
       <View style={styles.container}>
@@ -21,15 +21,17 @@ export default function Index() {
 
   /**
    * SECURITY PROTOCOL:
-   * If a session exists, the role-based logic in _layout.js 
-   * will automatically intercept and route to Admin, Owner, or Customer.
-   * If no session, we default to the Secure Login gateway.
+   * 1. If no session exists, force redirect to the Secure Login gateway.
+   * 2. If session exists, let the Root Layout (_layout.js) handle the 
+   * precise role-based routing (Admin, Owner, or Customer).
    */
   if (user) {
-    // Return null and let the useEffect in _layout.js handle the redirection
+    // If user is authenticated, we return null and let _layout.js handle navigation
+    // This prevents "Double Redirection" crashes.
     return null;
   }
 
+  // Default fallback to Secure Login
   return <Redirect href="/auth/login" />;
 }
 
