@@ -10,16 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Prettier
+      - name: Run Prettier Formatting
         run: npx prettier --write . --ignore-unknown
 
-      - name: Commit and Push
+      - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "System: Automated code formatting"
+          commit_message: "Fix: automated code formatting"
+          branch: main
+          commit_options: '--no-verify'
+          repository: .
