@@ -1,59 +1,60 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
 
-// 🛡️ 15 STRATEGIC MARKETS DATA (No Data Missing)
 const MARKETS = [
-  { id: 'THA', name: 'Thailand', flag: '🇹🇭', lang: 'Thai/EN' },
-  { id: 'ARE', name: 'UAE', flag: '🇦🇪', lang: 'Arabic/EN' },
-  { id: 'USA', name: 'USA', flag: '🇺🇸', lang: 'English' },
-  { id: 'GBR', name: 'UK', flag: '🇬🇧', lang: 'English' },
-  { id: 'CHN', name: 'China', flag: '🇨🇳', lang: 'Chinese/EN' },
-  { id: 'JPN', name: 'Japan', flag: '🇯🇵', lang: 'Japanese/EN' },
-  { id: 'KOR', name: 'S.Korea', flag: '🇰🇷', lang: 'Korean/EN' },
-  { id: 'SGP', name: 'Singapore', flag: '🇸🇬', lang: 'English' },
-  { id: 'MYS', name: 'Malaysia', flag: '🇲🇾', lang: 'Malay/EN' },
-  { id: 'IDN', name: 'Indonesia', flag: '🇮🇩', lang: 'Indo/EN' },
-  { id: 'VNM', name: 'Vietnam', flag: '🇻🇳', lang: 'Viet/EN' },
-  { id: 'SAU', name: 'Saudi Arabia', flag: '🇸🇦', lang: 'Arabic/EN' },
-  { id: 'HKG', name: 'Hong Kong', flag: '🇭🇰', lang: 'Cantonese/EN' },
-  { id: 'DEU', name: 'Germany', flag: '🇩🇪', lang: 'German/EN' },
-  { id: 'FRA', name: 'France', flag: '🇫🇷', lang: 'French/EN' },
+  { id: 'THA', name: 'Thailand', flag: '🇹🇭' },
+  { id: 'ARE', name: 'UAE', flag: '🇦🇪' },
+  { id: 'USA', name: 'USA', flag: '🇺🇸' },
+  { id: 'GBR', name: 'UK', flag: '🇬🇧' },
+  { id: 'CHN', name: 'China', flag: '🇨🇳' },
+  { id: 'JPN', name: 'Japan', flag: '🇯🇵' },
+  { id: 'KOR', name: 'S.Korea', flag: '🇰🇷' },
+  { id: 'SGP', name: 'Singapore', flag: '🇸🇬' },
+  { id: 'MYS', name: 'Malaysia', flag: '🇲🇾' },
+  { id: 'IDN', name: 'Indonesia', flag: '🇮🇩' },
+  { id: 'VNM', name: 'Vietnam', flag: '🇻🇳' },
+  { id: 'SAU', name: 'Saudi Arabia', flag: '🇸🇦' },
+  { id: 'HKG', name: 'Hong Kong', flag: '🇭🇰' },
+  { id: 'DEU', name: 'Germany', flag: '🇩🇪' },
+  { id: 'FRA', name: 'France', flag: '🇫🇷' },
 ];
 
 export default function GlobalHeader() {
-  const [selectedMarket, setSelectedMarket] = useState(MARKETS[0]); // Default Thailand
+  const { colors } = useTheme();
+  const [selectedMarket, setSelectedMarket] = useState(MARKETS[0]);
   const [currentLang, setCurrentLang] = useState('EN');
 
   return (
-    <View style={styles.container}>
-      {/* --- Top Row: Profile & Language --- */}
+    <View style={[styles.container, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
       <View style={styles.topRow}>
         <View style={styles.profileArea}>
-          <View style={styles.avatar} />
-          <Text style={styles.welcomeText}>Welcome, Partner</Text>
+          <View style={[styles.avatar, { backgroundColor: colors.primary }]} />
+          <Text style={[styles.welcomeText, { color: colors.textMain }]}>Welcome, Partner</Text>
         </View>
 
         <TouchableOpacity 
           style={styles.langSelector}
           onPress={() => setCurrentLang(currentLang === 'EN' ? 'UR' : 'EN')}
         >
-          <Text style={styles.langLabel}>LANGUAGE:</Text>
-          <Text style={styles.langActive}>{currentLang === 'EN' ? 'ENGLISH' : 'اردو'}</Text>
+          <Text style={[styles.langLabel, { color: colors.textDim }]}>LANGUAGE:</Text>
+          <Text style={[styles.langActive, { color: colors.primary }]}>
+            {currentLang === 'EN' ? 'ENGLISH' : 'URDU'}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* --- Middle Row: Market Flags (The 15 Nodes) --- */}
       <View style={styles.marketBar}>
-        <Text style={styles.marketTitle}>SELECT OPERATIONAL MARKET:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.flagScroll}>
+        <Text style={[styles.marketTitle, { color: colors.textDim }]}>SELECT OPERATIONAL MARKET:</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {MARKETS.map((item) => (
             <TouchableOpacity 
               key={item.id} 
-              style={[styles.flagBtn, selectedMarket.id === item.id && styles.activeFlagBtn]}
+              style={[styles.flagBtn, selectedMarket.id === item.id && { borderBottomColor: colors.primary }]}
               onPress={() => setSelectedMarket(item)}
             >
               <Text style={styles.flagIcon}>{item.flag}</Text>
-              <Text style={[styles.flagText, selectedMarket.id === item.id && styles.activeFlagText]}>
+              <Text style={[styles.flagText, { color: selectedMarket.id === item.id ? colors.primary : colors.textDim }]}>
                 {item.id}
               </Text>
             </TouchableOpacity>
@@ -61,13 +62,12 @@ export default function GlobalHeader() {
         </ScrollView>
       </View>
 
-      {/* --- Bottom Status: Current Node Sync --- */}
-      <View style={styles.statusNode}>
-        <Text style={styles.nodeText}>
-          CONNECTED TO: <Text style={styles.nodeHighlight}>{selectedMarket.name.toUpperCase()} NODE</Text>
+      <View style={[styles.statusNode, { backgroundColor: '#050505', borderTopColor: colors.border }]}>
+        <Text style={[styles.nodeText, { color: colors.textDim }]}>
+          CONNECTED: <Text style={{ color: colors.primary }}>{selectedMarket.name.toUpperCase()}</Text>
         </Text>
-        <Text style={styles.nodeText}>
-          SYSTEM LANG: <Text style={styles.nodeHighlight}>{currentLang}</Text>
+        <Text style={[styles.nodeText, { color: colors.textDim }]}>
+          SYSTEM: <Text style={{ color: colors.primary }}>{currentLang}</Text>
         </Text>
       </View>
     </View>
@@ -75,31 +75,19 @@ export default function GlobalHeader() {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#000', paddingTop: 10, borderBottomWidth: 1, borderBottomColor: '#1A1A1A' },
+  container: { paddingTop: 10, borderBottomWidth: 1 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 15 },
   profileArea: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { width: 35, height: 35, borderRadius: 18, backgroundColor: '#D4AF37', borderWidth: 1, borderColor: '#333' },
-  welcomeText: { color: '#FFF', fontSize: 12, fontWeight: 'bold', marginLeft: 10 },
+  avatar: { width: 35, height: 35, borderRadius: 18, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  welcomeText: { fontSize: 12, fontWeight: 'bold', marginLeft: 10 },
   langSelector: { alignItems: 'flex-end' },
-  langLabel: { color: '#444', fontSize: 7, fontWeight: '900', letterSpacing: 1 },
-  langActive: { color: '#D4AF37', fontSize: 10, fontWeight: 'bold' },
+  langLabel: { fontSize: 8, fontWeight: '900', letterSpacing: 1 },
+  langActive: { fontSize: 11, fontWeight: 'bold' },
   marketBar: { paddingLeft: 20, marginBottom: 15 },
-  marketTitle: { color: '#333', fontSize: 8, fontWeight: '900', marginBottom: 8, letterSpacing: 1 },
-  flagScroll: { flexDirection: 'row' },
+  marketTitle: { fontSize: 8, fontWeight: '900', marginBottom: 8, letterSpacing: 1 },
   flagBtn: { alignItems: 'center', marginRight: 15, paddingBottom: 5, borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  activeFlagBtn: { borderBottomColor: '#D4AF37' },
   flagIcon: { fontSize: 22, marginBottom: 2 },
-  flagText: { color: '#444', fontSize: 8, fontWeight: 'bold' },
-  activeFlagText: { color: '#D4AF37' },
-  statusNode: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    backgroundColor: '#050505', 
-    paddingHorizontal: 20, 
-    paddingVertical: 6,
-    borderTopWidth: 1,
-    borderTopColor: '#111'
-  },
-  nodeText: { color: '#222', fontSize: 7, fontWeight: '900' },
-  nodeHighlight: { color: '#D4AF37' }
+  flagText: { fontSize: 9, fontWeight: 'bold' },
+  statusNode: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 8, borderTopWidth: 1 },
+  nodeText: { fontSize: 8, fontWeight: '900' }
 });
