@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { useTheme } from '../../src/theme/ThemeContext';
+import { aiService } from '../../src/services/aiService';
 import { dbService } from '../../src/services/dbService';
 import { Ionicons } from '@expo/vector-icons';
-import * as Animatable from 'react-native-animatable';
 
 export default function SupportScreen() {
   const { userData, user } = useAuth();
@@ -13,48 +13,45 @@ export default function SupportScreen() {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const [needsAdmin, setNeedsAdmin] = useState(false);
+  const [escalate, setEscalate] = useState(false);
 
-  const processSupportRequest = async () => {
+  const handleSupportRequest = async () => {
     if (!query.trim()) return;
+    
     setLoading(true);
-    setNeedsAdmin(false);
-
+    setEscalate(false);
+    
     try {
-      const isRelevant = query.length > 10; 
+      const aiResult = await aiService.generateResponse(query, userData?.role || 'Guest');
+      setResponse(aiResult);
 
-      if (isRelevant) {
-        setResponse("Analyzing your request via Dining Engine... Please provide specific details regarding your order or account for a precise solution.");
-        if (query.toLowerCase().includes('error') || query.toLowerCase().includes('fail')) {
-          setNeedsAdmin(true);
-        }
-      } else {
-        setResponse("I am unable to process this request with the current information. Would you like to escalate this to a Human Administrator?");
-        setNeedsAdmin(true);
+      const triggers = ['admin', 'human', 'manual', 'stuck', 'failed', 'issue'];
+      if (triggers.some(word => aiResult.toLowerCase().includes(word))) {
+        setEscalate(true);
       }
     } catch (error) {
-      setNeedsAdmin(true);
+      setResponse("Diagnostic node offline. Please use direct admin link.");
+      setEscalate(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const transferToAdmin = async () => {
+  const notifyAdmin = async () => {
     setLoading(true);
     try {
       await dbService.sendSupportTicket({
         uid: user.uid,
-        email: user.email,
-        issue: query,
+        query: query,
         role: userData?.role,
         timestamp: new Date().toISOString()
       });
-      Alert.alert("Success", "Diagnostic data transferred to Admin Control Center.");
+      Alert.alert("Status", "Admin notified via secure channel.");
       setQuery('');
       setResponse('');
-      setNeedsAdmin(false);
+      setEscalate(false);
     } catch (e) {
-      Alert.alert("Sync Error", "Could not connect to Admin node.");
+      Alert.alert("Error", "Transmission failed.");
     } finally {
       setLoading(false);
     }
@@ -63,41 +60,34 @@ export default function SupportScreen() {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <Text style={[styles.brand, { color: colors.primary }]}>SYSTEM SUPPORT</Text>
-        <Text style={[styles.subText, { color: colors.textDim }]}>AI-DRIVEN DIAGNOSTICS</Text>
+        <Text style={[styles.brand, { color: colors.primary }]}>SUPPORT CENTER</Text>
+        <Text style={[styles.sub, { color: colors.textDim }]}>SECURE AI INTERFACE</Text>
       </View>
 
-      <Animatable.View animation="fadeIn" style={[styles.aiBox, { backgroundColor: colors.cardBg, borderColor: colors.border }]}>
-        <Text style={[styles.aiLabel, { color: colors.primary }]}>CORE ASSISTANT</Text>
-        <Text style={[styles.aiContent, { color: colors.textMain }]}>
-          {response || "Describe your issue. Our AI will analyze the request before connecting to a human agent."}
+      <View style={[styles.box, { backgroundColor: colors.cardBg, borderColor: colors.border }]}>
+        <Text style={[styles.label, { color: colors.primary }]}>AI RESPONSE</Text>
+        <Text style={[styles.text, { color: colors.textMain }]}>
+          {response || "System ready for inquiry. Describe your issue for immediate analysis."}
         </Text>
         
-        {needsAdmin && (
-          <TouchableOpacity 
-            style={[styles.adminBtn, { backgroundColor: colors.primary }]} 
-            onPress={transferToAdmin}
-          >
-            <Text style={styles.adminBtnText}>REQUEST ADMIN INTERVENTION</Text>
+        {escalate && (
+          <TouchableOpacity style={[styles.btnAdmin, { backgroundColor: colors.primary }]} onPress={notifyAdmin}>
+            <Text style={styles.btnText}>CONNECT TO ADMIN</Text>
           </TouchableOpacity>
         )}
-      </Animatable.View>
+      </View>
 
-      <View style={styles.inputContainer}>
+      <View style={styles.inputRow}>
         <TextInput
           style={[styles.input, { color: colors.textMain, borderColor: colors.border, backgroundColor: colors.inputBg }]}
-          placeholder="Enter issue details..."
+          placeholder="Issue details..."
           placeholderTextColor={colors.textDim}
           value={query}
           onChangeText={setQuery}
           multiline
         />
-        <TouchableOpacity 
-          style={[styles.actionBtn, { backgroundColor: colors.primary }]} 
-          onPress={processSupportRequest}
-          disabled={loading}
-        >
-          {loading ? <ActivityIndicator color="#000" /> : <Ionicons name="analytics" size={20} color="#000" />}
+        <TouchableOpacity style={[styles.btnSend, { backgroundColor: colors.primary }]} onPress={handleSupportRequest} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Ionicons name="flash" size={20} color="#000" />}
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -105,16 +95,16 @@ export default function SupportScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 25 },
-  header: { marginTop: 40, marginBottom: 30, alignItems: 'center' },
-  brand: { fontSize: 24, fontWeight: '200', letterSpacing: 4 },
-  subText: { fontSize: 8, fontWeight: '900', marginTop: 5, letterSpacing: 2 },
-  aiBox: { padding: 25, borderRadius: 24, borderWidth: 1, minHeight: 160 },
-  aiLabel: { fontSize: 8, fontWeight: '900', marginBottom: 15, letterSpacing: 1.5 },
-  aiContent: { fontSize: 14, lineHeight: 22, fontWeight: '500' },
-  inputContainer: { flexDirection: 'row', gap: 10, marginTop: 25, marginBottom: 50 },
-  input: { flex: 1, borderWidth: 1, borderRadius: 18, padding: 15, minHeight: 60, fontSize: 14 },
-  actionBtn: { width: 60, height: 60, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
-  adminBtn: { marginTop: 20, padding: 15, borderRadius: 12, alignItems: 'center' },
-  adminBtnText: { color: '#000', fontWeight: '900', fontSize: 10, letterSpacing: 1 }
+  container: { flex: 1, padding: 20 },
+  header: { marginTop: 40, marginBottom: 25, alignItems: 'center' },
+  brand: { fontSize: 22, fontWeight: 'bold', letterSpacing: 2 },
+  sub: { fontSize: 8, fontWeight: '900', letterSpacing: 1, marginTop: 4 },
+  box: { padding: 20, borderRadius: 20, borderWidth: 1, minHeight: 150 },
+  label: { fontSize: 8, fontWeight: '900', marginBottom: 12 },
+  text: { fontSize: 14, lineHeight: 22 },
+  inputRow: { flexDirection: 'row', gap: 10, marginTop: 20, marginBottom: 40 },
+  input: { flex: 1, borderWidth: 1, borderRadius: 15, padding: 15, minHeight: 55 },
+  btnSend: { width: 55, height: 55, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  btnAdmin: { marginTop: 15, padding: 12, borderRadius: 10, alignItems: 'center' },
+  btnText: { color: '#000', fontWeight: 'bold', fontSize: 10 }
 });
