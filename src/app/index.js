@@ -1,23 +1,27 @@
 import { Redirect } from 'expo-router';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../src/context/AuthContext';
+import { useTheme } from '../src/theme/ThemeContext';
 
 export default function Index() {
   const { loading, user } = useAuth();
+  const { colors } = useTheme();
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#D4AF37" />
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
-  // If no user session, go to Login. 
-  // If user exists, let RootLayout handle the rest.
-  return user ? null : <Redirect href="/auth/login" />;
+  return user ? <Redirect href="/(customer)/home" /> : <Redirect href="/(auth)/login" />;
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
+  container: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
 });
