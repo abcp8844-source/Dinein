@@ -1,22 +1,32 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function PremiumButton({ title, onPress, type = 'primary' }) {
-  const { colors } = useTheme();
+  const { colors, borderRadius } = useTheme();
   
+  const isPrimary = type === 'primary';
+
   return (
     <TouchableOpacity 
+      activeOpacity={0.8}
       style={[
         styles.button, 
-        { backgroundColor: type === 'primary' ? colors.primary : 'transparent',
-          borderColor: colors.secondary,
-          borderWidth: type === 'primary' ? 0 : 1 }
+        { 
+          backgroundColor: isPrimary ? colors.primary : 'transparent',
+          borderColor: colors.primary,
+          borderWidth: isPrimary ? 0 : 1.5,
+          borderRadius: borderRadius.button,
+          shadowColor: colors.primary,
+        }
       ]} 
       onPress={onPress}
     >
-      <Text style={[styles.text, { color: type === 'primary' ? colors.textMain : colors.secondary }]}>
-        {title}
+      <Text style={[
+        styles.text, 
+        { color: isPrimary ? colors.background : colors.primary }
+      ]}>
+        {title.toUpperCase()}
       </Text>
     </TouchableOpacity>
   );
@@ -24,17 +34,19 @@ export default function PremiumButton({ title, onPress, type = 'primary' }) {
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    marginVertical: 10,
-    width: '80%',
+    paddingVertical: 14,
+    paddingHorizontal: 25,
+    marginVertical: 8,
+    width: '100%',
     alignItems: 'center',
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   text: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    letterSpacing: 1,
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 1.5,
   },
 });
