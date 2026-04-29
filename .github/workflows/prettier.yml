@@ -15,18 +15,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install Prettier
-        # We use a specific version for stability
         run: npm install --save-dev --save-exact prettier@3.2.5
 
       - name: Run Prettier Fix
-        # This command cleans up indentation, spaces, and brackets automatically
         run: npx prettier --write . --ignore-unknown
         continue-on-error: true
 
-      - name: Commit cleaned code
+      - name: Commit Cleaned Code
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Clean: Automatically formatted code and removed clutter"
+          commit_message: "Clean: Automatically formatted code"
           branch: ${{ github.head_ref }}
