@@ -7,9 +7,13 @@ import { dbService } from '../../src/services/dbService';
 import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 
-export default function CustomerHome() {
+/**
+ * CUSTOMER HOME - MAIN INTERFACE
+ * Route: /customer/home
+ */
+export default function Home() {
   const { userData } = useAuth();
-  const { colors, borderRadius } = useTheme();
+  const { colors } = useTheme();
   const router = useRouter();
 
   const [items, setItems] = useState([]);
@@ -50,7 +54,7 @@ export default function CustomerHome() {
       setItems(data);
       setFilteredItems(data);
     } catch (error) {
-      console.error(error);
+      console.error("FETCH_ERROR:", error);
     } finally {
       setLoading(false);
     }
