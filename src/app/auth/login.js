@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator, StatusBar } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
+import { View, Text, StyleSheet, Alert, ActivityIndicator, StatusBar, TouchableOpacity } from 'react-native';
+import { useAuth } from '../../src/context/AuthContext';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../context/ThemeContext';
-import { Ionicons } from '@expo/vector-icons'; // For Google Icon
+import { useTheme } from '../../src/theme/ThemeContext';
+import PremiumButton from '../../src/components/PremiumButton';
+import PremiumInput from '../../src/components/PremiumInput';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, loginWithGoogle } = useAuth(); // Added Google Auth Support
+  const { login, loginWithGoogle } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
 
-  // MASTER SECURITY: Using your specific credentials
   const MASTER_ADMIN_EMAIL = "abcp8844@gmail.com";
   const MASTER_ADMIN_PASS = "abcp7863811";
 
   const handleLogin = async () => {
-    // 🛡️ Admin Verification Logic
     const isMasterAdmin = (email.toLowerCase() === 'admin' || email === MASTER_ADMIN_EMAIL) 
                           && password === MASTER_ADMIN_PASS;
 
@@ -28,32 +28,28 @@ export default function Login() {
     }
 
     if (!email || !password) {
-      Alert.alert("Authentication", "Credentials cannot be empty.");
+      Alert.alert("Authentication", "Credentials required.");
       return;
     }
 
     setLoading(true);
     try {
       await login(email, password);
-      router.replace('/(tabs)/home'); 
+      router.replace('/(customer)/home'); 
     } catch (error) {
-      Alert.alert("Access Denied", "Check your ID or Security Key.");
+      Alert.alert("Access Denied", "Invalid Security Key.");
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * 🚀 CUSTOMER EASE: One-Tap Google Access
-   */
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      // Logic from AuthContext to handle Gmail login
       await loginWithGoogle(); 
-      router.replace('/customer/home');
+      router.replace('/(customer)/home');
     } catch (error) {
-      console.log("Google Auth Cancelled or Failed");
+      console.log("Auth Error");
     } finally {
       setLoading(false);
     }
@@ -70,69 +66,44 @@ export default function Login() {
       </View>
 
       <View style={styles.formArea}>
-        {/* Email Input */}
-        <View style={[styles.inputWrapper, { borderBottomColor: colors.border }]}>
-          <Text style={[styles.label, { color: colors.primary }]}>ACCESS ID</Text>
-          <TextInput
-            style={[styles.input, { color: colors.textMain }]}
-            placeholder="Email or Admin Username"
-            placeholderTextColor="#444"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-        </View>
+        <Text style={[styles.label, { color: colors.primary }]}>ACCESS ID</Text>
+        <PremiumInput
+          placeholder="Email or Admin ID"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-        {/* Password Input */}
-        <View style={[styles.inputWrapper, { borderBottomColor: colors.border }]}>
-          <Text style={[styles.label, { color: colors.primary }]}>SECURITY KEY</Text>
-          <TextInput
-            style={[styles.input, { color: colors.textMain }]}
-            placeholder="••••••••"
-            placeholderTextColor="#444"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
+        <Text style={[styles.label, { color: colors.primary, marginTop: 15 }]}>SECURITY KEY</Text>
+        <PremiumInput
+          placeholder="••••••••"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
       </View>
 
-      {/* Main Login Button */}
-      <TouchableOpacity 
-        activeOpacity={0.8}
-        style={[styles.loginBtn, { backgroundColor: colors.primary }]} 
+      <PremiumButton 
+        title={loading ? "INITIALIZING..." : "INITIALIZE ACCESS"} 
         onPress={handleLogin}
-        disabled={loading}
-      >
-        {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.btnText}>INITIALIZE ACCESS</Text>}
-      </TouchableOpacity>
+      />
 
-      {/* --- QUICK ACCESS FOR CUSTOMERS --- */}
       <View style={styles.dividerArea}>
-        <View style={styles.line} />
-        <Text style={styles.dividerText}>QUICK ACCESS</Text>
-        <View style={styles.line} />
+        <View style={[styles.line, { backgroundColor: colors.border }]} />
+        <Text style={[styles.dividerText, { color: colors.textDim }]}>QUICK ACCESS</Text>
+        <View style={[styles.line, { backgroundColor: colors.border }]} />
       </View>
 
       <TouchableOpacity 
-        style={styles.googleBtn} 
+        style={[styles.googleBtn, { borderColor: colors.primary }]} 
         onPress={handleGoogleLogin}
-        activeOpacity={0.7}
       >
-        <Ionicons name="logo-google" size={18} color="#D4AF37" />
-        <Text style={styles.googleBtnText}>CONTINUE WITH GOOGLE</Text>
+        <Ionicons name="logo-google" size={18} color={colors.primary} />
+        <Text style={[styles.googleBtnText, { color: colors.primary }]}>CONTINUE WITH GOOGLE</Text>
       </TouchableOpacity>
 
       <View style={styles.footerLinks}>
-        <TouchableOpacity onPress={() => router.push('/auth/register')}>
+        <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
           <Text style={{ color: colors.textDim }}>NEW PARTNER? <Text style={{ color: colors.secondary, fontWeight: 'bold' }}>REGISTER</Text></Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={{ marginTop: 25 }}
-          onPress={() => Alert.alert("Secure Node", "All credentials are encrypted via 15-Market Protocol.")}
-        >
-          <Text style={{ color: colors.primary, fontSize: 10, letterSpacing: 1 }}>256-BIT SECURITY ENFORCED</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -140,21 +111,17 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 40, justifyContent: 'center' },
-  headerArea: { alignItems: 'center', marginBottom: 50 },
-  logoText: { fontSize: 32, fontWeight: '300', letterSpacing: 4 },
-  underline: { height: 1, width: 30, marginVertical: 10 },
-  tagline: { fontSize: 8, letterSpacing: 2, fontWeight: '600' },
-  formArea: { marginBottom: 20 },
-  inputWrapper: { borderBottomWidth: 1, marginBottom: 25, paddingBottom: 5 },
-  label: { fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5, marginBottom: 5 },
-  input: { fontSize: 15, height: 40 },
-  loginBtn: { height: 50, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
-  btnText: { color: '#000', fontWeight: '900', fontSize: 11, letterSpacing: 2 },
-  dividerArea: { flexDirection: 'row', alignItems: 'center', marginVertical: 30 },
-  line: { flex: 1, height: 1, backgroundColor: '#222' },
-  dividerText: { color: '#444', fontSize: 8, paddingHorizontal: 15, fontWeight: 'bold', letterSpacing: 1 },
-  googleBtn: { height: 50, borderRadius: 4, borderWidth: 1, borderColor: '#D4AF37', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 },
-  googleBtnText: { color: '#D4AF37', fontSize: 11, fontWeight: 'bold', letterSpacing: 1 },
-  footerLinks: { alignItems: 'center', marginTop: 30 }
+  container: { flex: 1, paddingHorizontal: 30, justifyContent: 'center' },
+  headerArea: { alignItems: 'center', marginBottom: 40 },
+  logoText: { fontSize: 28, fontWeight: '300', letterSpacing: 5 },
+  underline: { height: 1, width: 40, marginVertical: 12 },
+  tagline: { fontSize: 9, letterSpacing: 2, fontWeight: 'bold' },
+  formArea: { marginBottom: 30 },
+  label: { fontSize: 9, fontWeight: '900', letterSpacing: 1.5, marginBottom: 8 },
+  dividerArea: { flexDirection: 'row', alignItems: 'center', marginVertical: 25 },
+  line: { flex: 1, height: 1 },
+  dividerText: { fontSize: 8, paddingHorizontal: 15, fontWeight: 'bold', letterSpacing: 1 },
+  googleBtn: { height: 50, borderRadius: 25, borderWidth: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 },
+  googleBtnText: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1 },
+  footerLinks: { alignItems: 'center', marginTop: 40 }
 });
