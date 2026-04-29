@@ -18,28 +18,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Tools
-        run: |
-          npm install eslint@8.10.0
-          npm install @microsoft/eslint-formatter-sarif@3.1.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Clean Code Only
-        # This fixes spaces and formatting without changing your logic.
+      - name: Install Dependencies
         run: |
-          npx eslint . --ext .js,.jsx,.ts,.tsx --fix || true
-        continue-on-error: true
+          npm install eslint@8.10.0 @microsoft/eslint-formatter-sarif@3.1.0 --save-dev
 
-      - name: Create Scan Report
-        env:
-          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+      - name: Clean and Generate Report
+        # This command runs fix and creates the SARIF file in one go
         run: |
-          npx eslint . \
-          --ext .js,.jsx,.ts,.tsx \
-          --format @microsoft/eslint-formatter-sarif \
-          --output-file eslint-results.sarif
-        continue-on-error: true
+          npx eslint . --ext .js,.jsx,.ts,.tsx --fix --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif || true
 
       - name: Upload to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
+        if: always() # This ensures it tries to upload even if errors exist
         with:
           sarif_file: eslint-results.sarif
+          wait-for-processing: true
