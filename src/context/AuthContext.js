@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
   const [marketISO, setMarketISO] = useState('THA'); 
   const [appLang, setAppLang] = useState('EN');      
 
@@ -26,14 +25,11 @@ export const AuthProvider = ({ children }) => {
           
           if (docSnap.exists()) {
             let data = docSnap.data();
-            
             if (firebaseUser.email === MASTER_ADMIN_EMAIL) {
               data.role = 'admin'; 
             }
-
             if (data.isoCode) setMarketISO(data.isoCode);
             if (data.preferredLang) setAppLang(data.preferredLang);
-
             setUserData(data);
           }
         } else {
@@ -41,7 +37,7 @@ export const AuthProvider = ({ children }) => {
           setUserData(null);
         }
       } catch (error) {
-        console.error("[AUTH_SYNC_ERROR]:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +47,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, role, additionalData) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    
     const userProfile = {
       uid: res.user.uid,
       email,
@@ -62,35 +57,26 @@ export const AuthProvider = ({ children }) => {
       ...additionalData,
       createdAt: new Date().toISOString(),
     };
-
     await setDoc(doc(db, "users", res.user.uid), userProfile);
     return res;
   };
 
   const login = async (email, password) => {
     if (email === MASTER_ADMIN_EMAIL && password !== MASTER_ADMIN_PASS) {
-      throw new Error("AUTH_FAILED: INVALID_ADMIN_CREDENTIALS");
+      throw new Error("AUTH_FAILED");
     }
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const updateMarketPreference = (iso) => setMarketISO(iso);
   const updateLanguagePreference = (lang) => setAppLang(lang);
-
   const logout = () => signOut(auth);
 
   return (
     <AuthContext.Provider value={{ 
-      user, 
-      userData, 
-      loading, 
-      marketISO, 
-      appLang,
-      updateMarketPreference,
-      updateLanguagePreference,
-      login, 
-      logout,
-      register
+      user, userData, loading, marketISO, appLang,
+      updateMarketPreference, updateLanguagePreference,
+      login, logout, register
     }}>
       {children}
     </AuthContext.Provider>
