@@ -1,32 +1,26 @@
-name: Prettier
+name: Prettier Fix
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  prettier:
-    name: Auto-Format Code
+  format:
+    name: Auto Clean
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install Prettier
-        run: npm install --save-dev --save-exact prettier@3.2.5
-
-      - name: Run Prettier Fix
+      - name: Run Format
         run: npx prettier --write . --ignore-unknown
         continue-on-error: true
 
-      - name: Commit Cleaned Code
+      - name: Push Clean Code
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Clean: Automatically formatted code"
-          branch: ${{ github.head_ref }}
+          commit_message: "System: Automated code cleaning"
