@@ -9,10 +9,11 @@ permissions:
 
 jobs:
   dependency-review:
-    name: Check Libraries
+    name: Scan Dependencies
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Review Dependencies
+
+      - name: Dependency Review
         uses: actions/dependency-review-action@v4
