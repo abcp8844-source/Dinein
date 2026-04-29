@@ -1,28 +1,44 @@
-name: Prettier Fix
+name: Prettier Formatter
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
+  workflows: write
 
 jobs:
   format:
-    name: Auto Clean Code
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Prettier Formatting
-        run: npx prettier --write . --ignore-unknown
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Commit and Push Changes
+      - name: Install Prettier
+        run: npm install --global prettier
+
+      - name: Format Files
+        run: |
+          npx prettier --write . --ignore-unknown
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and Push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "System: Automated code formatting"
+          commit_message: "Fix: Automated code formatting"
           branch: main
+          commit_options: '--no-verify'
+          push_options: '--force'
+          skip_fetch: true
