@@ -1,9 +1,8 @@
-name: Prettier Formatter
+name: Prettier Fixed
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,7 +12,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MY_GITHUB_TOKEN }}
@@ -23,22 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install Prettier
-        run: npm install --global prettier
-
-      - name: Format Files
+      - name: Fix and Push
         run: |
+          npm install --global prettier
           npx prettier --write . --ignore-unknown
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit and Push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Fix: Automated code formatting"
-          branch: main
-          commit_options: '--no-verify'
-          push_options: '--force'
-          skip_fetch: true
+          git add .
+          git commit -m "Fix: formatting and workflow error resolved" || echo "No changes"
+          git push origin main --force
