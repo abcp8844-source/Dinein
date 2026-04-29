@@ -4,13 +4,12 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: write
-  workflows: write
-
 jobs:
   format:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -30,5 +29,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Fix: formatting and workflow error resolved" || echo "No changes"
+          git commit -m "Fix: formatting resolved" || echo "No changes to commit"
           git push origin main --force
