@@ -1,6 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminDashboard() {
   const { logout, marketISO, userData } = useAuth();
@@ -25,12 +32,12 @@ export default function AdminDashboard() {
         {/* MARKET MANAGEMENT SECTION */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MARKET OPERATIONS</Text>
-          
+
           <View style={styles.row}>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.btnText}>OWNER REQUESTS</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.button}>
               <Text style={styles.btnText}>ACTIVE STORES</Text>
             </TouchableOpacity>
@@ -40,7 +47,7 @@ export default function AdminDashboard() {
             <TouchableOpacity style={styles.button}>
               <Text style={styles.btnText}>TRANSACTIONS</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.button}>
               <Text style={styles.btnText}>SYSTEM LOGS</Text>
             </TouchableOpacity>
@@ -57,19 +64,60 @@ export default function AdminDashboard() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#000' },
-  header: { padding: 25, borderBottomWidth: 1, borderBottomColor: '#111', alignItems: 'center' },
-  adminTitle: { color: '#D4AF37', fontSize: 14, fontWeight: 'bold', letterSpacing: 2 },
-  nodeStatus: { color: '#444', fontSize: 8, marginTop: 4 },
+  safe: { flex: 1, backgroundColor: "#000" },
+  header: {
+    padding: 25,
+    borderBottomWidth: 1,
+    borderBottomColor: "#111",
+    alignItems: "center",
+  },
+  adminTitle: {
+    color: "#D4AF37",
+    fontSize: 14,
+    fontWeight: "bold",
+    letterSpacing: 2,
+  },
+  nodeStatus: { color: "#444", fontSize: 8, marginTop: 4 },
   container: { flex: 1, padding: 15 },
-  card: { backgroundColor: '#050505', padding: 25, borderRadius: 10, borderWidth: 1, borderColor: '#111', alignItems: 'center', marginBottom: 20 },
-  cardLabel: { color: '#333', fontSize: 10, fontWeight: 'bold' },
-  cardValue: { color: '#FFF', fontSize: 28, fontWeight: 'bold', marginTop: 5 },
+  card: {
+    backgroundColor: "#050505",
+    padding: 25,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#111",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  cardLabel: { color: "#333", fontSize: 10, fontWeight: "bold" },
+  cardValue: { color: "#FFF", fontSize: 28, fontWeight: "bold", marginTop: 5 },
   section: { marginBottom: 20 },
-  sectionTitle: { color: '#444', fontSize: 9, fontWeight: 'bold', marginBottom: 10, marginLeft: 5 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-  button: { width: '48%', backgroundColor: '#0A0A0A', padding: 18, borderRadius: 8, borderWidth: 1, borderColor: '#111', alignItems: 'center' },
-  btnText: { color: '#AAA', fontSize: 10, fontWeight: 'bold' },
-  exitBtn: { marginTop: 20, padding: 20, alignItems: 'center' },
-  exitBtnText: { color: '#FF4444', fontSize: 10, fontWeight: 'bold', letterSpacing: 1 }
+  sectionTitle: {
+    color: "#444",
+    fontSize: 9,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 5,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  button: {
+    width: "48%",
+    backgroundColor: "#0A0A0A",
+    padding: 18,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#111",
+    alignItems: "center",
+  },
+  btnText: { color: "#AAA", fontSize: 10, fontWeight: "bold" },
+  exitBtn: { marginTop: 20, padding: 20, alignItems: "center" },
+  exitBtnText: {
+    color: "#FF4444",
+    fontSize: 10,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
 });

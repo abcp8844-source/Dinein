@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 /**
  * GLOBAL MENU SYSTEM - CLEAN ARCHITECTURE
@@ -10,25 +18,28 @@ import { useTheme } from '../../context/ThemeContext';
  */
 export default function UploadMenu() {
   const { colors } = useTheme();
-  const { userData } = useAuth(); 
+  const { userData } = useAuth();
   const router = useRouter();
 
-  const [itemName, setItemName] = useState('');
-  const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
-  const [description, setDescription] = useState('');
+  const [itemName, setItemName] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
 
   // 🛡️ Regional settings fetched from Owner Profile
-  const currency = userData?.currencyCode || 'USD';
-  const country = userData?.countryName || 'Global Market';
+  const currency = userData?.currencyCode || "USD";
+  const country = userData?.countryName || "Global Market";
 
   const handleUpload = () => {
     // Validation Logic
     if (!itemName || !price || !category) {
-      Alert.alert("System Notification", "Required fields are missing for global indexing.");
+      Alert.alert(
+        "System Notification",
+        "Required fields are missing for global indexing.",
+      );
       return;
     }
-    
+
     // 🤖 AI-Ready Data Structure (Prepped for Gemini Analysis)
     const menuItem = {
       name: itemName,
@@ -41,19 +52,27 @@ export default function UploadMenu() {
       ai_metadata: {
         market_analysis: true,
         taste_profile_sync: true,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
 
-    Alert.alert("Registry Success", `${itemName} is now broadcasted to the ${country} network.`);
+    Alert.alert(
+      "Registry Success",
+      `${itemName} is now broadcasted to the ${country} network.`,
+    );
     router.back();
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <Text style={styles.headerTitle}>MENU MANAGEMENT</Text>
-        <Text style={styles.subTag}>📍 {country} | {currency} SYSTEM</Text>
+        <Text style={styles.subTag}>
+          📍 {country} | {currency} SYSTEM
+        </Text>
         <View style={styles.divider} />
       </View>
 
@@ -76,7 +95,9 @@ export default function UploadMenu() {
             value={price}
             onChangeText={setPrice}
           />
-          <View style={styles.badge}><Text style={styles.badgeText}>{currency}</Text></View>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{currency}</Text>
+          </View>
         </View>
 
         <TextInput
@@ -98,7 +119,11 @@ export default function UploadMenu() {
           onChangeText={setDescription}
         />
 
-        <TouchableOpacity style={styles.publishBtn} onPress={handleUpload} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.publishBtn}
+          onPress={handleUpload}
+          activeOpacity={0.8}
+        >
           <Text style={styles.btnText}>PUBLISH TO MARKET</Text>
         </TouchableOpacity>
 
@@ -111,34 +136,67 @@ export default function UploadMenu() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#000', padding: 30 },
-  header: { marginTop: 40, marginBottom: 40, alignItems: 'center' },
-  headerTitle: { color: '#D4AF37', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
-  subTag: { color: '#666', fontSize: 10, fontWeight: 'bold', marginTop: 8, letterSpacing: 1 },
-  divider: { width: 40, height: 2, backgroundColor: '#D4AF37', marginTop: 15 },
-  label: { color: '#D4AF37', fontSize: 9, fontWeight: 'bold', letterSpacing: 2, marginBottom: 12, marginTop: 10, opacity: 0.7 },
-  form: { width: '100%' },
-  priceContainer: { flexDirection: 'row', alignItems: 'center' },
-  badge: { backgroundColor: '#111', padding: 10, borderRadius: 8, marginLeft: 10, marginBottom: 25, borderWidth: 1, borderColor: '#222' },
-  badgeText: { color: '#D4AF37', fontWeight: 'bold', fontSize: 11 },
+  container: { flexGrow: 1, backgroundColor: "#000", padding: 30 },
+  header: { marginTop: 40, marginBottom: 40, alignItems: "center" },
+  headerTitle: {
+    color: "#D4AF37",
+    fontSize: 24,
+    fontWeight: "900",
+    letterSpacing: 2,
+  },
+  subTag: {
+    color: "#666",
+    fontSize: 10,
+    fontWeight: "bold",
+    marginTop: 8,
+    letterSpacing: 1,
+  },
+  divider: { width: 40, height: 2, backgroundColor: "#D4AF37", marginTop: 15 },
+  label: {
+    color: "#D4AF37",
+    fontSize: 9,
+    fontWeight: "bold",
+    letterSpacing: 2,
+    marginBottom: 12,
+    marginTop: 10,
+    opacity: 0.7,
+  },
+  form: { width: "100%" },
+  priceContainer: { flexDirection: "row", alignItems: "center" },
+  badge: {
+    backgroundColor: "#111",
+    padding: 10,
+    borderRadius: 8,
+    marginLeft: 10,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  badgeText: { color: "#D4AF37", fontWeight: "bold", fontSize: 11 },
   input: {
     height: 55,
     borderBottomWidth: 1,
-    borderBottomColor: '#1A1A1A',
-    color: '#FFF',
+    borderBottomColor: "#1A1A1A",
+    color: "#FFF",
     marginBottom: 25,
     fontSize: 15,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
-  textArea: { height: 100, textAlignVertical: 'top' },
+  textArea: { height: 100, textAlignVertical: "top" },
   publishBtn: {
-    backgroundColor: '#D4AF37',
+    backgroundColor: "#D4AF37",
     height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 8,
-    marginTop: 20
+    marginTop: 20,
   },
-  btnText: { color: '#000', fontWeight: '900', letterSpacing: 2, fontSize: 13 },
-  footerNote: { color: '#333', fontSize: 10, textAlign: 'center', marginTop: 40, letterSpacing: 1 }
+  btnText: { color: "#000", fontWeight: "900", letterSpacing: 2, fontSize: 13 },
+  footerNote: {
+    color: "#333",
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: 40,
+    letterSpacing: 1,
+  },
 });

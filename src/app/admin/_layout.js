@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router';
-import { useTheme } from '../../context/ThemeContext';
+import { Stack } from "expo-router";
+import { useTheme } from "../../context/ThemeContext";
 
 /**
  * ADMIN NAVIGATION ARCHITECTURE
@@ -10,33 +10,32 @@ export default function AdminLayout() {
   const { colors } = useTheme();
 
   return (
-    <Stack screenOptions={{
-      headerStyle: { backgroundColor: '#000' },
-      headerTintColor: '#D4AF37', // Signature Gold for Admin Authority
-      headerTitleStyle: { 
-        fontWeight: '900', 
-        fontSize: 14, 
-        letterSpacing: 1.5 
-      },
-      headerShadowVisible: false,
-      headerBackTitleVisible: false,
-    }}>
+    <Stack
+      screenOptions={{
+        headerStyle: { backgroundColor: "#000" },
+        headerTintColor: "#D4AF37", // Signature Gold for Admin Authority
+        headerTitleStyle: {
+          fontWeight: "900",
+          fontSize: 14,
+          letterSpacing: 1.5,
+        },
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+    >
       {/* Principal Monitoring Hub */}
-      <Stack.Screen 
-        name="home" 
-        options={{ title: 'GLOBAL CONTROL CENTER' }} 
-      />
-      
+      <Stack.Screen name="home" options={{ title: "GLOBAL CONTROL CENTER" }} />
+
       {/* Network Partner Management */}
-      <Stack.Screen 
-        name="manage-owners" 
-        options={{ title: 'NETWORK PARTNERS' }} 
+      <Stack.Screen
+        name="manage-owners"
+        options={{ title: "NETWORK PARTNERS" }}
       />
 
       {/* Support & Help Desk Nodes */}
-      <Stack.Screen 
-        name="support-tickets" 
-        options={{ title: 'SUPPORT MONITOR' }} 
+      <Stack.Screen
+        name="support-tickets"
+        options={{ title: "SUPPORT MONITOR" }}
       />
     </Stack>
   );
