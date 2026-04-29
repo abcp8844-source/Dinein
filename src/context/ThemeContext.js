@@ -5,14 +5,25 @@ const ThemeContext = createContext({});
 export const ThemeProvider = ({ children }) => {
   const theme = {
     colors: {
-      background: '#0A0A0A',
+      background: '#0A111F', 
       primary: '#D4AF37',   
       secondary: '#FFFFFF', 
-      textMain: '#F2F2F7',  
-      textDim: '#8E8E93',   
-      cardBg: '#1C1C1E',    
-      accent: '#FF3B30',    
-      border: '#2C2C2E',    
+      textMain: '#FDFDFD',  
+      textDim: '#A0AEC0',   
+      cardBg: '#161E2E',    
+      accent: '#C41E3A',    
+      border: 'rgba(212, 175, 55, 0.15)',    
+      inputBg: '#1F2937',
+      success: '#27AE60',
+    },
+    borderRadius: {
+      small: 6,
+      medium: 14,
+      button: 25,
+    },
+    spacing: {
+      padding: 20,
+      gap: 12,
     }
   };
 
