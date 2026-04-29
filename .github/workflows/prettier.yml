@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
+      workflows: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,5 +26,3 @@ jobs:
         with:
           commit_message: "Fix: automated code formatting"
           branch: main
-          commit_options: '--no-verify'
-          repository: .
