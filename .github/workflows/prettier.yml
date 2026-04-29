@@ -6,21 +6,22 @@ on:
 
 jobs:
   format:
-    name: Auto Clean
+    name: Auto Clean Code
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      workflows: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Run Format
+      - name: Run Prettier
         run: npx prettier --write . --ignore-unknown
         continue-on-error: true
 
-      - name: Push Clean Code
+      - name: Commit and Push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "System: Automated code cleaning"
+          commit_message: "System: Automated code formatting"
