@@ -1,12 +1,19 @@
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function PremiumInput({ placeholder, value, onChangeText, secureTextEntry = false }) {
-  const { colors } = useTheme();
+  const { colors, borderRadius } = useTheme();
   
   return (
-    <View style={[styles.container, { borderColor: colors.primary }]}>
+    <View style={[
+      styles.container, 
+      { 
+        borderColor: colors.border, 
+        backgroundColor: colors.inputBg,
+        borderRadius: borderRadius.medium 
+      }
+    ]}>
       <TextInput
         style={[styles.input, { color: colors.textMain }]}
         placeholder={placeholder}
@@ -14,6 +21,7 @@ export default function PremiumInput({ placeholder, value, onChangeText, secureT
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
+        selectionColor={colors.primary}
       />
     </View>
   );
@@ -21,16 +29,15 @@ export default function PremiumInput({ placeholder, value, onChangeText, secureT
 
 const styles = StyleSheet.create({
   container: {
-    width: '85%',
+    width: '100%',
     height: 55,
     borderWidth: 1,
-    borderRadius: 10,
-    marginVertical: 12,
+    marginVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: 'rgba(128, 0, 0, 0.05)',
     justifyContent: 'center',
   },
   input: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: '500',
   },
 });
