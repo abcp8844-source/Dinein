@@ -1,0 +1,28 @@
+name: Prettier Fix
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  format:
+    name: Auto Clean Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      workflows: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Prettier Formatting
+        run: npx prettier --write . --ignore-unknown
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Fix: automated code formatting"
+          branch: main
