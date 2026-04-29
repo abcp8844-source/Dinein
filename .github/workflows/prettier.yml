@@ -1,0 +1,32 @@
+name: Prettier
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  prettier:
+    name: Auto-Format Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Prettier
+        # We use a specific version for stability
+        run: npm install --save-dev --save-exact prettier@3.2.5
+
+      - name: Run Prettier Fix
+        # This command cleans up indentation, spaces, and brackets automatically
+        run: npx prettier --write . --ignore-unknown
+        continue-on-error: true
+
+      - name: Commit cleaned code
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Clean: Automatically formatted code and removed clutter"
+          branch: ${{ github.head_ref }}
