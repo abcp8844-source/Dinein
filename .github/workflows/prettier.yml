@@ -14,11 +14,16 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Purge Non-ASCII and Comments
+        run: |
+          find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.json" \) -not -path "./node_modules/*" -exec sed -i 's/\/\/.*//g' {} +
+          find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" -o -name "*.json" \) -not -path "./node_modules/*" -exec sed -i 's/[^[:ascii:]]//g' {} +
+
       - name: Run Prettier Clean-up
-        run: npx prettier --write "src/**/*.{js,jsx,json,css}" --ignore-unknown
+        run: npx prettier --write . --ignore-unknown
 
       - name: Commit Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: automated deep clean of src folder [skip ci]"
-          file_pattern: 'src/** package.json app.json'
+          commit_message: "chore: automated deep clean and language purge [skip ci]"
+          file_pattern: '.'
