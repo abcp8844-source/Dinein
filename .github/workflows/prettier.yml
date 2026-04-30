@@ -1,37 +1,21 @@
-Name: Deep Clean and Format
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
-on:
-  push:
-    branches: [main]
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID
+};
 
-jobs:
-  prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          # Using your existing GitHub Token for secure access
-          token: ${{ secrets.GITHUB_TOKEN }}
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-      - name: Prettier Auto-Fix
-        uses: creyder/prettier_action@v4.3
-        with:
-          prettier_options: >
-            --write "src/**/*.{js,jsx,json,css}" 
-            package.json 
-            app.json 
-            --ignore-unknown 
-            --ignore-path .gitignore
-          
-          install_plugins: false
-          
-          # Custom commit message to prevent re-triggering builds
-          commit_message: "chore: deep clean and formatting [skip ci]"
-          
-          # Securely pushing changes back using the token
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-      - name: Success Notification
-        run: echo "Clean-up successful. No extra builds consumed."
+export default app;
