@@ -40,12 +40,18 @@ export default function OwnerAiConsultant() {
         2. Provide a 1-sentence market trend for this specific area.
         3. Keep response professional and strictly about restaurant operations.
       `;
-      
+
       try {
         const response = await generateAIResponse(systemPrompt);
         setMessages([{ id: "1", text: response, sender: "ai" }]);
       } catch (error) {
-        setMessages([{ id: "1", text: "Systems Active. Real-time data sync in progress...", sender: "ai" }]);
+        setMessages([
+          {
+            id: "1",
+            text: "Systems Active. Real-time data sync in progress...",
+            sender: "ai",
+          },
+        ]);
       } finally {
         setLoading(false);
       }
@@ -56,7 +62,11 @@ export default function OwnerAiConsultant() {
   const handleSendMessage = async () => {
     if (!inputText.trim() || loading) return;
 
-    const userMessage = { id: Date.now().toString(), text: inputText, sender: "user" };
+    const userMessage = {
+      id: Date.now().toString(),
+      text: inputText,
+      sender: "user",
+    };
     setMessages((prev) => [...prev, userMessage]);
     const currentInput = inputText;
     setInputText("");
@@ -74,9 +84,19 @@ export default function OwnerAiConsultant() {
 
     try {
       const response = await generateAIResponse(securePrompt);
-      setMessages((prev) => [...prev, { id: Date.now().toString(), text: response, sender: "ai" }]);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), text: response, sender: "ai" },
+      ]);
     } catch (error) {
-      setMessages((prev) => [...prev, { id: Date.now().toString(), text: "Neural Link Busy. Try again.", sender: "ai" }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          text: "Neural Link Busy. Try again.",
+          sender: "ai",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -88,10 +108,17 @@ export default function OwnerAiConsultant() {
       duration={500}
       style={[
         styles.messageBubble,
-        item.sender === "user" ? styles.userBubble : [styles.aiBubble, { borderColor: colors.primary }],
+        item.sender === "user"
+          ? styles.userBubble
+          : [styles.aiBubble, { borderColor: colors.primary }],
       ]}
     >
-      <Text style={[styles.messageText, { color: item.sender === "user" ? colors.primary : "#EEE" }]}>
+      <Text
+        style={[
+          styles.messageText,
+          { color: item.sender === "user" ? colors.primary : "#EEE" },
+        ]}
+      >
         {item.text}
       </Text>
     </Animatable.View>
@@ -107,8 +134,18 @@ export default function OwnerAiConsultant() {
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>AI STRATEGIC RADAR</Text>
           <View style={styles.statusRow}>
-            <View style={[styles.pulseDot, { backgroundColor: loading ? "#FF3B30" : colors.primary }]} />
-            <Text style={[styles.statusText, { color: loading ? "#FF3B30" : colors.primary }]}>
+            <View
+              style={[
+                styles.pulseDot,
+                { backgroundColor: loading ? "#FF3B30" : colors.primary },
+              ]}
+            />
+            <Text
+              style={[
+                styles.statusText,
+                { color: loading ? "#FF3B30" : colors.primary },
+              ]}
+            >
               {loading ? "ANALYZING REAL-TIME..." : "SECURE LINK ACTIVE"}
             </Text>
           </View>
@@ -125,7 +162,10 @@ export default function OwnerAiConsultant() {
         onContentSizeChange={() => flatListRef.current.scrollToEnd()}
       />
 
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={100}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
         <View style={styles.inputArea}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -136,8 +176,16 @@ export default function OwnerAiConsultant() {
               onChangeText={setInputText}
               editable={!loading}
             />
-            <TouchableOpacity onPress={handleSendMessage} disabled={loading} style={[styles.sendBtn, { backgroundColor: colors.primary }]}>
-              {loading ? <ActivityIndicator size="small" color="#000" /> : <Ionicons name="pulse-outline" size={20} color="#000" />}
+            <TouchableOpacity
+              onPress={handleSendMessage}
+              disabled={loading}
+              style={[styles.sendBtn, { backgroundColor: colors.primary }]}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#000" />
+              ) : (
+                <Ionicons name="pulse-outline" size={20} color="#000" />
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -148,19 +196,63 @@ export default function OwnerAiConsultant() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000" },
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 20, borderBottomWidth: 1, borderBottomColor: "#111" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#111",
+  },
   headerTitleContainer: { alignItems: "center" },
-  headerTitle: { color: "#FFF", fontSize: 10, fontWeight: "900", letterSpacing: 3 },
+  headerTitle: {
+    color: "#FFF",
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 3,
+  },
   statusRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
   pulseDot: { width: 4, height: 4, borderRadius: 2, marginRight: 5 },
   statusText: { fontSize: 7, fontWeight: "bold", letterSpacing: 1 },
   chatContent: { padding: 25, paddingBottom: 40 },
-  messageBubble: { maxWidth: "85%", padding: 20, borderRadius: 22, marginBottom: 20 },
-  userBubble: { alignSelf: "flex-end", backgroundColor: "#111", borderBottomRightRadius: 2, borderWidth: 1, borderColor: "#222" },
-  aiBubble: { alignSelf: "flex-start", backgroundColor: "#050505", borderBottomLeftRadius: 2, borderWidth: 1 },
+  messageBubble: {
+    maxWidth: "85%",
+    padding: 20,
+    borderRadius: 22,
+    marginBottom: 20,
+  },
+  userBubble: {
+    alignSelf: "flex-end",
+    backgroundColor: "#111",
+    borderBottomRightRadius: 2,
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  aiBubble: {
+    alignSelf: "flex-start",
+    backgroundColor: "#050505",
+    borderBottomLeftRadius: 2,
+    borderWidth: 1,
+  },
   messageText: { fontSize: 14, lineHeight: 22, fontWeight: "500" },
   inputArea: { padding: 25, backgroundColor: "#000" },
-  inputContainer: { flexDirection: "row", alignItems: "center", backgroundColor: "#080808", borderRadius: 20, paddingHorizontal: 20, paddingVertical: 12, borderWidth: 1, borderColor: "#111" },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#080808",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#111",
+  },
   input: { flex: 1, color: "#FFF", fontSize: 13 },
-  sendBtn: { width: 40, height: 40, borderRadius: 12, justifyContent: "center", alignItems: "center", marginLeft: 15 },
+  sendBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 15,
+  },
 });
