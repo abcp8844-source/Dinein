@@ -14,23 +14,23 @@ export const aiService = {
     try {
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json" 
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           contents: [
             {
               parts: [
                 {
-                  text: `${systemContext}\n\nUser Query: ${userPrompt}`
-                }
-              ]
-            }
+                  text: `${systemContext}\n\nUser Query: ${userPrompt}`,
+                },
+              ],
+            },
           ],
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: 200,
-          }
+          },
         }),
       });
 
