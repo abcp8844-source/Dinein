@@ -2,7 +2,7 @@ name: Global-Optimizer-System
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup-Node-Environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install-Core-Optimization-Tools
         run: |
@@ -36,7 +36,7 @@ jobs:
         with:
           commit_message: "System: Optimization-Complete-Unused-Assets-Removed"
           branch: main
-          push_options: '--force'
+          push_options: "--force"
 
       - name: Generation-Of-Final-Cleaning-Report
         if: steps.auto_commit.outputs.changes_detected == 'true'
