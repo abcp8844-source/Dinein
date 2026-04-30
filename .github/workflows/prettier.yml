@@ -14,16 +14,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Prettier Auto-Fix
-        uses: creyder/prettier_action@v4.3
+      - name: Run Prettier Clean-up
+        run: npx prettier --write "src/**/*.{js,jsx,json,css}" --ignore-unknown
+
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          prettier_options: >
-            --write "src/**/*.{js,jsx,json,css}" 
-            package.json 
-            app.json 
-            --ignore-unknown 
-            --ignore-path .gitignore
-          
-          install_plugins: false
-          commit_message: "chore: deep clean and formatting [skip ci]"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "chore: automated deep clean of src folder [skip ci]"
+          file_pattern: 'src/** package.json app.json'
