@@ -8,18 +8,22 @@ export const aiService = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Role: ${userRole}. Act as a premium assistant for 'Dining Table' App. 
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Role: ${userRole}. Act as a premium assistant for 'Dining Table' App. 
                      Keep answers concise and helpful. 
-                     User Query: ${userPrompt}`
-            }]
-          }]
-        })
+                     User Query: ${userPrompt}`,
+                },
+              ],
+            },
+          ],
+        }),
       });
 
       const data = await response.json();
-      
+
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         return data.candidates[0].content.parts[0].text;
       } else {
@@ -28,5 +32,5 @@ export const aiService = {
     } catch (error) {
       return "Connection error. Please try again or contact Admin.";
     }
-  }
+  },
 };
