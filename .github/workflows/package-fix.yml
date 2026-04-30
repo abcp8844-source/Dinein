@@ -1,13 +1,13 @@
-name: Production-Package-Fix
+name: Production-Force-Expo-Fix
 
 on:
   workflow_dispatch:
 
 jobs:
-  fix-dependencies:
+  repair:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -15,18 +15,19 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Rebuild Lock File
+      - name: Force Repair Dependencies
         run: |
           rm -f package-lock.json
-          npm install --package-lock-only --legacy-peer-deps
+          npm install expo --save --legacy-peer-deps
+          npm install --legacy-peer-deps
           npx expo install --fix
 
-      - name: Sync Repository
+      - name: Update Repository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git add package-lock.json package.json
-          git commit -m "Auto-fix: Rebuilt package-lock for Expo compatibility" || exit 0
+          git add package.json package-lock.json
+          git commit -m "Force-fix: Reinstalled Expo core and rebuilt lock file" || exit 0
           git push
