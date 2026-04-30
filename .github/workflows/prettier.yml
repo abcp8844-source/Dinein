@@ -1,47 +1,37 @@
-name: Global-Optimizer-System
+Name: Deep Clean and Format
 
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: [main]
 
 jobs:
-  deep-clean:
+  prettier:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize-Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
+          # Using your existing GitHub Token for secure access
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup-Node-Environment
-        uses: actions/setup-node@v4
+      - name: Prettier Auto-Fix
+        uses: creyder/prettier_action@v4.3
         with:
-          node-version: "20"
+          prettier_options: >
+            --write "src/**/*.{js,jsx,json,css}" 
+            package.json 
+            app.json 
+            --ignore-unknown 
+            --ignore-path .gitignore
+          
+          install_plugins: false
+          
+          # Custom commit message to prevent re-triggering builds
+          commit_message: "chore: deep clean and formatting [skip ci]"
+          
+          # Securely pushing changes back using the token
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install-Core-Optimization-Tools
-        run: |
-          npm install eslint prettier eslint-plugin-unused-imports --save-dev
-
-      - name: Execute-Deep-Scan-And-Auto-Fix
-        # This step removes unused variables, imports, and formats the code
-        run: |
-          npx eslint . --ext .js,.jsx,.ts,.tsx --fix || true
-          npx prettier --write . --ignore-unknown --ignore-path ".github/workflows/**"
-
-      - name: Push-Clean-Code-To-Repository
-        id: auto_commit
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "System: Optimization-Complete-Unused-Assets-Removed"
-          branch: main
-          push_options: "--force"
-
-      - name: Generation-Of-Final-Cleaning-Report
-        if: steps.auto_commit.outputs.changes_detected == 'true'
-        run: |
-          echo "--- ANALYSIS REPORT ---"
-          echo "Status: Deep Scan Successful"
-          echo "Modified Files List:"
-          git diff --name-only HEAD^ HEAD
+      - name: Success Notification
+        run: echo "Clean-up successful. No extra builds consumed."
