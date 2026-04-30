@@ -29,7 +29,7 @@
     "@babel/core": "^7.20.0",
     "babel-preset-expo": "~10.0.1",
     "eslint": "^8.57.0",
-    "eslint-config-expo": "~5.0.0",
+    "eslint-config-expo": "8.0.0",
     "prettier": "^3.2.5"
   },
   "private": true
