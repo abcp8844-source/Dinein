@@ -3,10 +3,6 @@ name: Deep-Clean-Format
 on:
   push:
     branches: [main]
-  workflow_run:
-    workflows: ["Production-Package-Fix"]
-    types:
-      - completed
 
 jobs:
   format:
@@ -31,6 +27,5 @@ jobs:
       - name: Secure Sync
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Clean: Optimized code structure and fixed casing for Expo"
+          commit_message: "style: optimize code structure and fix casing for expo router"
           file_pattern: 'src/** app.json package.json eas.json'
-          skip_dirty_check: false
