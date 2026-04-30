@@ -29,5 +29,5 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add package.json package-lock.json
-          git commit -m "Force-fix: Reinstalled Expo core and rebuilt lock file" || exit 0
+          git commit -m "chore: force reinstall expo core and rebuild lock file" || exit 0
           git push
