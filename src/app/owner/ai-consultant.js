@@ -9,17 +9,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
+import { generateAIResponse } from "../../services/aiService";
 
-/**
- * GEMINI BUSINESS INTELLIGENCE (Final Version)
- * Features: Market Radar | Weather Sync | Trend Forecasting | Low-Latency
- */
 export default function OwnerAiConsultant() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -27,49 +25,60 @@ export default function OwnerAiConsultant() {
 
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [loading, setLoading] = useState(false);
   const flatListRef = useRef();
 
-  // 🛡️ INITIAL MARKET ANALYSIS ON LOAD
+  // 🛡️ AUTO-NOTIFY & REAL-TIME SYNC ON LOAD
   useEffect(() => {
-    const initialBriefing = {
-      id: "1",
-      text: `SYSTEM ONLINE. \n\nGreetings, Chief. Here is your 15-Market Intelligence Briefing for ${userData?.location?.city || "Thailand"}: \n\n⛅ WEATHER: High humidity expected tonight. Trending: Cold Beverages. \n🔥 MARKET: 70% of nearby users are ordering 'Spicy Seafood'. \n📦 LOGISTICS: Delivery traffic is low. Perfect time for volume orders.`,
-      sender: "ai",
+    const triggerInitialIntelligence = async () => {
+      setLoading(true);
+      const systemPrompt = `
+        Role: Strategic Business AI. 
+        Context: Restaurant Owner is at ${userData?.location?.city || "Current Location"}.
+        Task: 
+        1. Check weather for the next 3 hours. If rain/storm is likely, start with "⚠️ WEATHER ALERT".
+        2. Provide a 1-sentence market trend for this specific area.
+        3. Keep response professional and strictly about restaurant operations.
+      `;
+      
+      try {
+        const response = await generateAIResponse(systemPrompt);
+        setMessages([{ id: "1", text: response, sender: "ai" }]);
+      } catch (error) {
+        setMessages([{ id: "1", text: "Systems Active. Real-time data sync in progress...", sender: "ai" }]);
+      } finally {
+        setLoading(false);
+      }
     };
-    setMessages([initialBriefing]);
+    triggerInitialIntelligence();
   }, []);
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
+  const handleSendMessage = async () => {
+    if (!inputText.trim() || loading) return;
 
-    const userMessage = {
-      id: Date.now().toString(),
-      text: inputText,
-      sender: "user",
-    };
+    const userMessage = { id: Date.now().toString(), text: inputText, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = inputText;
     setInputText("");
+    setLoading(true);
 
-    // 🤖 AI NEURAL RESPONSE (Market & Weather Logic)
-    setTimeout(() => {
-      const aiResponse = {
-        id: (Date.now() + 1).toString(),
-        text: generateAiInsight(inputText),
-        sender: "ai",
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 1200);
-  };
+    // 🧠 DOMAIN-SPECIFIC LOGIC (Privacy & Scope)
+    const securePrompt = `
+      Boundary Instructions:
+      - You are an AI Consultant for this Global Restaurant App.
+      - Topic Scope: ONLY Market Trends, Weather, Logistics, and Business Strategy.
+      - Privacy: NEVER reveal customer personal info or internal admin credentials.
+      - Limitation: If the user asks for recipes or non-business/non-app topics, politely decline and redirect to business goals.
+      - User Query: ${currentInput}
+    `;
 
-  // 🧠 Logic to keep the app lightweight but smart
-  const generateAiInsight = (query) => {
-    const q = query.toLowerCase();
-    if (q.includes("market") || q.includes("customer")) {
-      return "MARKET DATA: Your area shows a 25% spike in night-time snacks. Competitors are offering 'Free Delivery' after 9 PM. Consider a price-match strategy.";
-    } else if (q.includes("weather") || q.includes("rain")) {
-      return "WEATHER SYNC: Rain predicted in 2 hours. Switch focus to 'Instant Delivery' and feature Hot Soups on the home grid.";
-    } else {
-      return "ANALYSIS COMPLETE: Current store health is Optimal. Suggesting an inventory restock for 'Featured Items' based on weekend forecasting.";
+    try {
+      const response = await generateAIResponse(securePrompt);
+      setMessages((prev) => [...prev, { id: Date.now().toString(), text: response, sender: "ai" }]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { id: Date.now().toString(), text: "Neural Link Busy. Try again.", sender: "ai" }]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,17 +88,10 @@ export default function OwnerAiConsultant() {
       duration={500}
       style={[
         styles.messageBubble,
-        item.sender === "user"
-          ? [styles.userBubble, { backgroundColor: "#111" }]
-          : [styles.aiBubble, { borderColor: colors.primary }],
+        item.sender === "user" ? styles.userBubble : [styles.aiBubble, { borderColor: colors.primary }],
       ]}
     >
-      <Text
-        style={[
-          styles.messageText,
-          { color: item.sender === "user" ? colors.primary : "#EEE" },
-        ]}
-      >
+      <Text style={[styles.messageText, { color: item.sender === "user" ? colors.primary : "#EEE" }]}>
         {item.text}
       </Text>
     </Animatable.View>
@@ -97,30 +99,23 @@ export default function OwnerAiConsultant() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* --- COMMAND CENTER HEADER --- */}
+      {/* HEADER SECTION */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={26} color="#FFF" />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>GEMINI CONSULTANT</Text>
+          <Text style={styles.headerTitle}>AI STRATEGIC RADAR</Text>
           <View style={styles.statusRow}>
-            <View
-              style={[styles.pulseDot, { backgroundColor: colors.primary }]}
-            />
-            <Text style={[styles.statusText, { color: colors.primary }]}>
-              MARKET RADAR ACTIVE
+            <View style={[styles.pulseDot, { backgroundColor: loading ? "#FF3B30" : colors.primary }]} />
+            <Text style={[styles.statusText, { color: loading ? "#FF3B30" : colors.primary }]}>
+              {loading ? "ANALYZING REAL-TIME..." : "SECURE LINK ACTIVE"}
             </Text>
           </View>
         </View>
-        <Ionicons
-          name="shield-checkmark-outline"
-          size={24}
-          color={colors.primary}
-        />
+        <Ionicons name="shield-half-outline" size={22} color={colors.primary} />
       </View>
 
-      {/* --- INTELLIGENCE FEED --- */}
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -130,25 +125,19 @@ export default function OwnerAiConsultant() {
         onContentSizeChange={() => flatListRef.current.scrollToEnd()}
       />
 
-      {/* --- NEURAL INPUT --- */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={100}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={100}>
         <View style={styles.inputArea}>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Ask about Market, Weather or Sales..."
+              placeholder="Ask about Market, Weather or Admin..."
               placeholderTextColor="#333"
               value={inputText}
               onChangeText={setInputText}
+              editable={!loading}
             />
-            <TouchableOpacity
-              onPress={handleSendMessage}
-              style={[styles.sendBtn, { backgroundColor: colors.primary }]}
-            >
-              <Ionicons name="pulse" size={20} color="#000" />
+            <TouchableOpacity onPress={handleSendMessage} disabled={loading} style={[styles.sendBtn, { backgroundColor: colors.primary }]}>
+              {loading ? <ActivityIndicator size="small" color="#000" /> : <Ionicons name="pulse-outline" size={20} color="#000" />}
             </TouchableOpacity>
           </View>
         </View>
@@ -159,62 +148,19 @@ export default function OwnerAiConsultant() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000" },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 25,
-    borderBottomWidth: 1,
-    borderBottomColor: "#111",
-  },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 20, borderBottomWidth: 1, borderBottomColor: "#111" },
   headerTitleContainer: { alignItems: "center" },
-  headerTitle: {
-    color: "#FFF",
-    fontSize: 11,
-    fontWeight: "900",
-    letterSpacing: 3,
-  },
+  headerTitle: { color: "#FFF", fontSize: 10, fontWeight: "900", letterSpacing: 3 },
   statusRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  pulseDot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 5 },
-  statusText: { fontSize: 8, fontWeight: "bold", letterSpacing: 1 },
+  pulseDot: { width: 4, height: 4, borderRadius: 2, marginRight: 5 },
+  statusText: { fontSize: 7, fontWeight: "bold", letterSpacing: 1 },
   chatContent: { padding: 25, paddingBottom: 40 },
-  messageBubble: {
-    maxWidth: "85%",
-    padding: 20,
-    borderRadius: 24,
-    marginBottom: 20,
-  },
-  userBubble: {
-    alignSelf: "flex-end",
-    borderBottomRightRadius: 2,
-    borderWidth: 1,
-    borderColor: "#222",
-  },
-  aiBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: "#050505",
-    borderBottomLeftRadius: 2,
-    borderWidth: 1,
-  },
+  messageBubble: { maxWidth: "85%", padding: 20, borderRadius: 22, marginBottom: 20 },
+  userBubble: { alignSelf: "flex-end", backgroundColor: "#111", borderBottomRightRadius: 2, borderWidth: 1, borderColor: "#222" },
+  aiBubble: { alignSelf: "flex-start", backgroundColor: "#050505", borderBottomLeftRadius: 2, borderWidth: 1 },
   messageText: { fontSize: 14, lineHeight: 22, fontWeight: "500" },
   inputArea: { padding: 25, backgroundColor: "#000" },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#080808",
-    borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: "#111",
-  },
+  inputContainer: { flexDirection: "row", alignItems: "center", backgroundColor: "#080808", borderRadius: 20, paddingHorizontal: 20, paddingVertical: 12, borderWidth: 1, borderColor: "#111" },
   input: { flex: 1, color: "#FFF", fontSize: 13 },
-  sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 15,
-  },
+  sendBtn: { width: 40, height: 40, borderRadius: 12, justifyContent: "center", alignItems: "center", marginLeft: 15 },
 });
