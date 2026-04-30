@@ -27,9 +27,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "eslint": "^10.2.1",
-    "eslint-plugin-unused-imports": "^4.4.1",
-    "prettier": "^3.8.3"
+    "babel-preset-expo": "~10.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~5.0.0",
+    "prettier": "^3.2.5"
   },
   "private": true
 }
