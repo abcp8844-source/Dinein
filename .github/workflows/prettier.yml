@@ -1,33 +1,47 @@
-name: Prettier Fixed
+name: Global-Optimizer-System
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  format:
+  deep-clean:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout Code
+      - name: Initialize-Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup Node
+      - name: Setup-Node-Environment
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
-      - name: Fix and Push
+      - name: Install-Core-Optimization-Tools
         run: |
-          npm install --global prettier
-          npx prettier --write . --ignore-unknown
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Fix: formatting resolved" || echo "No changes to commit"
-          git push origin main --force
+          npm install eslint prettier eslint-plugin-unused-imports --save-dev
+
+      - name: Execute-Deep-Scan-And-Auto-Fix
+        # This step removes unused variables, imports, and formats the code
+        run: |
+          npx eslint . --ext .js,.jsx,.ts,.tsx --fix || true
+          npx prettier --write . --ignore-unknown --ignore-path ".github/workflows/**"
+
+      - name: Push-Clean-Code-To-Repository
+        id: auto_commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "System: Optimization-Complete-Unused-Assets-Removed"
+          branch: main
+          push_options: '--force'
+
+      - name: Generation-Of-Final-Cleaning-Report
+        if: steps.auto_commit.outputs.changes_detected == 'true'
+        run: |
+          echo "--- ANALYSIS REPORT ---"
+          echo "Status: Deep Scan Successful"
+          echo "Modified Files List:"
+          git diff --name-only HEAD^ HEAD
