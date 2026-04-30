@@ -1,0 +1,32 @@
+name: System-Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Production Fix
+        run: |
+          rm -f package-lock.json
+          npm install expo --save --legacy-peer-deps
+          npx expo install --fix
+          npm install --package-lock-only --legacy-peer-deps
+
+      - name: Git Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add package.json package-lock.json
+          git commit -m "build: sync dependencies for expo router" || exit 0
+          git push
