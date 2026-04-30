@@ -28,17 +28,15 @@ export default function OwnerAiConsultant() {
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef();
 
-  // 🛡️ AUTO-NOTIFY & REAL-TIME SYNC ON LOAD
   useEffect(() => {
-    const triggerInitialIntelligence = async () => {
+    const initializeBusinessIntelligence = async () => {
       setLoading(true);
       const systemPrompt = `
-        Role: Strategic Business AI. 
-        Context: Restaurant Owner is at ${userData?.location?.city || "Current Location"}.
-        Task: 
-        1. Check weather for the next 3 hours. If rain/storm is likely, start with "⚠️ WEATHER ALERT".
-        2. Provide a 1-sentence market trend for this specific area.
-        3. Keep response professional and strictly about restaurant operations.
+        Role: Strategic Business AI for Restaurant Owner. 
+        Context: Location ${userData?.location?.city || "Thailand"}.
+        Task: Provide a brief weather-impact report and one local market insight.
+        Privacy: Maintain business confidentiality. 
+        Support: If business help is needed beyond AI, advise using the Admin Support link.
       `;
 
       try {
@@ -48,7 +46,7 @@ export default function OwnerAiConsultant() {
         setMessages([
           {
             id: "1",
-            text: "Systems Active. Real-time data sync in progress...",
+            text: "Business Strategy Link Active. How can I help with your operations today?",
             sender: "ai",
           },
         ]);
@@ -56,46 +54,33 @@ export default function OwnerAiConsultant() {
         setLoading(false);
       }
     };
-    triggerInitialIntelligence();
+    initializeBusinessIntelligence();
   }, []);
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || loading) return;
 
-    const userMessage = {
-      id: Date.now().toString(),
-      text: inputText,
-      sender: "user",
-    };
+    const userMessage = { id: Date.now().toString(), text: inputText, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
     const currentInput = inputText;
     setInputText("");
     setLoading(true);
 
-    // 🧠 DOMAIN-SPECIFIC LOGIC (Privacy & Scope)
     const securePrompt = `
-      Boundary Instructions:
-      - You are an AI Consultant for this Global Restaurant App.
-      - Topic Scope: ONLY Market Trends, Weather, Logistics, and Business Strategy.
-      - Privacy: NEVER reveal customer personal info or internal admin credentials.
-      - Limitation: If the user asks for recipes or non-business/non-app topics, politely decline and redirect to business goals.
-      - User Query: ${currentInput}
+      Instructions:
+      - You are a Business Consultant. 
+      - Topics: Market Trends, Logistics, Weather, Growth.
+      - Escalation: If the owner is frustrated or needs direct technical help, say: "Direct Admin support is available. I am alerting the team to assist you further."
+      User Query: ${currentInput}
     `;
 
     try {
       const response = await generateAIResponse(securePrompt);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), text: response, sender: "ai" },
-      ]);
+      setMessages((prev) => [...prev, { id: Date.now().toString(), text: response, sender: "ai" }]);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        {
-          id: Date.now().toString(),
-          text: "Neural Link Busy. Try again.",
-          sender: "ai",
-        },
+        { id: Date.now().toString(), text: "System busy. Connecting to Admin backup...", sender: "ai" },
       ]);
     } finally {
       setLoading(false);
@@ -105,20 +90,13 @@ export default function OwnerAiConsultant() {
   const renderMessage = ({ item }) => (
     <Animatable.View
       animation={item.sender === "user" ? "fadeInRight" : "fadeInLeft"}
-      duration={500}
+      duration={400}
       style={[
         styles.messageBubble,
-        item.sender === "user"
-          ? styles.userBubble
-          : [styles.aiBubble, { borderColor: colors.primary }],
+        item.sender === "user" ? styles.userBubble : [styles.aiBubble, { borderColor: colors.primary }],
       ]}
     >
-      <Text
-        style={[
-          styles.messageText,
-          { color: item.sender === "user" ? colors.primary : "#EEE" },
-        ]}
-      >
+      <Text style={[styles.messageText, { color: item.sender === "user" ? colors.primary : "#EEE" }]}>
         {item.text}
       </Text>
     </Animatable.View>
@@ -126,31 +104,25 @@ export default function OwnerAiConsultant() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HEADER SECTION */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={26} color="#FFF" />
         </TouchableOpacity>
+        
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>AI STRATEGIC RADAR</Text>
+          <Text style={styles.headerTitle}>STRATEGIC RADAR</Text>
           <View style={styles.statusRow}>
-            <View
-              style={[
-                styles.pulseDot,
-                { backgroundColor: loading ? "#FF3B30" : colors.primary },
-              ]}
-            />
-            <Text
-              style={[
-                styles.statusText,
-                { color: loading ? "#FF3B30" : colors.primary },
-              ]}
-            >
-              {loading ? "ANALYZING REAL-TIME..." : "SECURE LINK ACTIVE"}
+            <View style={[styles.pulseDot, { backgroundColor: loading ? "#FF3B30" : colors.primary }]} />
+            <Text style={[styles.statusText, { color: loading ? "#FF3B30" : colors.primary }]}>
+              {loading ? "SYNCING DATA..." : "BUSINESS LINK SECURE"}
             </Text>
           </View>
         </View>
-        <Ionicons name="shield-half-outline" size={22} color={colors.primary} />
+
+        {/* DIRECT ADMIN SUPPORT BUTTON */}
+        <TouchableOpacity onPress={() => router.push("/support/admin-direct")}>
+          <Ionicons name="headset-outline" size={24} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -162,30 +134,19 @@ export default function OwnerAiConsultant() {
         onContentSizeChange={() => flatListRef.current.scrollToEnd()}
       />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={100}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={100}>
         <View style={styles.inputArea}>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Ask about Market, Weather or Admin..."
-              placeholderTextColor="#333"
+              placeholder="Ask about Market, Weather or Support..."
+              placeholderTextColor="#444"
               value={inputText}
               onChangeText={setInputText}
               editable={!loading}
             />
-            <TouchableOpacity
-              onPress={handleSendMessage}
-              disabled={loading}
-              style={[styles.sendBtn, { backgroundColor: colors.primary }]}
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#000" />
-              ) : (
-                <Ionicons name="pulse-outline" size={20} color="#000" />
-              )}
+            <TouchableOpacity onPress={handleSendMessage} disabled={loading} style={[styles.sendBtn, { backgroundColor: colors.primary }]}>
+              {loading ? <ActivityIndicator size="small" color="#000" /> : <Ionicons name="rocket-sharp" size={18} color="#000" />}
             </TouchableOpacity>
           </View>
         </View>
@@ -196,63 +157,19 @@ export default function OwnerAiConsultant() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000" },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#111",
-  },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 20, borderBottomWidth: 1, borderBottomColor: "#111" },
   headerTitleContainer: { alignItems: "center" },
-  headerTitle: {
-    color: "#FFF",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 3,
-  },
+  headerTitle: { color: "#FFF", fontSize: 10, fontWeight: "900", letterSpacing: 3 },
   statusRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  pulseDot: { width: 4, height: 4, borderRadius: 2, marginRight: 5 },
-  statusText: { fontSize: 7, fontWeight: "bold", letterSpacing: 1 },
-  chatContent: { padding: 25, paddingBottom: 40 },
-  messageBubble: {
-    maxWidth: "85%",
-    padding: 20,
-    borderRadius: 22,
-    marginBottom: 20,
-  },
-  userBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: "#111",
-    borderBottomRightRadius: 2,
-    borderWidth: 1,
-    borderColor: "#222",
-  },
-  aiBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: "#050505",
-    borderBottomLeftRadius: 2,
-    borderWidth: 1,
-  },
-  messageText: { fontSize: 14, lineHeight: 22, fontWeight: "500" },
-  inputArea: { padding: 25, backgroundColor: "#000" },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#080808",
-    borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: "#111",
-  },
+  pulseDot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 6 },
+  statusText: { fontSize: 8, fontWeight: "bold", letterSpacing: 1 },
+  chatContent: { padding: 20, paddingBottom: 40 },
+  messageBubble: { maxWidth: "85%", padding: 18, borderRadius: 20, marginBottom: 15 },
+  userBubble: { alignSelf: "flex-end", backgroundColor: "#0D0D0D", borderBottomRightRadius: 2, borderWidth: 1, borderColor: "#1A1A1A" },
+  aiBubble: { alignSelf: "flex-start", backgroundColor: "#050505", borderBottomLeftRadius: 2, borderWidth: 1 },
+  messageText: { fontSize: 13, lineHeight: 20, fontWeight: "500" },
+  inputArea: { padding: 20, backgroundColor: "#000" },
+  inputContainer: { flexDirection: "row", alignItems: "center", backgroundColor: "#080808", borderRadius: 25, paddingHorizontal: 15, paddingVertical: 10, borderWidth: 1, borderColor: "#111" },
   input: { flex: 1, color: "#FFF", fontSize: 13 },
-  sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 15,
-  },
+  sendBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: "center", alignItems: "center", marginLeft: 10 },
 });
