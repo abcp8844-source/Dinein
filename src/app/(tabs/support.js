@@ -9,10 +9,10 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { useAuth } from "../../src/context/AuthContext";
-import { useTheme } from "../../src/theme/ThemeContext";
-import { aiService } from "../../src/services/aiService";
-import { dbService } from "../../src/services/dbService";
+import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../theme/ThemeContext";
+import { aiService } from "../../services/aiService";
+import { dbService } from "../../services/dbService";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function SupportScreen() {
