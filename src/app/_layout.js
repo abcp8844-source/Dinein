@@ -3,11 +3,10 @@ import { useEffect } from "react";
 import { StatusBar, LogBox } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-// Importing Context Providers
-import { AuthProvider, useAuth } from "../context/AuthContext";
-import { ThemeProvider } from "../context/ThemeContext";
-import { CartProvider } from "../context/CartContext";
-import { LocationProvider } from "../context/LocationContext";
+import { AuthProvider, useAuth } from "./../context/AuthContext";
+import { ThemeProvider } from "./../context/ThemeContext";
+import { CartProvider } from "./../context/CartContext";
+import { LocationProvider } from "./../context/LocationContext";
 
 LogBox.ignoreAllLogs();
 
