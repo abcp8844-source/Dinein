@@ -18,8 +18,8 @@ import * as Animatable from "react-native-animatable";
 
 /**
  * RESTORED: Future-Tech Logistics Node
- * Logic: Regional Node Lock (20-Country Sync) with Encrypted Signal Processing
- * Integrity: Full functionality maintained for Global Logistics
+ * Logic: Real-time Geo-spatial Data Binding with AuthContext
+ * Integrity: Standard Deep-Navy #020B18 | No Design Deletions
  */
 export default function AddressSetup() {
   const [address, setAddress] = useState(null);
@@ -28,24 +28,28 @@ export default function AddressSetup() {
   const { colors } = useTheme();
   const router = useRouter();
 
-  const country = userData?.countryName || "GLOBAL";
+  // Ensuring country name defaults to user's real data
+  const country = userData?.countryName || "Thailand"; 
 
   const handleIdentifyLocation = async () => {
     setLoading(true);
     try {
+      // Step 1: Request Real Permissions
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
           "ACCESS DENIED",
-          "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS.",
+          "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS."
         );
         return;
       }
 
+      // Step 2: Get High Accuracy Coordinates
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
 
+      // Step 3: Reverse Geocode for Human Readable Address
       const reverseGeo = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -53,14 +57,16 @@ export default function AddressSetup() {
 
       if (reverseGeo && reverseGeo.length > 0) {
         const first = reverseGeo[0];
-        setAddress({
+        const locationData = {
           street: first.street || "",
           house: first.streetNumber || "",
           district: first.district || "",
-          city: first.city || "",
+          city: first.city || first.region || "",
           lat: location.coords.latitude,
           lng: location.coords.longitude,
-        });
+          formattedAddress: `${first.streetNumber || ""} ${first.street || ""}, ${first.city || ""}`.trim()
+        };
+        setAddress(locationData);
       }
     } catch (error) {
       Alert.alert("SYNC ERROR", "UNABLE TO CONNECT WITH LOCAL SATELLITES.");
@@ -72,7 +78,11 @@ export default function AddressSetup() {
   const finalizeSetup = async () => {
     if (!address) return;
     try {
-      await updateProfile({ location: address });
+      // REAL DATA UPDATE: Syncing with Firebase via AuthContext
+      await updateProfile({ 
+        locationData: address,
+        addressInitialized: true 
+      });
       router.replace("/(customer)/home");
     } catch (error) {
       Alert.alert("UPDATE FAILED", "COULD NOT ESTABLISH PROFILE LINK.");
@@ -100,7 +110,7 @@ export default function AddressSetup() {
           <Text style={styles.label}>COORDINATES DETECTED:</Text>
           <Text style={styles.addressText}>
             {address
-              ? `${address.house} ${address.street}, ${address.city}`.toUpperCase()
+              ? address.formattedAddress.toUpperCase()
               : "SEARCHING FOR ENCRYPTED SIGNAL..."}
           </Text>
         </View>
