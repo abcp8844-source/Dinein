@@ -18,8 +18,8 @@ import * as Animatable from "react-native-animatable";
 /**
  * RESTORED: Logistics Archive (Orders)
  * Logic: Real-time Registry Sync & Status Node Tracking
- * Feature: Progress-Based Visual Mapping for Transaction States
- * Integrity: Restored original logistical tracking and regional currency display.
+ * Feature: Progress-Based Visual Mapping for 20-Country Framework
+ * Integrity: Global Node logic with localized currency synchronization.
  */
 export default function Orders() {
   const { userData } = useAuth();
@@ -28,17 +28,17 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // RESTORED: Regional Currency Sync Logic
+  // GLOBAL SYNC: Pulling currency from the user's localized node
   const currency = userData?.currencyCode || "USD";
 
   useEffect(() => {
     loadOrders();
-  }, []);
+  }, [userData?.uid]);
 
   const loadOrders = async () => {
     try {
       if (userData?.uid) {
-        // Logic: Database retrieval for customer-specific transaction history
+        // Logic: Cross-border database retrieval for global transaction history
         const data = await dbService.getCustomerOrders(userData.uid);
         setOrders(data);
       }
@@ -51,7 +51,7 @@ export default function Orders() {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case "pending":
         return "#D4AF37";
       case "preparing":
@@ -76,10 +76,10 @@ export default function Orders() {
       ]}
     >
       <View style={styles.cardHeader}>
-        <View>
-          <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.itemName}>{item.itemName?.toUpperCase() || "GLOBAL ASSET"}</Text>
           <Text style={styles.orderId}>
-            NODE ID: #{item.id?.slice(-6).toUpperCase()}
+            NODE ID: #{item.id?.slice(-8).toUpperCase()}
           </Text>
         </View>
         <View
@@ -91,7 +91,7 @@ export default function Orders() {
           <Text
             style={[styles.statusText, { color: getStatusColor(item.status) }]}
           >
-            {item.status.toUpperCase()}
+            {item.status?.toUpperCase() || "UNKNOWN"}
           </Text>
         </View>
       </View>
@@ -169,7 +169,7 @@ export default function Orders() {
                 size={40}
                 color="#1B2631"
               />
-              <Text style={styles.emptyText}>NO ACTIVE TRANSACTIONS FOUND</Text>
+              <Text style={styles.emptyText}>NO ACTIVE TRANSACTIONS IN ARCHIVE</Text>
             </View>
           }
         />
@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     marginBottom: 20,
+    marginHorizontal: 25
   },
   cardHeader: {
     flexDirection: "row",
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
   },
   progressBar: { height: "100%", borderRadius: 2 },
   loader: { flex: 1, justifyContent: "center" },
-  listContainer: { padding: 25, paddingBottom: 100 },
+  listContainer: { paddingBottom: 100 },
   emptyContainer: { alignItems: "center", marginTop: 150 },
   emptyText: {
     color: "#1B2631",
