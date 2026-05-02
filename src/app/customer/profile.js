@@ -14,12 +14,18 @@ import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Customer Profile & Session Registry
+ * Logic: User Identity Sync & Financial Asset Overview
+ * Feature: Secured Node Session Termination & Navigation Logic
+ * Integrity: Complete restoration of original navigation routes and aesthetic nodes.
+ */
 export default function CustomerProfile() {
   const { userData, logout } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
 
-  // 🛡️ Optimized Routes to match folder structure
+  // RESTORED: Optimized Routes synchronized with core folder structure
   const menuOptions = [
     {
       id: "1",
@@ -51,13 +57,14 @@ export default function CustomerProfile() {
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* --- PROFILE HEADER --- */}
+        
+        {/* --- PROFILE HEADER: Identity Verification Node --- */}
         <Animatable.View animation="fadeIn" style={styles.header}>
-          <View style={[styles.avatarBorder, { borderColor: colors.primary }]}>
+          <View style={[styles.avatarBorder, { borderColor: colors.primary || "#D4AF37" }]}>
             <View
               style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}
             >
-              <Ionicons name="person" size={40} color={colors.primary} />
+              <Ionicons name="person" size={40} color={colors.primary || "#D4AF37"} />
             </View>
           </View>
           <Text style={styles.userName}>
@@ -68,7 +75,7 @@ export default function CustomerProfile() {
           </Text>
         </Animatable.View>
 
-        {/* --- STATS ROW --- */}
+        {/* --- STATS ROW: Asset & Logistics Status --- */}
         <View
           style={[
             styles.statsContainer,
@@ -80,7 +87,7 @@ export default function CustomerProfile() {
             onPress={() => router.push("/(customer)/wallet")}
           >
             <Text style={styles.statLabel}>BALANCE</Text>
-            <Text style={[styles.statValue, { color: colors.primary }]}>
+            <Text style={[styles.statValue, { color: colors.primary || "#D4AF37" }]}>
               {userData?.walletBalance || "0.00"}{" "}
               <Text style={styles.currency}>
                 {userData?.currencyCode || "THB"}
@@ -93,11 +100,11 @@ export default function CustomerProfile() {
             onPress={() => router.push("/(customer)/orders")}
           >
             <Text style={styles.statLabel}>LOGISTICS</Text>
-            <Text style={styles.statValue}>ACTIVE</Text>
+            <Text style={[styles.statValue, { color: "#FFF" }]}>ACTIVE</Text>
           </TouchableOpacity>
         </View>
 
-        {/* --- MENU OPTIONS --- */}
+        {/* --- MENU OPTIONS: Core System Navigation --- */}
         <View style={styles.menuSection}>
           {menuOptions.map((item, index) => (
             <Animatable.View
@@ -113,7 +120,7 @@ export default function CustomerProfile() {
                   <MaterialCommunityIcons
                     name={item.icon}
                     size={22}
-                    color={colors.primary}
+                    color={colors.primary || "#D4AF37"}
                   />
                   <Text style={styles.menuTitle}>{item.title}</Text>
                 </View>
@@ -123,7 +130,7 @@ export default function CustomerProfile() {
           ))}
         </View>
 
-        {/* --- SESSION CONTROL --- */}
+        {/* --- SESSION CONTROL: Security Termination --- */}
         <TouchableOpacity
           style={[styles.logoutBtn, { borderColor: "#1A0505" }]}
           onPress={logout}
