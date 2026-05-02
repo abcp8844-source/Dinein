@@ -3,32 +3,28 @@ import { View } from "react-native";
 import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 
-/**
- * AI-CENTRIC CUSTOMER ARCHITECTURE
- * Engineered for Global Markets (15 Regions)
- */
 export default function CustomerLayout() {
   const { colors } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: "#444444",
+        tabBarActiveTintColor: colors.primary, // Using your theme's Primary Gold
+        tabBarInactiveTintColor: "#5D6D7E", // Premium Slate Grey
         tabBarStyle: {
-          backgroundColor: "#000000",
-          borderTopColor: "#1A1A1A",
-          height: 75,
-          paddingBottom: 15,
+          backgroundColor: "#020B18", // Deep Navy Blue from Image 12896
+          borderTopColor: "#0A1A2F",
+          height: 80,
+          paddingBottom: 20,
           paddingTop: 10,
-          elevation: 20,
-          shadowColor: colors.primary,
-          shadowOpacity: 0.1,
+          elevation: 0,
+          borderTopWidth: 1,
         },
         tabBarLabelStyle: {
-          fontSize: 10,
+          fontSize: 9,
           fontWeight: "900",
-          letterSpacing: 1.2,
+          letterSpacing: 1.5,
+          marginTop: 5,
         },
         headerShown: false,
       }}
@@ -36,9 +32,9 @@ export default function CustomerLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "DISCOVER",
+          title: "EXPLORE",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="apps-outline" size={22} color={color} />
+            <Ionicons name="grid-outline" size={20} color={color} />
           ),
         }}
       />
@@ -46,19 +42,22 @@ export default function CustomerLayout() {
       <Tabs.Screen
         name="ai-assistant"
         options={{
-          title: "AI ASSIST",
+          title: "CORE AI",
           tabBarIcon: ({ color }) => (
             <View
               style={{
-                backgroundColor: "#111",
-                padding: 10,
-                borderRadius: 50,
+                backgroundColor: "#0A1A2F",
+                padding: 12,
+                borderRadius: 20,
                 borderWidth: 1,
                 borderColor: color,
-                marginTop: -10,
+                marginTop: -25,
+                shadowColor: color,
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
               }}
             >
-              <Ionicons name="sparkles" size={24} color={color} />
+              <Ionicons name="shield-checkmark" size={24} color={color} />
             </View>
           ),
         }}
@@ -67,9 +66,9 @@ export default function CustomerLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: "SEARCH",
+          title: "QUERY",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="search-outline" size={22} color={color} />
+            <Ionicons name="search-sharp" size={20} color={color} />
           ),
         }}
       />
@@ -77,9 +76,9 @@ export default function CustomerLayout() {
       <Tabs.Screen
         name="orders"
         options={{
-          title: "ORDERS",
+          title: "HISTORY",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="receipt-outline" size={22} color={color} />
+            <Ionicons name="layers-outline" size={20} color={color} />
           ),
         }}
       />
@@ -87,9 +86,9 @@ export default function CustomerLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "PROFILE",
+          title: "IDENTITY",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="person-circle-outline" size={22} color={color} />
+            <Ionicons name="finger-print-outline" size={20} color={color} />
           ),
         }}
       />
