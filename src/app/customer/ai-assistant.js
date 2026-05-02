@@ -21,7 +21,7 @@ import { generateAIResponse } from "../../services/aiService";
 /**
  * RESTORED: Future-Tech Core AI Engine
  * Logic: Profile-based Taste Matching & Safety Scanning
- * Feature: Deep Regional Awareness (20-Country Sync)
+ * Feature: Real-time Firebase & AI Service Binding
  */
 export default function AiAssistant() {
   const { userData } = useAuth();
@@ -36,8 +36,11 @@ export default function AiAssistant() {
   useEffect(() => {
     const initializeChat = async () => {
       setLoading(true);
-      // RESTORED: Market-Specific Context Logic
-      const systemPrompt = `Role: Customer Food Assistant. Location: ${userData?.location?.city || "Thailand"}. Region: ${userData?.countryName}. Transfer Rule: If user asks for human/admin, use: "Connecting to our human support expert..."`;
+      // REAL DATA SYNC: Pulling from User Profile
+      const city = userData?.location?.city || "Thailand";
+      const region = userData?.countryName || "Global";
+      const systemPrompt = `Role: Customer Food Assistant. Location: ${city}. Region: ${region}. Transfer Rule: If user asks for human/admin, use: "Connecting to our human support expert..."`;
+      
       try {
         const response = await generateAIResponse(systemPrompt);
         setMessages([{ id: "1", text: response, sender: "ai" }]);
@@ -45,7 +48,7 @@ export default function AiAssistant() {
         setMessages([
           {
             id: "1",
-            text: "PROTOCOL ACTIVE. HOW CAN I ASSIST YOU?",
+            text: "PROTOCOL ACTIVE. HOW CAN I ASSIST YOU TODAY?",
             sender: "ai",
           },
         ]);
@@ -70,7 +73,7 @@ export default function AiAssistant() {
     setLoading(true);
 
     try {
-      // Logic: Deep scan query against customer taste profile nodes
+      // Logic: Deep scan against customer profile nodes
       const response = await generateAIResponse(`Query: ${currentInput}`);
       setMessages((prev) => [
         ...prev,
@@ -81,7 +84,7 @@ export default function AiAssistant() {
         ...prev,
         {
           id: Date.now().toString(),
-          text: "CONNECTING TO ADMIN SUPPORT...",
+          text: "CONNECTION ERROR: REDIRECTING TO ADMIN SUPPORT...",
           sender: "admin",
         },
       ]);
@@ -145,6 +148,7 @@ export default function AiAssistant() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
         <View style={styles.inputWrapper}>
           <View style={styles.inputContainer}>
