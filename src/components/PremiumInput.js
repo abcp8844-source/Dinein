@@ -2,11 +2,16 @@ import React from "react";
 import { TextInput, StyleSheet, View } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 
+/**
+ * EXECUTIVE UI COMPONENT: PREMIUM INPUT
+ * Optimized for high-contrast visibility and international character support.
+ */
 export default function PremiumInput({
   placeholder,
   value,
   onChangeText,
   secureTextEntry = false,
+  keyboardType = "default", // Useful for phone numbers or emails
 }) {
   const { colors, borderRadius } = useTheme();
 
@@ -29,6 +34,9 @@ export default function PremiumInput({
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         selectionColor={colors.primary}
+        keyboardType={keyboardType}
+        autoCapitalize="none" // Essential for emails/passwords
+        cursorColor={colors.primary}
       />
     </View>
   );
@@ -37,14 +45,15 @@ export default function PremiumInput({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 55,
-    borderWidth: 1,
-    marginVertical: 10,
-    paddingHorizontal: 15,
+    height: 58, // Slightly taller for a more premium touch
+    borderWidth: 1.5,
+    marginVertical: 8,
+    paddingHorizontal: 20,
     justifyContent: "center",
   },
   input: {
-    fontSize: 15,
-    fontWeight: "500",
+    fontSize: 14,
+    fontWeight: "400",
+    letterSpacing: 0.5,
   },
 });
