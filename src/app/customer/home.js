@@ -20,9 +20,9 @@ import * as Animatable from "react-native-animatable";
 
 /**
  * RESTORED: Future-Tech Market Engine
- * Logic: Global Logistics Node Sync (20-Country Framework)
- * Features: AI System Core Engine & Premium Asset Indexing
- * Integrity: Full restoration of original logic nodes and design aesthetics.
+ * Logic: Global Logistics Node Sync with Real-time Firebase DB
+ * Feature: Profile-Aware Location & Currency Mapping
+ * Integrity: Standard Deep-Navy #020B18 | No Design Alterations
  */
 export default function Home() {
   const { userData } = useAuth();
@@ -35,8 +35,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [aiMessage, setAiMessage] = useState("CORE_SYNC_ACTIVE");
 
-  const currency = userData?.currencyCode || "USD";
-  const location = userData?.location?.city || "GLOBAL NODE";
+  // REAL DATA MAPPING: Pulling directly from User Context
+  const currency = userData?.currencyCode || "THB";
+  const location = userData?.locationData?.city || userData?.location?.city || "GLOBAL NODE";
 
   useEffect(() => {
     fetchMenu();
@@ -45,9 +46,9 @@ export default function Home() {
 
   const updateAiProtocol = () => {
     const hours = new Date().getHours();
-    // Logic: Time-based AI protocol matching for localized optimization
+    // Logic: Time-based AI protocol matching
     if (hours < 12)
-      setAiMessage(`AM_PROTOCOL: OPTIMIZING ENERGY IN ${location}.`);
+      setAiMessage(`AM_PROTOCOL: OPTIMIZING ENERGY IN ${location.toUpperCase()}.`);
     else if (hours < 18)
       setAiMessage(`SYSTEM_SYNC: HIGH-PERFORMANCE DETECTED.`);
     else setAiMessage(`PM_PROTOCOL: ANALYZING COMFORT-TIER OPTIONS.`);
@@ -55,11 +56,15 @@ export default function Home() {
 
   const fetchMenu = async () => {
     try {
+      setLoading(true);
+      // REAL DATA RETRIEVAL: Fetching items from Firebase
       const data = await dbService.getMenuItems();
+      
+      // OPTIONAL: Filter items based on availability or user's region if needed
       setItems(data);
       setFilteredItems(data);
     } catch (error) {
-      console.error("DATA_FETCH_FAILURE");
+      console.error("DATA_FETCH_FAILURE:", error);
     } finally {
       setLoading(false);
     }
@@ -73,8 +78,9 @@ export default function Home() {
     }
     const filtered = items.filter(
       (item) =>
-        item.name.toLowerCase().includes(text.toLowerCase()) ||
-        item.description.toLowerCase().includes(text.toLowerCase()),
+        item.name?.toLowerCase().includes(text.toLowerCase()) ||
+        item.description?.toLowerCase().includes(text.toLowerCase()) ||
+        item.restaurantName?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredItems(filtered);
   };
@@ -95,7 +101,7 @@ export default function Home() {
         ]}
       >
         <View style={styles.itemMeta}>
-          <Text style={styles.itemName}>{item.name?.toUpperCase()}</Text>
+          <Text style={styles.itemName}>{item.name?.toUpperCase() || "ITEM"}</Text>
           <View style={styles.distanceRow}>
             <Ionicons
               name="location-sharp"
@@ -103,7 +109,7 @@ export default function Home() {
               color={colors.primary || "#D4AF37"}
             />
             <Text style={styles.distanceText}>
-              {item.restaurantName || "VERIFIED SOURCE"}
+              {item.restaurantName?.toUpperCase() || "VERIFIED SOURCE"}
             </Text>
           </View>
           <Text numberOfLines={1} style={styles.itemDesc}>
@@ -199,9 +205,14 @@ export default function Home() {
           <FlatList
             data={filteredItems}
             scrollEnabled={false}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => item.id || index.toString()}
             renderItem={renderMenuItem}
             contentContainerStyle={styles.listPadding}
+            ListEmptyComponent={
+              <Text style={{ color: "#5D6D7E", textAlign: "center", marginTop: 20, fontSize: 10 }}>
+                NO ASSETS FOUND IN THIS REGION.
+              </Text>
+            }
           />
         )}
       </ScrollView>
