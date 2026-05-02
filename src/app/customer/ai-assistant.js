@@ -127,7 +127,12 @@ export default function AiAssistant() {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background || "#000" }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.background || "#000" },
+      ]}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#FFF" />
