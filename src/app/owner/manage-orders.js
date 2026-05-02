@@ -7,19 +7,30 @@ import {
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { dbService } from "../../services/dbService";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
-/**
- * SMART ORDER MANAGEMENT SYSTEM
- * Built for 15 Global Markets | AI-Ready Structure
- */
 export default function ManageOrders() {
   const { userData } = useAuth();
   const { colors } = useTheme();
+  const router = useRouter();
   const [orders, setOrders] = useState([]);
+
+  // PREMIUM VISIBILITY COLORS
+  const THEME = {
+    bg: "#001529",         // Dark Navy Background
+    card: "#002F56",       // Lighter Navy (Box stays visible/clear)
+    accent: "#D4AF37",     // Premium Gold for highlights
+    textMain: "#FFFFFF",   // Sharp White for readability
+    textSecondary: "#A6B1BB",
+    addressBox: "#003A6B", // Even clearer box for delivery info
+    border: "#004B87"      // Sharp border for definition
+  };
 
   useEffect(() => {
     loadIncomingOrders();
@@ -27,9 +38,8 @@ export default function ManageOrders() {
 
   const loadIncomingOrders = async () => {
     try {
-      // 🛡️ Anchoring: Fetching orders specific to the owner's regional ISO code
       const allOrders = await dbService.getOwnerOrders(userData.uid);
-      setOrders(allOrders);
+      setOrders(allOrders || []);
     } catch (error) {
       console.log("Order Fetch Error:", error.message);
     }
@@ -38,86 +48,66 @@ export default function ManageOrders() {
   const updateStatus = async (orderId, status) => {
     try {
       await dbService.updateOrderStatus(orderId, status);
-      Alert.alert(
-        "System Notification",
-        `Order status synchronized to: ${status.toUpperCase()}`,
-      );
+      Alert.alert("System Notification", `Order is now: ${status.toUpperCase()}`);
       loadIncomingOrders();
     } catch (error) {
-      Alert.alert("Process Failed", error.message);
+      Alert.alert("Error", error.message);
     }
   };
 
   const renderOrder = ({ item }) => (
-    <View
-      style={[
-        styles.card,
-        { backgroundColor: "#0A0A0A", borderColor: colors.primary },
-      ]}
-    >
+    <View style={[styles.card, { backgroundColor: THEME.card, borderColor: THEME.border }]}>
       <View style={styles.cardHeader}>
-        <Text style={[styles.itemTitle, { color: colors.secondary }]}>
-          {item.itemName}
-        </Text>
-        <Text style={styles.priceTag}>
-          {item.price} {item.currency || "USD"}
+        <Text style={[styles.itemTitle, { color: THEME.textMain }]}>{item.itemName}</Text>
+        <Text style={[styles.priceTag, { color: THEME.accent }]}>
+          {item.price} {item.currency || "THB"}
         </Text>
       </View>
 
-      {/* 📍 PRECISION DELIVERY DATA (The "Door-to-Door" Logic) */}
-      <View style={styles.addressBox}>
-        <Text style={styles.addressLabel}>DELIVERY TO:</Text>
-        <Text style={styles.addressText}>
-          📍 {item.customerLocation?.street || "N/A"},{" "}
-          {item.customerLocation?.area || "N/A"}
+      {/* 📍 DELIVERY BOX - High Contrast */}
+      <View style={[styles.addressBox, { backgroundColor: THEME.addressBox }]}>
+        <Text style={[styles.addressLabel, { color: THEME.accent }]}>DELIVERY TO:</Text>
+        <Text style={[styles.addressText, { color: THEME.textMain }]}>
+          📍 {item.customerLocation?.street || "No Street Provided"}
         </Text>
-        <Text style={styles.cityText}>
+        <Text style={[styles.cityText, { color: THEME.textSecondary }]}>
           {item.customerLocation?.city}, {item.customerLocation?.country}
         </Text>
       </View>
 
       <View style={styles.statusRow}>
-        <Text style={{ color: "#666", fontSize: 12 }}>Current Phase:</Text>
-        <Text style={[styles.statusText, { color: colors.primary }]}>
+        <Text style={{ color: THEME.textSecondary, fontSize: 12 }}>Status:</Text>
+        <Text style={[styles.statusText, { color: THEME.accent }]}>
           {item.status.toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.btnRow}>
         <TouchableOpacity
-          activeOpacity={0.8}
-          style={[
-            styles.actionBtn,
-            { backgroundColor: "#111", borderColor: "#28a745", borderWidth: 1 },
-          ]}
+          style={[styles.actionBtn, { backgroundColor: "#1B5E20" }]}
           onPress={() => updateStatus(item.id, "preparing")}
         >
-          <Text style={[styles.btnText, { color: "#28a745" }]}>ACCEPT</Text>
+          <Text style={styles.btnText}>ACCEPT</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          activeOpacity={0.8}
-          style={[
-            styles.actionBtn,
-            { backgroundColor: "#111", borderColor: "#dc3545", borderWidth: 1 },
-          ]}
+          style={[styles.actionBtn, { backgroundColor: "#B71C1C" }]}
           onPress={() => updateStatus(item.id, "cancelled")}
         >
-          <Text style={[styles.btnText, { color: "#dc3545" }]}>REJECT</Text>
+          <Text style={styles.btnText}>REJECT</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#000" }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: THEME.bg }]}>
+      <StatusBar barStyle="light-content" />
       <View style={styles.topHeader}>
-        <Text style={[styles.headerText, { color: colors.secondary }]}>
-          Incoming Orders
-        </Text>
-        <Text style={styles.marketTag}>
-          Monitoring: {userData?.countryName || "Global"}
-        </Text>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={28} color={THEME.textMain} />
+        </TouchableOpacity>
+        <Text style={[styles.headerText, { color: THEME.textMain }]}>Incoming Orders</Text>
       </View>
 
       <FlatList
@@ -126,7 +116,7 @@ export default function ManageOrders() {
         renderItem={renderOrder}
         contentContainerStyle={{ padding: 20 }}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No active orders in this region.</Text>
+          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>No active orders.</Text>
         }
       />
     </SafeAreaView>
@@ -135,66 +125,26 @@ export default function ManageOrders() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  topHeader: { padding: 25, paddingTop: 40 },
-  headerText: { fontSize: 32, fontWeight: "900", letterSpacing: 1 },
-  marketTag: {
-    color: "#444",
-    fontSize: 10,
-    fontWeight: "bold",
-    letterSpacing: 2,
-    marginTop: 5,
-  },
+  topHeader: { padding: 25, flexDirection: "row", alignItems: "center" },
+  headerText: { fontSize: 24, fontWeight: "900", marginLeft: 15 },
   card: {
     padding: 20,
     borderRadius: 20,
-    borderWidth: 1,
+    borderWidth: 1.5,
     marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.5,
-    elevation: 10,
+    elevation: 5,
   },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  itemTitle: { fontSize: 20, fontWeight: "bold", letterSpacing: 0.5 },
-  priceTag: { color: "#FFF", fontSize: 14, fontWeight: "bold" },
-  addressBox: {
-    backgroundColor: "#111",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  addressLabel: {
-    color: "#444",
-    fontSize: 8,
-    fontWeight: "bold",
-    letterSpacing: 1,
-    marginBottom: 4,
-  },
-  addressText: { color: "#CCC", fontSize: 13, fontWeight: "600" },
-  cityText: { color: "#666", fontSize: 11, marginTop: 2 },
-  statusRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  statusText: { fontWeight: "900", fontSize: 12, letterSpacing: 1 },
+  cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 },
+  itemTitle: { fontSize: 18, fontWeight: "bold" },
+  priceTag: { fontSize: 16, fontWeight: "900" },
+  addressBox: { padding: 12, borderRadius: 12, marginBottom: 15 },
+  addressLabel: { fontSize: 8, fontWeight: "bold", marginBottom: 4 },
+  addressText: { fontSize: 13, fontWeight: "600" },
+  cityText: { fontSize: 11 },
+  statusRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+  statusText: { fontWeight: "900", fontSize: 12 },
   btnRow: { flexDirection: "row", justifyContent: "space-between" },
-  actionBtn: {
-    paddingVertical: 12,
-    borderRadius: 12,
-    flex: 0.47,
-    alignItems: "center",
-  },
-  btnText: { fontSize: 12, fontWeight: "bold", letterSpacing: 1 },
-  emptyText: {
-    color: "#333",
-    textAlign: "center",
-    marginTop: 50,
-    letterSpacing: 1,
-  },
+  actionBtn: { paddingVertical: 12, borderRadius: 12, flex: 0.47, alignItems: "center" },
+  btnText: { color: "#FFF", fontSize: 12, fontWeight: "bold" },
+  emptyText: { textAlign: "center", marginTop: 50 },
 });
