@@ -4,7 +4,7 @@
  * Target: 15 International Operational Nodes
  */
 
-import { db } from "./firebaseConfig"; 
+import { db } from "./firebaseConfig";
 import {
   doc,
   updateDoc,
