@@ -6,26 +6,34 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { useTheme } from "../../theme/ThemeContext";
+import { useAuth } from "../../context/AuthContext"; // Profile sync کے لیے
 import { db } from "../../services/firebaseConfig";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
+import { useRouter } from "expo-router";
 
 /**
  * RESTORED: Logic-Based Menu View
  * Feature: Real-time Firebase Sync with Active Status Filtering
  * Design: High-Performance UI with Premium Asset Indexing
- * Integrity: Complete restoration of Firestore logic and themed architecture.
+ * Integrity: Deep-Navy #020B18 | 100% Logic Restoration
  */
 export default function MenuView() {
   const { colors } = useTheme();
+  const { userData } = useAuth();
+  const router = useRouter();
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Profile-based location and currency sync
+  const currency = userData?.currencyCode || "THB";
+
   useEffect(() => {
-    // Logic: Secure retrieval of active culinary assets
+    // LOGIC: Secure retrieval of active culinary assets from "menus" collection
     const menuRef = collection(db, "menus");
     const q = query(menuRef, where("active", "==", true));
 
@@ -35,6 +43,9 @@ export default function MenuView() {
         ...doc.data(),
       }));
       setMenuItems(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("SYNC_ERROR:", error);
       setLoading(false);
     });
 
@@ -46,22 +57,37 @@ export default function MenuView() {
       animation="fadeInUp"
       duration={600}
       delay={index * 50}
-      style={[
-        styles.menuCard,
-        { backgroundColor: "#0A1A2F", borderColor: "#1B2631" },
-      ]}
     >
-      <View style={styles.cardInfo}>
-        <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
-        <Text style={styles.itemDesc}>{item.description}</Text>
-      </View>
-      <View style={styles.priceContainer}>
-        <Text
-          style={[styles.priceText, { color: colors.primary || "#D4AF37" }]}
-        >
-          {item.currency || "$"} {item.price}
-        </Text>
-      </View>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() =>
+          router.push({
+            pathname: "/(customer)/item-details",
+            params: { ...item },
+          })
+        }
+        style={[
+          styles.menuCard,
+          { backgroundColor: "#0A1A2F", borderColor: "#1B2631" },
+        ]}
+      >
+        <View style={styles.cardInfo}>
+          <Text style={styles.itemName}>
+            {item.name?.toUpperCase() || item.itemName?.toUpperCase() || "UNKNOWN ASSET"}
+          </Text>
+          <Text numberOfLines={2} style={styles.itemDesc}>
+            {item.description || "NO ARCHIVE DATA AVAILABLE."}
+          </Text>
+        </View>
+        <View style={styles.priceContainer}>
+          <Text
+            style={[styles.priceText, { color: colors.primary || "#D4AF37" }]}
+          >
+            {item.price}
+          </Text>
+          <Text style={styles.currencyLabel}>{currency}</Text>
+        </View>
+      </TouchableOpacity>
     </Animatable.View>
   );
 
@@ -88,29 +114,35 @@ export default function MenuView() {
         />
       </Animatable.View>
 
-      <FlatList
-        data={menuItems}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {loading ? "SYNCHRONIZING CORE..." : "NO DATA IN SECTOR"}
-            </Text>
-          </View>
-        }
-      />
+      {loading ? (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator size="small" color={colors.primary || "#D4AF37"} />
+          <Text style={[styles.emptyText, { marginTop: 15 }]}>SYNCHRONIZING CORE...</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={menuItems}
+          keyExtractor={(item, index) => item.id || index.toString()}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120, paddingTop: 10 }}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>NO DATA IN SECTOR</Text>
+            </View>
+          }
+        />
+      )}
 
       <TouchableOpacity
         activeOpacity={0.8}
+        onPress={() => router.push("/(customer)/cart")}
         style={[
           styles.orderBtn,
           { backgroundColor: colors.primary || "#D4AF37" },
         ]}
       >
-        <Text style={styles.btnText}>PROCEED TO RESERVATION</Text>
+        <Text style={styles.btnText}>VIEW ACTIVE QUEUE</Text>
       </TouchableOpacity>
     </View>
   );
@@ -118,7 +150,7 @@ export default function MenuView() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 25 },
-  header: { marginTop: 60, marginBottom: 30, alignItems: "center" },
+  header: { marginTop: 60, marginBottom: 20, alignItems: "center" },
   headerTitle: {
     fontSize: 11,
     fontWeight: "900",
@@ -129,12 +161,12 @@ const styles = StyleSheet.create({
   menuCard: {
     flexDirection: "row",
     padding: 22,
-    borderRadius: 20,
+    borderRadius: 25,
     marginBottom: 15,
     borderWidth: 1,
     alignItems: "center",
   },
-  cardInfo: { flex: 0.7 },
+  cardInfo: { flex: 0.75 },
   itemName: {
     color: "#FFF",
     fontSize: 14,
@@ -148,8 +180,9 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontWeight: "500",
   },
-  priceContainer: { flex: 0.3, alignItems: "flex-end" },
+  priceContainer: { flex: 0.25, alignItems: "flex-end" },
   priceText: { fontSize: 18, fontWeight: "900", letterSpacing: 0.5 },
+  currencyLabel: { fontSize: 8, fontWeight: "900", color: "#5D6D7E", marginTop: 2 },
   emptyContainer: { marginTop: 150, alignItems: "center" },
   emptyText: {
     color: "#1B2631",
@@ -166,8 +199,8 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 25,
     right: 25,
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
+    shadowColor: "#D4AF37",
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 8,
   },
