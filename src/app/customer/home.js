@@ -39,8 +39,10 @@ export default function Home() {
 
   const updateAiProtocol = () => {
     const hours = new Date().getHours();
-    if (hours < 12) setAiMessage(`AM_PROTOCOL: OPTIMIZING ENERGY IN ${location}.`);
-    else if (hours < 18) setAiMessage(`SYSTEM_SYNC: HIGH-PERFORMANCE DETECTED.`);
+    if (hours < 12)
+      setAiMessage(`AM_PROTOCOL: OPTIMIZING ENERGY IN ${location}.`);
+    else if (hours < 18)
+      setAiMessage(`SYSTEM_SYNC: HIGH-PERFORMANCE DETECTED.`);
     else setAiMessage(`PM_PROTOCOL: ANALYZING COMFORT-TIER OPTIONS.`);
   };
 
@@ -74,19 +76,33 @@ export default function Home() {
     <Animatable.View animation="fadeInUp" duration={600} delay={index * 50}>
       <TouchableOpacity
         activeOpacity={0.9}
-        onPress={() => router.push({ pathname: "/(customer)/item-details", params: { ...item } })}
-        style={[styles.card, { backgroundColor: "#0A1A2F", borderColor: "#1B2631" }]}
+        onPress={() =>
+          router.push({
+            pathname: "/(customer)/item-details",
+            params: { ...item },
+          })
+        }
+        style={[
+          styles.card,
+          { backgroundColor: "#0A1A2F", borderColor: "#1B2631" },
+        ]}
       >
         <View style={styles.itemMeta}>
           <Text style={styles.itemName}>{item.name?.toUpperCase()}</Text>
           <View style={styles.distanceRow}>
             <Ionicons name="location-sharp" size={10} color="#D4AF37" />
-            <Text style={styles.distanceText}>{item.restaurantName || "VERIFIED SOURCE"}</Text>
+            <Text style={styles.distanceText}>
+              {item.restaurantName || "VERIFIED SOURCE"}
+            </Text>
           </View>
-          <Text numberOfLines={1} style={styles.itemDesc}>{item.description}</Text>
+          <Text numberOfLines={1} style={styles.itemDesc}>
+            {item.description}
+          </Text>
         </View>
         <View style={styles.priceContainer}>
-          <Text style={[styles.priceTag, { color: "#D4AF37" }]}>{item.price}</Text>
+          <Text style={[styles.priceTag, { color: "#D4AF37" }]}>
+            {item.price}
+          </Text>
           <Text style={styles.currencyLabel}>{currency}</Text>
         </View>
       </TouchableOpacity>
@@ -97,20 +113,38 @@ export default function Home() {
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         <Animatable.View animation="fadeInDown" style={styles.header}>
           <View style={styles.headerTop}>
             <Text style={styles.brandTitle}>DISCOVER</Text>
-            <TouchableOpacity onPress={() => router.push("/(customer)/wallet")} style={styles.walletBtn}>
-              <MaterialCommunityIcons name="wallet-outline" size={22} color="#D4AF37" />
+            <TouchableOpacity
+              onPress={() => router.push("/(customer)/wallet")}
+              style={styles.walletBtn}
+            >
+              <MaterialCommunityIcons
+                name="wallet-outline"
+                size={22}
+                color="#D4AF37"
+              />
             </TouchableOpacity>
           </View>
-          <Text style={styles.subTitle}>📍 {location.toUpperCase()} LOGISTICS NODE</Text>
+          <Text style={styles.subTitle}>
+            📍 {location.toUpperCase()} LOGISTICS NODE
+          </Text>
         </Animatable.View>
 
         <View style={styles.searchSection}>
-          <View style={[styles.searchBar, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
-            <Ionicons name="search" size={18} color="#2C3E50" style={{ marginRight: 10 }} />
+          <View
+            style={[
+              styles.searchBar,
+              { backgroundColor: "#051121", borderColor: "#0A1A2F" },
+            ]}
+          >
+            <Ionicons
+              name="search"
+              size={18}
+              color="#2C3E50"
+              style={{ marginRight: 10 }}
+            />
             <TextInput
               placeholder="SEARCH GLOBAL ARCHIVE..."
               placeholderTextColor="#2C3E50"
@@ -121,9 +155,20 @@ export default function Home() {
           </View>
         </View>
 
-        <Animatable.View animation="pulse" iterationCount="infinite" style={[styles.aiPanel, { backgroundColor: "#0A1A2F", borderColor: "#1B2631" }]}>
+        <Animatable.View
+          animation="pulse"
+          iterationCount="infinite"
+          style={[
+            styles.aiPanel,
+            { backgroundColor: "#0A1A2F", borderColor: "#1B2631" },
+          ]}
+        >
           <View style={styles.aiHeader}>
-            <MaterialCommunityIcons name="shield-check" size={14} color="#FF3B30" />
+            <MaterialCommunityIcons
+              name="shield-check"
+              size={14}
+              color="#FF3B30"
+            />
             <Text style={styles.aiLabel}>SYSTEM CORE ENGINE</Text>
           </View>
           <Text style={styles.aiText}>{aiMessage}</Text>
@@ -132,7 +177,11 @@ export default function Home() {
         <Text style={styles.sectionTitle}>PREMIUM SELECTIONS</Text>
 
         {loading ? (
-          <ActivityIndicator size="small" color="#D4AF37" style={styles.loader} />
+          <ActivityIndicator
+            size="small"
+            color="#D4AF37"
+            style={styles.loader}
+          />
         ) : (
           <FlatList
             data={filteredItems}
@@ -150,23 +199,94 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { padding: 25, paddingTop: 30 },
-  headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  brandTitle: { fontSize: 32, fontWeight: "900", letterSpacing: 2, color: "#FFF" },
-  subTitle: { fontSize: 8, fontWeight: "900", letterSpacing: 2, marginTop: 8, color: "#5D6D7E" },
-  walletBtn: { padding: 10, backgroundColor: "#0A1A2F", borderRadius: 15, borderWidth: 1, borderColor: "#1B2631" },
+  headerTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  brandTitle: {
+    fontSize: 32,
+    fontWeight: "900",
+    letterSpacing: 2,
+    color: "#FFF",
+  },
+  subTitle: {
+    fontSize: 8,
+    fontWeight: "900",
+    letterSpacing: 2,
+    marginTop: 8,
+    color: "#5D6D7E",
+  },
+  walletBtn: {
+    padding: 10,
+    backgroundColor: "#0A1A2F",
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#1B2631",
+  },
   searchSection: { paddingHorizontal: 25, marginBottom: 10 },
-  searchBar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, height: 60, borderRadius: 20, borderWidth: 1 },
-  searchInput: { flex: 1, fontSize: 11, color: "#FFF", letterSpacing: 1, fontWeight: '600' },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    height: 60,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 11,
+    color: "#FFF",
+    letterSpacing: 1,
+    fontWeight: "600",
+  },
   aiPanel: { margin: 25, padding: 20, borderRadius: 20, borderWidth: 1 },
-  aiHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  aiLabel: { fontSize: 8, fontWeight: "900", letterSpacing: 2, color: "#FF3B30", marginLeft: 6 },
-  aiText: { fontSize: 11, fontWeight: "700", color: "#FFF", letterSpacing: 0.5 },
-  sectionTitle: { fontSize: 9, fontWeight: "900", marginHorizontal: 25, marginBottom: 20, letterSpacing: 3, color: "#2C3E50" },
-  card: { flexDirection: "row", padding: 22, borderRadius: 25, borderWidth: 1, marginBottom: 15, marginHorizontal: 25, alignItems: "center" },
+  aiHeader: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
+  aiLabel: {
+    fontSize: 8,
+    fontWeight: "900",
+    letterSpacing: 2,
+    color: "#FF3B30",
+    marginLeft: 6,
+  },
+  aiText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#FFF",
+    letterSpacing: 0.5,
+  },
+  sectionTitle: {
+    fontSize: 9,
+    fontWeight: "900",
+    marginHorizontal: 25,
+    marginBottom: 20,
+    letterSpacing: 3,
+    color: "#2C3E50",
+  },
+  card: {
+    flexDirection: "row",
+    padding: 22,
+    borderRadius: 25,
+    borderWidth: 1,
+    marginBottom: 15,
+    marginHorizontal: 25,
+    alignItems: "center",
+  },
   itemMeta: { flex: 1 },
-  itemName: { fontSize: 14, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
+  itemName: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
+  },
   distanceRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
-  distanceText: { fontSize: 8, fontWeight: "bold", color: "#5D6D7E", marginLeft: 4, letterSpacing: 1 },
+  distanceText: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#5D6D7E",
+    marginLeft: 4,
+    letterSpacing: 1,
+  },
   itemDesc: { fontSize: 10, marginTop: 10, color: "#5D6D7E", lineHeight: 16 },
   priceContainer: { alignItems: "flex-end" },
   priceTag: { fontWeight: "900", fontSize: 22 },
