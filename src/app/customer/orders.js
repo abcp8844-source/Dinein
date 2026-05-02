@@ -7,10 +7,12 @@ import {
   ActivityIndicator,
   SafeAreaView,
   RefreshControl,
+  StatusBar,
 } from "react-native";
 import { dbService } from "../../services/dbService";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../theme/ThemeContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
 export default function Orders() {
@@ -28,13 +30,12 @@ export default function Orders() {
 
   const loadOrders = async () => {
     try {
-      // 🛡️ Safe Access: Added '?' to prevent crashes if userData is null
       if (userData?.uid) {
         const data = await dbService.getCustomerOrders(userData.uid);
         setOrders(data);
       }
     } catch (error) {
-      console.error("Order Load Error:", error);
+      console.error("DATA_FETCH_FAILURE");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -43,16 +44,11 @@ export default function Orders() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "pending":
-        return "#D4AF37";
-      case "preparing":
-        return "#3498db";
-      case "delivered":
-        return "#2ecc71";
-      case "cancelled":
-        return "#e74c3c";
-      default:
-        return "#555";
+      case "pending": return "#D4AF37";
+      case "preparing": return "#3498db";
+      case "delivered": return "#2ecc71";
+      case "cancelled": return "#FF3B30";
+      default: return "#5D6D7E";
     }
   };
 
@@ -61,35 +57,26 @@ export default function Orders() {
       animation="fadeInRight"
       duration={600}
       delay={index * 100}
-      style={[
-        styles.orderCard,
-        { backgroundColor: "#0A0A0A", borderColor: "#1A1A1A" },
-      ]}
+      style={[styles.orderCard, { backgroundColor: "#0A1A2F", borderColor: "#1B2631" }]}
     >
       <View style={styles.cardHeader}>
-        <Text style={[styles.itemName, { color: "#FFF" }]}>
-          {item.itemName}
-        </Text>
-        <View
-          style={[
-            styles.statusBadge,
-            { borderColor: getStatusColor(item.status) },
-          ]}
-        >
-          <Text
-            style={[styles.statusText, { color: getStatusColor(item.status) }]}
-          >
+        <View>
+          <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
+          <Text style={styles.orderId}>NODE ID: #{item.id?.slice(-6).toUpperCase()}</Text>
+        </View>
+        <View style={[styles.statusBadge, { borderColor: getStatusColor(item.status) }]}>
+          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
             {item.status.toUpperCase()}
           </Text>
         </View>
       </View>
 
       <View style={styles.detailsRow}>
-        <Text style={styles.orderId}>
-          ID: #{item.id?.slice(-6).toUpperCase()}
-        </Text>
         <Text style={[styles.price, { color: colors.primary }]}>
           {item.itemPrice} {currency}
+        </Text>
+        <Text style={styles.dateText}>
+          {item.timestamp ? new Date(item.timestamp).toLocaleDateString() : "SYNC_PENDING"}
         </Text>
       </View>
 
@@ -99,38 +86,24 @@ export default function Orders() {
             styles.progressBar,
             {
               backgroundColor: getStatusColor(item.status),
-              width:
-                item.status === "pending"
-                  ? "25%"
-                  : item.status === "preparing"
-                    ? "60%"
-                    : "100%",
+              width: item.status === "pending" ? "25%" : item.status === "preparing" ? "65%" : "100%",
             },
           ]}
         />
-      </View>
-
-      <View style={styles.cardFooter}>
-        <Text style={styles.dateText}>
-          {item.timestamp ? new Date(item.timestamp).toLocaleDateString() : ""}
-        </Text>
       </View>
     </Animatable.View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
+      <StatusBar barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>MY ORDERS</Text>
-        <View style={styles.goldLine} />
+        <Text style={styles.headerTitle}>LOGISTICS ARCHIVE</Text>
+        <View style={[styles.goldLine, { backgroundColor: colors.primary }]} />
       </View>
 
       {loading ? (
-        <ActivityIndicator
-          size="large"
-          color={colors.primary}
-          style={styles.loader}
-        />
+        <ActivityIndicator size="small" color={colors.primary} style={styles.loader} />
       ) : (
         <FlatList
           data={orders}
@@ -141,16 +114,14 @@ export default function Orders() {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                loadOrders();
-              }}
+              onRefresh={() => { setRefreshing(true); loadOrders(); }}
               tintColor={colors.primary}
             />
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No orders found.</Text>
+              <MaterialCommunityIcons name="folder-open-outline" size={40} color="#1B2631" />
+              <Text style={styles.emptyText}>NO ACTIVE TRANSACTIONS FOUND</Text>
             </View>
           }
         />
@@ -160,58 +131,24 @@ export default function Orders() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1 },
   header: { padding: 30, paddingTop: 50 },
-  headerTitle: {
-    color: "#FFF",
-    fontSize: 24,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
-  goldLine: { width: 40, height: 2, backgroundColor: "#D4AF37", marginTop: 10 },
-  orderCard: {
-    padding: 25,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginBottom: 20,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  itemName: { fontSize: 18, fontWeight: "bold" },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    borderWidth: 1,
-  },
-  statusText: { fontSize: 9, fontWeight: "900" },
-  detailsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  orderId: { color: "#444", fontSize: 10, fontWeight: "bold" },
+  headerTitle: { color: "#FFF", fontSize: 22, fontWeight: "900", letterSpacing: 2 },
+  goldLine: { width: 40, height: 2, marginTop: 12 },
+  orderCard: { padding: 25, borderRadius: 25, borderWidth: 1, marginBottom: 20 },
+  cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 25 },
+  itemName: { fontSize: 15, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
+  orderId: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", marginTop: 5 },
+  statusBadge: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, borderWidth: 1 },
+  statusText: { fontSize: 8, fontWeight: "900", letterSpacing: 1 },
+  detailsRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   price: { fontSize: 18, fontWeight: "900" },
-  progressContainer: {
-    height: 3,
-    width: "100%",
-    backgroundColor: "#1A1A1A",
-    borderRadius: 2,
-    marginTop: 20,
-  },
+  dateText: { color: "#2C3E50", fontSize: 9, fontWeight: "900" },
+  progressContainer: { height: 2, width: "100%", backgroundColor: "#051121", borderRadius: 2, marginTop: 25 },
   progressBar: { height: "100%", borderRadius: 2 },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginTop: 15,
-  },
-  dateText: { color: "#333", fontSize: 9, fontWeight: "bold" },
   loader: { flex: 1, justifyContent: "center" },
   listContainer: { padding: 25, paddingBottom: 100 },
   emptyContainer: { alignItems: "center", marginTop: 150 },
-  emptyText: { color: "#444", fontSize: 12 },
+  emptyText: { color: "#1B2631", fontSize: 9, fontWeight: "900", letterSpacing: 2, marginTop: 20 },
 });
+
