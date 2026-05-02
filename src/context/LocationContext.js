@@ -20,7 +20,7 @@ export const LocationProvider = ({ children }) => {
       setLocationData({
         city: userData.city,
         isoCode: marketISO,
-        address: userData.address || ""
+        address: userData.address || "",
       });
     }
   }, [userData, marketISO]);
@@ -39,11 +39,11 @@ export const LocationProvider = ({ children }) => {
   };
 
   return (
-    <LocationContext.Provider 
-      value={{ 
-        locationData, 
+    <LocationContext.Provider
+      value={{
+        locationData,
         setLocationData: updateLocation,
-        validateDeliveryRange 
+        validateDeliveryRange,
       }}
     >
       {children}

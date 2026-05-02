@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
           if (docSnap.exists()) {
             let data = docSnap.data();
-            
+
             // Administrative Privilege Verification
             if (firebaseUser.email === MASTER_ADMIN_EMAIL) {
               data.role = "admin";
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
             // Sync with Global Market Registry
             if (data.isoCode) setMarketISO(data.isoCode);
             if (data.preferredLang) setAppLang(data.preferredLang);
-            
+
             setUserData(data);
           }
         } else {
@@ -59,12 +59,12 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, role, additionalData) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Enforcing 20-Country Market Protocol
       const userProfile = {
         uid: res.user.uid,
         email,
-        role, 
+        role,
         isoCode: additionalData.isoCode || "THA",
         currencyCode: additionalData.currencyCode || "THB",
         preferredLang: additionalData.preferredLang || "EN",
@@ -92,10 +92,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const userRef = doc(db, "users", user.uid);
       await updateDoc(userRef, updates);
-      
+
       if (updates.isoCode) setMarketISO(updates.isoCode);
       if (updates.preferredLang) setAppLang(updates.preferredLang);
-      
+
       setUserData((prev) => ({ ...prev, ...updates }));
     } catch (error) {
       console.error("Preference Update Failed:", error);
