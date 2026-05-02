@@ -20,7 +20,7 @@ export default function TrackOrder() {
   const { orderId } = useLocalSearchParams();
 
   const [region] = useState({
-    latitude: 13.7563, 
+    latitude: 13.7563,
     longitude: 100.5018,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
@@ -34,13 +34,13 @@ export default function TrackOrder() {
   return (
     <View style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
-      
+
       {/* --- LIVE MAP INTERFACE --- */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={region}
-        customMapStyle={darkMapConfig} 
+        customMapStyle={darkMapConfig}
       >
         <Marker coordinate={region}>
           <View style={[styles.markerCircle, { borderColor: colors.primary }]}>
@@ -75,10 +75,18 @@ export default function TrackOrder() {
       </SafeAreaView>
 
       {/* --- BOTTOM LOGISTICS CARD --- */}
-      <Animatable.View animation="fadeInUp" style={[styles.detailsCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+      <Animatable.View
+        animation="fadeInUp"
+        style={[
+          styles.detailsCard,
+          { backgroundColor: "#051121", borderColor: "#0A1A2F" },
+        ]}
+      >
         <View style={styles.riderProfile}>
-          <View style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}>
-             <Ionicons name="person" size={25} color={colors.primary} />
+          <View
+            style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}
+          >
+            <Ionicons name="person" size={25} color={colors.primary} />
           </View>
           <View style={{ flex: 1, marginLeft: 15 }}>
             <Text style={styles.riderName}>Alex Logistics</Text>
@@ -94,9 +102,13 @@ export default function TrackOrder() {
         <View style={[styles.timeRow, { borderTopColor: "#0A1A2F" }]}>
           <View>
             <Text style={styles.timeLabel}>ESTIMATED ARRIVAL</Text>
-            <Text style={[styles.timeValue, { color: colors.primary }]}>4-6 MINUTES</Text>
+            <Text style={[styles.timeValue, { color: colors.primary }]}>
+              4-6 MINUTES
+            </Text>
           </View>
-          <View style={[styles.verticalDivider, { backgroundColor: "#0A1A2F" }]} />
+          <View
+            style={[styles.verticalDivider, { backgroundColor: "#0A1A2F" }]}
+          />
           <View>
             <Text style={styles.timeLabel}>DISTANCE</Text>
             <Text style={styles.timeValue}>1.2 KM</Text>
@@ -110,8 +122,16 @@ export default function TrackOrder() {
 const darkMapConfig = [
   { elementType: "geometry", stylers: [{ color: "#020B18" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#5D6D7E" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#0A1A2F" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#010812" }] }
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#0A1A2F" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#010812" }],
+  },
 ];
 
 const styles = StyleSheet.create({
@@ -137,8 +157,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   orderInfo: { marginLeft: 15, flex: 1 },
-  orderIdText: { color: "#FFF", fontSize: 11, fontWeight: "900", letterSpacing: 1 },
-  statusText: { fontSize: 9, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
+  orderIdText: {
+    color: "#FFF",
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+  statusText: {
+    fontSize: 9,
+    fontWeight: "900",
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
   markerCircle: {
     width: 32,
     height: 32,
@@ -166,7 +196,11 @@ const styles = StyleSheet.create({
     padding: 25,
     borderWidth: 1,
   },
-  riderProfile: { flexDirection: "row", alignItems: "center", marginBottom: 25 },
+  riderProfile: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 25,
+  },
   avatarPlaceholder: {
     width: 50,
     height: 50,
@@ -175,8 +209,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   riderName: { color: "#FFF", fontSize: 15, fontWeight: "900" },
-  riderSub: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
-  callBtn: { width: 45, height: 45, borderRadius: 12, justifyCenter: "center", alignItems: "center" },
+  riderSub: {
+    color: "#5D6D7E",
+    fontSize: 8,
+    fontWeight: "900",
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+  callBtn: {
+    width: 45,
+    height: 45,
+    borderRadius: 12,
+    justifyCenter: "center",
+    alignItems: "center",
+  },
   timeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -184,7 +230,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingTop: 20,
   },
-  timeLabel: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", letterSpacing: 1, marginBottom: 5 },
+  timeLabel: {
+    color: "#5D6D7E",
+    fontSize: 8,
+    fontWeight: "900",
+    letterSpacing: 1,
+    marginBottom: 5,
+  },
   timeValue: { fontSize: 16, fontWeight: "900" },
   verticalDivider: { width: 1, height: 30 },
 });
