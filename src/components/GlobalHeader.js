@@ -9,30 +9,21 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { MARKET_REGISTRY } from "../constants/market-registry";
 
-/**
- * GLOBAL HEADER COMPONENT
- * Handles: Multi-country regional switching and language localization.
- * Integrated with: AuthContext for global state synchronization.
- */
 export default function GlobalHeader() {
   const { userData, updateGlobalPreference } = useAuth();
-
-  // Logic: Identify current market from registry based on user's ISO code
+  
   const currentMarket =
-    MARKET_REGISTRY.find((m) => m.iso === userData?.isoCode) ||
-    MARKET_REGISTRY[0];
+    MARKET_REGISTRY.find((m) => m.iso === userData?.isoCode) || MARKET_REGISTRY[0];
 
   return (
     <View style={styles.headerBody}>
-      {/* UPPER SECTION: BRANDING & LOCALIZATION */}
       <View style={styles.topSection}>
         <View style={styles.branding}>
           <Text style={styles.flagLarge}>{currentMarket.flag}</Text>
           <View>
-            <Text style={styles.brandTitle}>AB&CP OFFICIAL</Text>
-            <Text style={styles.regionName}>
-              {currentMarket.name.toUpperCase()}
-            </Text>
+            {/* Back to your original App Name */}
+            <Text style={styles.brandTitle}>DINING TABLE</Text>
+            <Text style={styles.regionName}>{currentMarket.name.toUpperCase()}</Text>
           </View>
         </View>
 
@@ -40,8 +31,7 @@ export default function GlobalHeader() {
           style={styles.langTrigger}
           onPress={() =>
             updateGlobalPreference({
-              preferredLang:
-                userData?.appLang === "EN" ? currentMarket.langCode : "EN",
+              preferredLang: userData?.appLang === "EN" ? currentMarket.langCode : "EN",
             })
           }
         >
@@ -52,7 +42,6 @@ export default function GlobalHeader() {
         </TouchableOpacity>
       </View>
 
-      {/* LOWER SECTION: MARKET SELECTOR (20 COUNTRIES) */}
       <View style={styles.marketBar}>
         <Text style={styles.barLabel}>OPERATIONAL NODES</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -60,8 +49,8 @@ export default function GlobalHeader() {
             <TouchableOpacity
               key={item.iso}
               style={[
-                styles.node,
-                userData?.isoCode === item.iso && styles.activeNode,
+                styles.node, 
+                userData?.isoCode === item.iso && styles.activeNode
               ]}
               onPress={() =>
                 updateGlobalPreference({
