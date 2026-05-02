@@ -6,211 +6,104 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
-  Image,
+  StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
-import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../theme/ThemeContext";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-/**
- * GLOBAL CUSTOMER DASHBOARD
- * Features: Profile Management | Wallet Sync | 15-Market Localization
- */
 export default function CustomerProfile() {
   const { userData, logout } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
 
+  // 🛡️ Optimized Routes to match folder structure
   const menuOptions = [
-    {
-      id: "1",
-      title: "Order History",
-      icon: "time-outline",
-      route: "/customer/orders",
-    },
-    {
-      id: "2",
-      title: "Payment Methods",
-      icon: "card-outline",
-      route: "/customer/wallet",
-    },
-    {
-      id: "3",
-      title: "Delivery Address",
-      icon: "location-outline",
-      route: "/customer/address-setup",
-    },
-    {
-      id: "4",
-      title: "AI Assistant Settings",
-      icon: "sparkles-outline",
-      route: "/customer/ai-assistant",
-    },
+    { id: "1", title: "Order History", icon: "clipboard-text-outline", route: "/(customer)/orders" },
+    { id: "2", title: "Payment Methods", icon: "wallet-outline", route: "/(customer)/wallet" },
+    { id: "3", title: "AI Assistant", icon: "robot-outline", route: "/(customer)/ai-assistant" },
+    { id: "4", title: "Global Menu", icon: "book-open-variant", route: "/(customer)/menu-view" },
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         {/* --- PROFILE HEADER --- */}
         <Animatable.View animation="fadeIn" style={styles.header}>
           <View style={[styles.avatarBorder, { borderColor: colors.primary }]}>
-            <View style={styles.avatarPlaceholder}>
-              <Ionicons name="person" size={40} color="#333" />
+            <View style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}>
+              <Ionicons name="person" size={40} color={colors.primary} />
             </View>
           </View>
-          <Text style={styles.userName}>
-            {userData?.name || "Global Citizen"}
-          </Text>
-          <Text style={[styles.userRegion, { color: colors.primary }]}>
-            📍 {userData?.location?.city || "Syncing Region..."}
+          <Text style={styles.userName}>{userData?.name?.toUpperCase() || "GLOBAL CITIZEN"}</Text>
+          <Text style={[styles.userRegion, { color: "#5D6D7E" }]}>
+            📍 {userData?.location?.city?.toUpperCase() || "SYNCING REGION..."}
           </Text>
         </Animatable.View>
 
         {/* --- STATS ROW --- */}
-        <View style={styles.statsContainer}>
-          <TouchableOpacity
-            style={styles.statBox}
-            onPress={() => router.push("/customer/wallet")}
-          >
+        <View style={[styles.statsContainer, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+          <TouchableOpacity style={styles.statBox} onPress={() => router.push("/(customer)/wallet")}>
             <Text style={styles.statLabel}>BALANCE</Text>
             <Text style={[styles.statValue, { color: colors.primary }]}>
-              {userData?.walletBalance || "0.00"}{" "}
-              <Text style={styles.currency}>
-                {userData?.currencyCode || "THB"}
-              </Text>
+              {userData?.walletBalance || "0.00"} <Text style={styles.currency}>{userData?.currencyCode || "THB"}</Text>
             </Text>
           </TouchableOpacity>
-          <View style={styles.divider} />
-          <TouchableOpacity
-            style={styles.statBox}
-            onPress={() => router.push("/customer/orders")}
-          >
-            <Text style={styles.statLabel}>ORDERS</Text>
-            <Text style={styles.statValue}>12</Text>
+          <View style={[styles.divider, { backgroundColor: "#0A1A2F" }]} />
+          <TouchableOpacity style={styles.statBox} onPress={() => router.push("/(customer)/orders")}>
+            <Text style={styles.statLabel}>LOGISTICS</Text>
+            <Text style={styles.statValue}>ACTIVE</Text>
           </TouchableOpacity>
         </View>
 
         {/* --- MENU OPTIONS --- */}
         <View style={styles.menuSection}>
           {menuOptions.map((item, index) => (
-            <Animatable.View
-              key={item.id}
-              animation="fadeInUp"
-              delay={index * 100}
-            >
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => router.push(item.route)}
-              >
+            <Animatable.View key={item.id} animation="fadeInUp" delay={index * 100}>
+              <TouchableOpacity style={[styles.menuItem, { borderBottomColor: "#0A1A2F" }]} onPress={() => router.push(item.route)}>
                 <View style={styles.menuLeft}>
-                  <Ionicons name={item.icon} size={20} color="#FFF" />
+                  <MaterialCommunityIcons name={item.icon} size={22} color={colors.primary} />
                   <Text style={styles.menuTitle}>{item.title}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={18} color="#222" />
+                <Ionicons name="chevron-forward" size={16} color="#1B2631" />
               </TouchableOpacity>
             </Animatable.View>
           ))}
         </View>
 
-        {/* --- LOGOUT --- */}
-        <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+        {/* --- SESSION CONTROL --- */}
+        <TouchableOpacity style={[styles.logoutBtn, { borderColor: "#1A0505" }]} onPress={logout}>
           <Text style={styles.logoutText}>TERMINATE SESSION</Text>
         </TouchableOpacity>
 
-        <Text style={styles.versionText}>
-          AB&CP PREMIUM v1.0.4 | SECURED BY GEMINI AI
-        </Text>
+        <Text style={styles.versionText}>AB&CP PREMIUM v1.0.4 | SECURED NODE</Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1 },
   header: { alignItems: "center", marginTop: 40, marginBottom: 30 },
-  avatarBorder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 5,
-  },
-  avatarPlaceholder: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 50,
-    backgroundColor: "#050505",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  userName: {
-    color: "#FFF",
-    fontSize: 22,
-    fontWeight: "900",
-    marginTop: 15,
-    letterSpacing: 1,
-  },
-  userRegion: {
-    fontSize: 10,
-    fontWeight: "bold",
-    marginTop: 5,
-    letterSpacing: 2,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    backgroundColor: "#050505",
-    marginHorizontal: 25,
-    borderRadius: 25,
-    paddingVertical: 25,
-    borderWidth: 1,
-    borderColor: "#111",
-  },
+  avatarBorder: { width: 100, height: 100, borderRadius: 50, borderWidth: 1, justifyContent: "center", alignItems: "center", padding: 5 },
+  avatarPlaceholder: { width: "100%", height: "100%", borderRadius: 50, justifyContent: "center", alignItems: "center" },
+  userName: { color: "#FFF", fontSize: 20, fontWeight: "900", marginTop: 15, letterSpacing: 1 },
+  userRegion: { fontSize: 9, fontWeight: "900", marginTop: 8, letterSpacing: 2 },
+  statsContainer: { flexDirection: "row", marginHorizontal: 25, borderRadius: 25, paddingVertical: 25, borderWidth: 1 },
   statBox: { flex: 1, alignItems: "center" },
-  statLabel: {
-    color: "#444",
-    fontSize: 8,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-    marginBottom: 5,
-  },
-  statValue: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
-  currency: { fontSize: 10, fontWeight: "400" },
-  divider: { width: 1, height: "100%", backgroundColor: "#111" },
-  menuSection: { marginTop: 30, paddingHorizontal: 25 },
-  menuItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 22,
-    borderBottomWidth: 1,
-    borderBottomColor: "#0A0A0A",
-  },
+  statLabel: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", letterSpacing: 1.5, marginBottom: 5 },
+  statValue: { fontSize: 18, fontWeight: "bold" },
+  currency: { fontSize: 10, fontWeight: "900" },
+  divider: { width: 1, height: "100%" },
+  menuSection: { marginTop: 20, paddingHorizontal: 25 },
+  menuItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 22, borderBottomWidth: 1 },
   menuLeft: { flexDirection: "row", alignItems: "center" },
-  menuTitle: { color: "#AAA", fontSize: 14, fontWeight: "600", marginLeft: 15 },
-  logoutBtn: {
-    margin: 40,
-    padding: 20,
-    alignItems: "center",
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#331111",
-  },
-  logoutText: {
-    color: "#FF4444",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
-  versionText: {
-    textAlign: "center",
-    color: "#111",
-    fontSize: 8,
-    fontWeight: "bold",
-    marginBottom: 40,
-    letterSpacing: 1,
-  },
+  menuTitle: { color: "#FFF", fontSize: 14, fontWeight: "700", marginLeft: 15, letterSpacing: 0.5 },
+  logoutBtn: { margin: 40, padding: 20, alignItems: "center", borderRadius: 20, borderWidth: 1 },
+  logoutText: { color: "#FF3B30", fontSize: 10, fontWeight: "900", letterSpacing: 2 },
+  versionText: { textAlign: "center", color: "#1B2631", fontSize: 8, fontWeight: "900", marginBottom: 40, letterSpacing: 1 },
 });
