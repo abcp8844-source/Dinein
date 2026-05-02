@@ -11,12 +11,12 @@ export const ThemeProvider = ({ children }) => {
   const theme = {
     colors: {
       // Backgrounds: Midnight Dark for Gold to Pop
-      background: "#020B18", 
+      background: "#020B18",
       cardBg: "#051121",
       inputBg: "#0A1A2F",
 
       // Primary Branding: Luxury Gold
-      primary: "#D4AF37", 
+      primary: "#D4AF37",
       secondary: "#FFFFFF",
 
       // Typography
@@ -26,11 +26,11 @@ export const ThemeProvider = ({ children }) => {
       // States & Accents
       accent: "#C41E3A",
       success: "#27AE60",
-      
+
       // Borders & Glows (Optimized for Animated Components)
       border: "rgba(212, 175, 55, 0.12)", // Dimmed Gold Border
-      glow: "rgba(212, 175, 55, 0.4)",   // Focus Glow
-      
+      glow: "rgba(212, 175, 55, 0.4)", // Focus Glow
+
       // Treasury/Financial Colors
       commission: "#2ECC71",
       promotion: "#F1C40F",
@@ -52,8 +52,8 @@ export const ThemeProvider = ({ children }) => {
         shadowOpacity: 0.3,
         shadowRadius: 10,
         elevation: 8,
-      }
-    }
+      },
+    },
   };
 
   return (
