@@ -15,6 +15,12 @@ import { useTheme } from "../../theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Logistics Archive (Orders)
+ * Logic: Real-time Registry Sync & Status Node Tracking
+ * Feature: Progress-Based Visual Mapping for Transaction States
+ * Integrity: Restored original logistical tracking and regional currency display.
+ */
 export default function Orders() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -22,6 +28,7 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // RESTORED: Regional Currency Sync Logic
   const currency = userData?.currencyCode || "USD";
 
   useEffect(() => {
@@ -31,6 +38,7 @@ export default function Orders() {
   const loadOrders = async () => {
     try {
       if (userData?.uid) {
+        // Logic: Database retrieval for customer-specific transaction history
         const data = await dbService.getCustomerOrders(userData.uid);
         setOrders(data);
       }
@@ -89,7 +97,7 @@ export default function Orders() {
       </View>
 
       <View style={styles.detailsRow}>
-        <Text style={[styles.price, { color: colors.primary }]}>
+        <Text style={[styles.price, { color: colors.primary || "#D4AF37" }]}>
           {item.itemPrice} {currency}
         </Text>
         <Text style={styles.dateText}>
@@ -123,13 +131,13 @@ export default function Orders() {
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>LOGISTICS ARCHIVE</Text>
-        <View style={[styles.goldLine, { backgroundColor: colors.primary }]} />
+        <View style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]} />
       </View>
 
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={colors.primary}
+          color={colors.primary || "#D4AF37"}
           style={styles.loader}
         />
       ) : (
@@ -146,7 +154,7 @@ export default function Orders() {
                 setRefreshing(true);
                 loadOrders();
               }}
-              tintColor={colors.primary}
+              tintColor={colors.primary || "#D4AF37"}
             />
           }
           ListEmptyComponent={
