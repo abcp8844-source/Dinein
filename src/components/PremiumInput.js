@@ -15,7 +15,7 @@ export default function PremiumInput({
 }) {
   const { colors, borderRadius } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
-  
+
   // Animation for the border glow effect
   const glowAnim = useRef(new Animated.Value(0)).current;
 
@@ -40,7 +40,7 @@ export default function PremiumInput({
   // Interpolating color from dimmed to bright gold
   const borderColor = glowAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [colors.border || "#1B2631", colors.primary || "#D4AF37"]
+    outputRange: [colors.border || "#1B2631", colors.primary || "#D4AF37"],
   });
 
   return (
@@ -81,7 +81,7 @@ export default function PremiumInput({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 60, 
+    height: 60,
     marginVertical: 10,
     paddingHorizontal: 20,
     justifyContent: "center",

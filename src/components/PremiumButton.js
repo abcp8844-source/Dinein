@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { 
-  TouchableOpacity, 
-  Text, 
-  StyleSheet, 
-  Animated, 
-  View 
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Animated,
+  View,
 } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -19,7 +19,7 @@ export default function PremiumButton({
 }) {
   const { colors, borderRadius } = useTheme();
   const isPrimary = type === "primary";
-  
+
   // Animation logic for the Gold Pulse
   const pulseAnim = useRef(new Animated.Value(0.4)).current;
 
@@ -37,7 +37,7 @@ export default function PremiumButton({
             duration: 800,
             useNativeDriver: true,
           }),
-        ])
+        ]),
       ).start();
     } else {
       pulseAnim.setValue(1);
@@ -56,26 +56,42 @@ export default function PremiumButton({
           borderRadius: borderRadius?.button || 15,
         },
         style,
-        (disabled && !loading) && { opacity: 0.5 }
+        disabled && !loading && { opacity: 0.5 },
       ]}
       onPress={onPress}
       disabled={disabled || loading}
     >
       {loading ? (
-        <Animated.View style={{ opacity: pulseAnim, flexDirection: 'row', alignItems: 'center' }}>
+        <Animated.View
+          style={{
+            opacity: pulseAnim,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
           {/* DINING TABLE BRAND VISUAL: A small plate/fork icon */}
-          <MaterialCommunityIcons 
-            name="silverware-variant" 
-            size={18} 
-            color={isPrimary ? "#020B18" : colors.primary} 
+          <MaterialCommunityIcons
+            name="silverware-variant"
+            size={18}
+            color={isPrimary ? "#020B18" : colors.primary}
             style={{ marginRight: 10 }}
           />
-          <Text style={[styles.text, { color: isPrimary ? "#020B18" : colors.primary }]}>
+          <Text
+            style={[
+              styles.text,
+              { color: isPrimary ? "#020B18" : colors.primary },
+            ]}
+          >
             PROCESSING...
           </Text>
         </Animated.View>
       ) : (
-        <Text style={[styles.text, { color: isPrimary ? "#020B18" : colors.primary }]}>
+        <Text
+          style={[
+            styles.text,
+            { color: isPrimary ? "#020B18" : colors.primary },
+          ]}
+        >
           {title.toUpperCase()}
         </Text>
       )}
