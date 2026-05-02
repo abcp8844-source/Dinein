@@ -5,92 +5,156 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
-import { useTheme } from "../context/ThemeContext";
-import { db } from "../services/firebaseConfig";
-import { collection, onSnapshot } from "firebase/firestore";
+import { useTheme } from "../../theme/ThemeContext";
+import { db } from "../../services/firebaseConfig";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import * as Animatable from "react-native-animatable";
 
 export default function MenuView() {
   const { colors } = useTheme();
   const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const menuRef = collection(db, "menus");
-    const unsubscribe = onSnapshot(menuRef, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const q = query(menuRef, where("active", "==", true)); // Production Logic
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const items = snapshot.docs.map((doc) => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      }));
       setMenuItems(items);
+      setLoading(false);
     });
+    
     return () => unsubscribe();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>DIGITAL MENU</Text>
-        <View style={styles.goldLine} />
+  const renderItem = ({ item }) => (
+    <Animatable.View 
+      animation="fadeInUp" 
+      duration={800} 
+      style={styles.menuCard}
+    >
+      <View style={styles.cardInfo}>
+        <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
+        <Text style={styles.itemDesc}>{item.description}</Text>
       </View>
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceText}>
+          {item.currency || "$"} {item.price}
+        </Text>
+      </View>
+    </Animatable.View>
+  );
+
+  return (
+    <View style={[styles.container, { backgroundColor: "#000" }]}>
+      <StatusBar barStyle="light-content" />
+      
+      <Animatable.View animation="fadeInDown" style={styles.header}>
+        <Text style={styles.headerTitle}>CUISINE SELECTION</Text>
+        <View style={styles.goldLine} />
+      </Animatable.View>
 
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.menuCard}>
-            <View style={styles.cardInfo}>
-              <Text style={styles.itemName}>{item.itemName}</Text>
-              <Text style={styles.itemDesc}>{item.description}</Text>
-            </View>
-            <View style={styles.priceTag}>
-              <Text style={styles.priceText}>{item.price}</Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>SYNCING GLOBAL DATA...</Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {loading ? "SYNCHRONIZING..." : "NO DATA IN NODE"}
+            </Text>
+          </View>
         }
       />
 
-      <TouchableOpacity style={styles.orderBtn}>
-        <Text style={styles.btnText}>PROCEED TO ORDER</Text>
+      <TouchableOpacity activeOpacity={0.8} style={styles.orderBtn}>
+        <Text style={styles.btnText}>PROCEED TO RESERVATION</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 25, backgroundColor: "#8B0000" },
-  header: { marginTop: 50, marginBottom: 30, alignItems: "center" },
-  headerTitle: {
-    color: "#D4AF37",
-    fontSize: 22,
-    fontWeight: "bold",
-    letterSpacing: 5,
+  container: { flex: 1, paddingHorizontal: 20 },
+  header: { marginTop: 60, marginBottom: 40, alignItems: "center" },
+  headerTitle: { 
+    color: "#D4AF37", 
+    fontSize: 14, 
+    fontWeight: "900", 
+    letterSpacing: 5 
   },
-  goldLine: { width: 40, height: 2, backgroundColor: "#D4AF37", marginTop: 8 },
+  goldLine: { 
+    width: 25, 
+    height: 1.5, 
+    backgroundColor: "#D4AF37", 
+    marginTop: 12 
+  },
   menuCard: {
     flexDirection: "row",
-    paddingVertical: 20,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(212, 175, 55, 0.3)",
+    padding: 20,
+    backgroundColor: "#0A0A0A",
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#111",
+    alignItems: "center",
   },
   cardInfo: { flex: 0.7 },
-  itemName: { color: "#D4AF37", fontSize: 18, fontWeight: "600" },
-  itemDesc: { color: "#FDF5E6", fontSize: 12, opacity: 0.8 },
-  priceTag: { flex: 0.3, alignItems: "flex-end" },
-  priceText: { color: "#D4AF37", fontWeight: "bold" },
-  emptyText: {
-    color: "#A68D5F",
-    textAlign: "center",
-    marginTop: 50,
-    fontSize: 10,
-    letterSpacing: 2,
+  itemName: { 
+    color: "#FFF", 
+    fontSize: 13, 
+    fontWeight: "800", 
+    letterSpacing: 1,
+    marginBottom: 6 
+  },
+  itemDesc: { 
+    color: "#666", 
+    fontSize: 10, 
+    lineHeight: 16,
+    fontWeight: "400" 
+  },
+  priceContainer: { flex: 0.3, alignItems: "flex-end" },
+  priceText: { 
+    color: "#D4AF37", 
+    fontSize: 16, 
+    fontWeight: "900",
+    letterSpacing: 0.5 
+  },
+  emptyContainer: { marginTop: 100, alignItems: "center" },
+  emptyText: { 
+    color: "#222", 
+    fontSize: 9, 
+    letterSpacing: 3, 
+    fontWeight: "bold" 
   },
   orderBtn: {
     backgroundColor: "#D4AF37",
-    height: 55,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 2,
-    marginBottom: 20,
+    borderRadius: 15,
+    position: "absolute",
+    bottom: 30,
+    left: 20,
+    right: 20,
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 10,
   },
-  btnText: { color: "#660000", fontWeight: "bold", letterSpacing: 2 },
+  btnText: { 
+    color: "#000", 
+    fontWeight: "900", 
+    letterSpacing: 2, 
+    fontSize: 11 
+  },
 });
