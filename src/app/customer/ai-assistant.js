@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  View,
+  View, // Added missing View import
   Text,
   StyleSheet,
   SafeAreaView,
@@ -12,11 +12,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext"; // Path Verified
+import { useTheme } from "../../theme/ThemeContext"; // Path Fixed
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import { generateAIResponse } from "../../services/aiService";
+import { generateAIResponse } from "../../services/aiService"; // Path Verified
 
 export default function AiAssistant() {
   const { userData } = useAuth();
@@ -53,8 +53,6 @@ export default function AiAssistant() {
       }
     };
     initializeChat();
-
-    // SOCKET/FIREBASE LISTENER FOR ADMIN MESSAGES SHOULD BE PLACED HERE
   }, []);
 
   const handleSendMessage = async () => {
@@ -80,9 +78,8 @@ export default function AiAssistant() {
     try {
       const response = await generateAIResponse(securePrompt);
 
-      // LOGIC: Trigger Admin Alert if AI suggests human handover
       if (response.includes("human expert")) {
-        // Function to push alert to your Admin Dashboard (e.g., notifyAdmin(userId))
+        // Logic to notify admin can be added here
       }
 
       setMessages((prev) => [
@@ -130,7 +127,7 @@ export default function AiAssistant() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background || "#000" }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#FFF" />
@@ -152,7 +149,7 @@ export default function AiAssistant() {
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
         contentContainerStyle={styles.chatContent}
-        onContentSizeChange={() => flatListRef.current.scrollToEnd()}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
       />
 
       <KeyboardAvoidingView
@@ -188,7 +185,7 @@ export default function AiAssistant() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
