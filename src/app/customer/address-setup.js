@@ -17,7 +17,7 @@ import * as Animatable from "react-native-animatable";
 export default function AddressSetup() {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { updateProfile } = useAuth(); 
+  const { updateProfile } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
 
@@ -28,7 +28,7 @@ export default function AddressSetup() {
       if (status !== "granted") {
         Alert.alert(
           "Permission Denied",
-          "Location access is vital for precision delivery."
+          "Location access is vital for precision delivery.",
         );
         return;
       }
@@ -73,7 +73,12 @@ export default function AddressSetup() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background || "#000" }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.background || "#000" },
+      ]}
+    >
       <Animatable.View animation="fadeInUp" style={styles.content}>
         <Text style={[styles.title, { color: "#FFF" }]}>
           DELIVERY PRECISION
@@ -82,8 +87,20 @@ export default function AddressSetup() {
           Aligning your global profile with local logistics.
         </Text>
 
-        <View style={[styles.addressDisplay, { backgroundColor: "#050505", borderColor: "#111" }]}>
-          <Text style={[styles.addressLabel, { color: colors.primary || "#D4AF37" }]}>DETECTED ADDRESS:</Text>
+        <View
+          style={[
+            styles.addressDisplay,
+            { backgroundColor: "#050505", borderColor: "#111" },
+          ]}
+        >
+          <Text
+            style={[
+              styles.addressLabel,
+              { color: colors.primary || "#D4AF37" },
+            ]}
+          >
+            DETECTED ADDRESS:
+          </Text>
           <Text style={styles.addressText}>
             {address
               ? `${address.house} ${address.street}, ${address.city}`

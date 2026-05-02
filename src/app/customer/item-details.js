@@ -38,10 +38,10 @@ export default function ItemDetails() {
           onPress: () =>
             Alert.alert(
               "Success",
-              "Admin has been notified. They will contact you shortly."
+              "Admin has been notified. They will contact you shortly.",
             ),
         },
-      ]
+      ],
     );
   };
 
@@ -64,7 +64,7 @@ export default function ItemDetails() {
 
       // Corrected Path to include parentheses
       router.replace({
-        pathname: "/(customer)/order-success", 
+        pathname: "/(customer)/order-success",
         params: {
           orderId: orderId,
           itemName: name,
@@ -75,7 +75,7 @@ export default function ItemDetails() {
     } catch (error) {
       Alert.alert(
         "Transaction Error",
-        "System is monitoring this issue. Admin has been alerted."
+        "System is monitoring this issue. Admin has been alerted.",
       );
     } finally {
       setLoading(false);
@@ -83,7 +83,12 @@ export default function ItemDetails() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background || "#000" }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.background || "#000" },
+      ]}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -103,12 +108,27 @@ export default function ItemDetails() {
             <Text style={[styles.price, { color: colors.primary }]}>
               {price}
             </Text>
-            <Text style={[styles.currencyLabel, { color: colors.textDim || "#444" }]}>{currency}</Text>
+            <Text
+              style={[
+                styles.currencyLabel,
+                { color: colors.textDim || "#444" },
+              ]}
+            >
+              {currency}
+            </Text>
           </View>
         </Animatable.View>
 
-        <Animatable.View animation="fadeInUp" delay={300} style={styles.selectorContainer}>
-          <Text style={[styles.sectionLabel, { color: colors.textDim || "#333" }]}>SELECT SERVICE MODE</Text>
+        <Animatable.View
+          animation="fadeInUp"
+          delay={300}
+          style={styles.selectorContainer}
+        >
+          <Text
+            style={[styles.sectionLabel, { color: colors.textDim || "#333" }]}
+          >
+            SELECT SERVICE MODE
+          </Text>
           <View style={styles.modeRow}>
             <TouchableOpacity
               onPress={() => setOrderMode("delivery")}
@@ -125,7 +145,12 @@ export default function ItemDetails() {
                 size={20}
                 color={orderMode === "delivery" ? colors.primary : "#444"}
               />
-              <Text style={[styles.modeText, { color: orderMode === "delivery" ? "#FFF" : "#444" }]}>
+              <Text
+                style={[
+                  styles.modeText,
+                  { color: orderMode === "delivery" ? "#FFF" : "#444" },
+                ]}
+              >
                 DELIVERY
               </Text>
             </TouchableOpacity>
@@ -145,21 +170,39 @@ export default function ItemDetails() {
                 size={20}
                 color={orderMode === "dine_in" ? colors.primary : "#444"}
               />
-              <Text style={[styles.modeText, { color: orderMode === "dine_in" ? "#FFF" : "#444" }]}>
+              <Text
+                style={[
+                  styles.modeText,
+                  { color: orderMode === "dine_in" ? "#FFF" : "#444" },
+                ]}
+              >
                 DINE-IN
               </Text>
             </TouchableOpacity>
           </View>
         </Animatable.View>
 
-        <Animatable.View animation="fadeIn" delay={600} style={styles.detailsBox}>
-          <Text style={[styles.descTitle, { color: colors.primary }]}>CHEF'S DESCRIPTION</Text>
-          <Text style={[styles.description, { color: "#AAA" }]}>{description}</Text>
+        <Animatable.View
+          animation="fadeIn"
+          delay={600}
+          style={styles.detailsBox}
+        >
+          <Text style={[styles.descTitle, { color: colors.primary }]}>
+            CHEF'S DESCRIPTION
+          </Text>
+          <Text style={[styles.description, { color: "#AAA" }]}>
+            {description}
+          </Text>
         </Animatable.View>
 
-        <Animatable.View animation="fadeInUp" delay={800} style={styles.aiTrustBox}>
+        <Animatable.View
+          animation="fadeInUp"
+          delay={800}
+          style={styles.aiTrustBox}
+        >
           <Text style={styles.aiTrustText}>
-            🛡️ AI-Verified Transaction: Monitoring regional sync for {userData?.countryName || "Local"} market.
+            🛡️ AI-Verified Transaction: Monitoring regional sync for{" "}
+            {userData?.countryName || "Local"} market.
           </Text>
         </Animatable.View>
 
@@ -169,8 +212,15 @@ export default function ItemDetails() {
             onPress={handlePlaceOrder}
             disabled={loading}
           />
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Text style={[styles.cancelText, { color: colors.textDim || "#222" }]}>CANCEL & RETURN</Text>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.backBtn}
+          >
+            <Text
+              style={[styles.cancelText, { color: colors.textDim || "#222" }]}
+            >
+              CANCEL & RETURN
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -182,20 +232,59 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { padding: 30, flexGrow: 1 },
   header: { marginTop: 20 },
-  titleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: { fontSize: 32, fontWeight: "900", letterSpacing: 1 },
-  priceContainer: { flexDirection: "row", alignItems: "baseline", marginTop: 5 },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    marginTop: 5,
+  },
   price: { fontSize: 24, fontWeight: "bold" },
   currencyLabel: { fontSize: 10, marginLeft: 5, fontWeight: "bold" },
   selectorContainer: { marginTop: 30 },
-  sectionLabel: { fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 15 },
+  sectionLabel: {
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    marginBottom: 15,
+  },
   modeRow: { flexDirection: "row", justifyContent: "space-between" },
-  modeBtn: { flex: 0.48, height: 60, borderRadius: 15, borderWidth: 1, borderColor: "#111", justifyContent: "center", alignItems: "center", flexDirection: "row" },
-  modeText: { fontSize: 10, fontWeight: "900", marginLeft: 10, letterSpacing: 1 },
+  modeBtn: {
+    flex: 0.48,
+    height: 60,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#111",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  modeText: {
+    fontSize: 10,
+    fontWeight: "900",
+    marginLeft: 10,
+    letterSpacing: 1,
+  },
   detailsBox: { marginTop: 40 },
-  descTitle: { fontSize: 9, fontWeight: "bold", letterSpacing: 2, marginBottom: 10 },
+  descTitle: {
+    fontSize: 9,
+    fontWeight: "bold",
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
   description: { fontSize: 15, lineHeight: 24 },
-  aiTrustBox: { marginTop: 30, padding: 15, backgroundColor: "#050505", borderRadius: 12, borderWidth: 1, borderColor: "#111" },
+  aiTrustBox: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: "#050505",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#111",
+  },
   aiTrustText: { color: "#444", fontSize: 10, textAlign: "center" },
   footer: { marginTop: "auto", paddingTop: 30 },
   backBtn: { marginTop: 20, alignItems: "center" },
