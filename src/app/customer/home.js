@@ -11,16 +11,12 @@ import {
   TextInput,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../src/context/AuthContext";
-import { useTheme } from "../../src/theme/ThemeContext";
-import { dbService } from "../../src/services/dbService";
+import { useAuth } from "../../context/AuthContext"; // Path Fixed
+import { useTheme } from "../../theme/ThemeContext"; // Path Fixed
+import { dbService } from "../../services/dbService"; // Path Fixed
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-/**
- * CUSTOMER HOME - MAIN INTERFACE
- * Route: /customer/home
- */
 export default function Home() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -43,17 +39,11 @@ export default function Home() {
   const updateAiAdvice = () => {
     const hours = new Date().getHours();
     if (hours < 12)
-      setAiMessage(
-        `MORNING PROTOCOL: Refreshing energy hubs in ${location}. ☀️`,
-      );
+      setAiMessage(`MORNING PROTOCOL: Refreshing energy hubs in ${location}. ☀️`);
     else if (hours < 18)
-      setAiMessage(
-        `SYSTEM SYNC: High-performance options detected in ${location}. ☁️`,
-      );
+      setAiMessage(`SYSTEM SYNC: High-performance options detected in ${location}. ☁️`);
     else
-      setAiMessage(
-        `NIGHT MODE: Analyzing comfort-tier dining for your cycle. 🌙`,
-      );
+      setAiMessage(`NIGHT MODE: Analyzing comfort-tier dining for your cycle. 🌙`);
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -92,7 +82,7 @@ export default function Home() {
     const filtered = items.filter(
       (item) =>
         item.name.toLowerCase().includes(text.toLowerCase()) ||
-        item.description.toLowerCase().includes(text.toLowerCase()),
+        item.description.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredItems(filtered);
   };
@@ -102,7 +92,7 @@ export default function Home() {
       userData?.location?.lat,
       userData?.location?.lng,
       item.lat,
-      item.lng,
+      item.lng
     );
 
     return (
@@ -128,19 +118,12 @@ export default function Home() {
               {item.name}
             </Text>
             <View style={styles.distanceRow}>
-              <Ionicons
-                name="location-sharp"
-                size={10}
-                color={colors.primary}
-              />
+              <Ionicons name="location-sharp" size={10} color={colors.primary} />
               <Text style={[styles.distanceText, { color: colors.textDim }]}>
                 {dist} KM • {item.restaurantName || "Verified"}
               </Text>
             </View>
-            <Text
-              numberOfLines={1}
-              style={[styles.itemDesc, { color: colors.textDim }]}
-            >
+            <Text numberOfLines={1} style={[styles.itemDesc, { color: colors.textDim }]}>
               {item.description}
             </Text>
           </View>
@@ -158,21 +141,13 @@ export default function Home() {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Animatable.View animation="fadeInDown" style={styles.header}>
           <View style={styles.headerTop}>
-            <Text style={[styles.brandTitle, { color: colors.textMain }]}>
-              DISCOVER
-            </Text>
+            <Text style={[styles.brandTitle, { color: colors.textMain }]}>DISCOVER</Text>
             <TouchableOpacity onPress={() => router.push("/(customer)/wallet")}>
-              <Ionicons
-                name="wallet-outline"
-                size={24}
-                color={colors.primary}
-              />
+              <Ionicons name="wallet-outline" size={24} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <Text style={[styles.subTitle, { color: colors.primary }]}>
@@ -181,18 +156,8 @@ export default function Home() {
         </Animatable.View>
 
         <View style={styles.searchSection}>
-          <View
-            style={[
-              styles.searchBar,
-              { backgroundColor: colors.inputBg, borderColor: colors.border },
-            ]}
-          >
-            <Ionicons
-              name="search"
-              size={18}
-              color={colors.textDim}
-              style={{ marginRight: 10 }}
-            />
+          <View style={[styles.searchBar, { backgroundColor: colors.inputBg, borderColor: colors.border }]}>
+            <Ionicons name="search" size={18} color={colors.textDim} style={{ marginRight: 10 }} />
             <TextInput
               placeholder="Search local delicacies..."
               placeholderTextColor={colors.textDim}
@@ -207,29 +172,16 @@ export default function Home() {
           animation="pulse"
           iterationCount="infinite"
           duration={4000}
-          style={[
-            styles.aiPanel,
-            { backgroundColor: colors.cardBg, borderColor: colors.border },
-          ]}
+          style={[styles.aiPanel, { backgroundColor: colors.cardBg, borderColor: colors.border }]}
         >
-          <Text style={[styles.aiLabel, { color: colors.primary }]}>
-            SYSTEM CORE ENGINE
-          </Text>
-          <Text style={[styles.aiText, { color: colors.textMain }]}>
-            {aiMessage}
-          </Text>
+          <Text style={[styles.aiLabel, { color: colors.primary }]}>SYSTEM CORE ENGINE</Text>
+          <Text style={[styles.aiText, { color: colors.textMain }]}>{aiMessage}</Text>
         </Animatable.View>
 
-        <Text style={[styles.sectionTitle, { color: colors.textDim }]}>
-          NEARBY SELECTIONS
-        </Text>
+        <Text style={[styles.sectionTitle, { color: colors.textDim }]}>NEARBY SELECTIONS</Text>
 
         {loading ? (
-          <ActivityIndicator
-            size="large"
-            color={colors.primary}
-            style={styles.loader}
-          />
+          <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
         ) : (
           <FlatList
             data={filteredItems}
@@ -244,55 +196,21 @@ export default function Home() {
   );
 }
 
+// ... styles remains the same as your input
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { padding: 25, paddingTop: 40 },
-  headerTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+  headerTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   brandTitle: { fontSize: 30, fontWeight: "900", letterSpacing: 2 },
-  subTitle: {
-    fontSize: 9,
-    fontWeight: "bold",
-    letterSpacing: 1.5,
-    marginTop: 5,
-  },
+  subTitle: { fontSize: 9, fontWeight: "bold", letterSpacing: 1.5, marginTop: 5 },
   searchSection: { paddingHorizontal: 25, marginBottom: 10 },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    height: 50,
-    borderRadius: 15,
-    borderWidth: 1,
-  },
+  searchBar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, height: 50, borderRadius: 15, borderWidth: 1 },
   searchInput: { flex: 1, fontSize: 14 },
   aiPanel: { margin: 25, padding: 20, borderRadius: 20, borderWidth: 1 },
-  aiLabel: {
-    fontSize: 8,
-    fontWeight: "900",
-    letterSpacing: 2,
-    marginBottom: 8,
-  },
+  aiLabel: { fontSize: 8, fontWeight: "900", letterSpacing: 2, marginBottom: 8 },
   aiText: { fontSize: 13, lineHeight: 20, fontWeight: "500" },
-  sectionTitle: {
-    fontSize: 10,
-    fontWeight: "900",
-    marginHorizontal: 25,
-    marginBottom: 15,
-    letterSpacing: 2,
-  },
-  card: {
-    flexDirection: "row",
-    padding: 20,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginBottom: 12,
-    marginHorizontal: 25,
-    alignItems: "center",
-  },
+  sectionTitle: { fontSize: 10, fontWeight: "900", marginHorizontal: 25, marginBottom: 15, letterSpacing: 2 },
+  card: { flexDirection: "row", padding: 20, borderRadius: 20, borderWidth: 1, marginBottom: 12, marginHorizontal: 25, alignItems: "center" },
   itemMeta: { flex: 1 },
   itemName: { fontSize: 16, fontWeight: "bold" },
   distanceRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
