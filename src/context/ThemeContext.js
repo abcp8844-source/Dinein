@@ -2,11 +2,16 @@ import React, { createContext, useContext } from "react";
 
 const ThemeContext = createContext({});
 
+/**
+ * GLOBAL THEME ARCHITECTURE
+ * Primary: Dark Navy Blue (#0A111F)
+ * Highlight: Premium Gold (#D4AF37)
+ */
 export const ThemeProvider = ({ children }) => {
   const theme = {
     colors: {
-      background: "#0A111F",
-      primary: "#D4AF37",
+      background: "#0A111F",      
+      primary: "#D4AF37",         
       secondary: "#FFFFFF",
       textMain: "#FDFDFD",
       textDim: "#A0AEC0",
@@ -28,7 +33,9 @@ export const ThemeProvider = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={theme}>
+      {children}
+    </ThemeContext.Provider>
   );
 };
 
