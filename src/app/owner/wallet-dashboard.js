@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,207 +7,109 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  StatusBar,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../theme/ThemeContext";
 import * as Animatable from "react-native-animatable";
 
-/**
- * OWNER REVENUE & PROMOTION ENGINE
- * Safeguard: Locked to specific Market ISO nodes to prevent cross-country data leakage.
- */
 export default function OwnerWallet() {
   const { userData } = useAuth();
   const { colors } = useTheme();
 
-  // 🛡️ SECURITY ANCHOR: Strictly derived from the 15-Market Registration Node
-  const marketISO = userData?.isoCode || "INTL"; // e.g., THA, ARE, USA
   const currency = userData?.currencyCode || "USD";
   const country = userData?.countryName || "Global Market";
+  const marketISO = userData?.isoCode || "INTL";
 
-  // Logic: In production, balance is fetched via dbService[marketISO].getBalance()
-  const [balance, setBalance] = useState(2500.0);
+  const [balance, setBalance] = useState(0.0);
 
-  const handlePurchasePromotion = (cost) => {
-    // 🛡️ Double Verification: Check if owner is operating in their registered market
+  const handlePromotionDeduction = (cost) => {
     if (balance >= cost) {
       Alert.alert(
-        "Market Deduction",
-        `Confirmed: ${cost} ${currency} will be deducted from your ${country} revenue node.`,
+        "DINING TABLE SECURITY",
+        `Confirm ${cost} ${currency} deduction for ${country} promotion.`,
         [
-          {
-            text: "Authorize",
-            onPress: () => {
-              setBalance((prev) => prev - cost);
-              // Logic: Update ledger in dbService under /wallets/[marketISO]/[ownerId]
-            },
-          },
-        ],
+          { text: "AUTHORIZE", onPress: () => setBalance((prev) => prev - cost) },
+          { text: "CANCEL", style: "cancel" }
+        ]
       );
     } else {
-      Alert.alert(
-        "Registry Sync Notice",
-        `Insufficient ${currency} in your ${marketISO} account.`,
-      );
+      Alert.alert("MARKET ERROR", "Insufficient funds in your revenue node.");
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* --- DYNAMIC MARKET HEADER --- */}
-        <Animatable.View animation="fadeInDown" style={styles.header}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{marketISO} REGISTRY ACTIVE</Text>
+        
+        <Animatable.View animation="fadeInDown" style={[styles.header, { backgroundColor: "#051121", borderBottomColor: "#0A1A2F" }]}>
+          <View style={[styles.badge, { borderColor: colors.primary }]}>
+            <Text style={[styles.badgeText, { color: colors.primary }]}>{marketISO} REGISTRY ACTIVE</Text>
           </View>
 
-          <Text style={styles.label}>
-            TOTAL SETTLED REVENUE ({country.toUpperCase()})
-          </Text>
-          <Text style={[styles.amount, { color: colors.primary }]}>
+          <Text style={styles.label}>TOTAL SETTLED REVENUE ({country.toUpperCase()})</Text>
+          <Text style={[styles.amount, { color: "#FFF" }]}>
             {balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}{" "}
-            <Text style={styles.currency}>{currency}</Text>
+            <Text style={[styles.currency, { color: colors.primary }]}>{currency}</Text>
           </Text>
 
           <View style={styles.syncStatus}>
-            <Text style={styles.syncStatusText}>
-              ● SECURE DATA NODE: {userData?.idVerification || "VERIFIED"}
-            </Text>
+            <Text style={styles.syncStatusText}>● DINING TABLE NODE: ENCRYPTED</Text>
           </View>
         </Animatable.View>
 
-        {/* --- PROMOTION SECTION (Market Specific) --- */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>REVENUE RE-INVESTMENT</Text>
+          <Text style={styles.sectionTitle}>PROMOTION ENGINE</Text>
           <TouchableOpacity
-            style={styles.promoCard}
-            onPress={() => handlePurchasePromotion(500)}
+            style={[styles.promoCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}
+            onPress={() => handlePromotionDeduction(500)}
           >
             <View style={{ flex: 1 }}>
               <Text style={styles.promoTitle}>Market Wide Visibility</Text>
-              <Text style={styles.promoDesc}>
-                Priority placement in {country} store listings for 24h
-              </Text>
+              <Text style={styles.promoDesc}>Priority placement in {country} market</Text>
             </View>
-            <Text style={[styles.promoPrice, { color: colors.primary }]}>
-              -500 {currency}
-            </Text>
+            <Text style={[styles.promoPrice, { color: colors.primary }]}>-{500} {currency}</Text>
           </TouchableOpacity>
         </View>
 
-        {/* --- TRANSACTION LEDGER (Locked to Country Node) --- */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            RECENT SETTLEMENTS ({marketISO})
-          </Text>
-          <View style={styles.ledgerCard}>
-            <View style={styles.ledgerRow}>
+          <Text style={styles.sectionTitle}>MARKET SETTLEMENTS ({marketISO})</Text>
+          <div style={[styles.ledgerCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+            <View style={[styles.ledgerRow, { borderBottomColor: "#0A1A2F" }]}>
               <View>
-                <Text style={styles.orderId}>Order #9921</Text>
-                <Text style={styles.timeStamp}>Detected in: {country}</Text>
+                <Text style={styles.orderId}>Order Settlement</Text>
+                <Text style={styles.timeStamp}>Synced for: {country}</Text>
               </View>
-              <Text style={styles.credit}>+150.00 {currency}</Text>
+              <Text style={styles.credit}>ACTIVE</Text>
             </View>
-
-            <View style={styles.ledgerRow}>
-              <View>
-                <Text style={styles.orderId}>Order #9918</Text>
-                <Text style={styles.timeStamp}>Local Node Transfer</Text>
-              </View>
-              <Text style={styles.credit}>+320.00 {currency}</Text>
-            </View>
-
-            <View style={[styles.ledgerRow, { borderBottomWidth: 0 }]}>
-              <View>
-                <Text style={styles.orderId}>Promotion Fee</Text>
-                <Text style={styles.timeStamp}>Internal Market Cost</Text>
-              </View>
-              <Text style={styles.debit}>-200.00 {currency}</Text>
-            </View>
-          </View>
+          </div>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
-  header: {
-    padding: 40,
-    alignItems: "center",
-    backgroundColor: "#050505",
-    borderBottomWidth: 1,
-    borderBottomColor: "#111",
-  },
-  badge: {
-    backgroundColor: "#1A1A1A",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  badgeText: {
-    color: "#D4AF37",
-    fontSize: 7,
-    fontWeight: "900",
-    letterSpacing: 1,
-  },
-  label: { color: "#444", fontSize: 9, fontWeight: "900", letterSpacing: 2 },
-  amount: { fontSize: 36, fontWeight: "900", marginTop: 10 },
-  currency: { fontSize: 16, fontWeight: "400" },
-  syncStatus: {
-    marginTop: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    backgroundColor: "#0A0A0A",
-    borderRadius: 4,
-  },
-  syncStatusText: {
-    color: "#00FF00",
-    fontSize: 7,
-    fontWeight: "bold",
-    opacity: 0.8,
-  },
+  container: { flex: 1 },
+  header: { padding: 40, alignItems: "center", borderBottomWidth: 1 },
+  badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 6, marginBottom: 15, borderWidth: 1 },
+  badgeText: { fontSize: 8, fontWeight: "900", letterSpacing: 1 },
+  label: { color: "#5D6D7E", fontSize: 9, fontWeight: "900", letterSpacing: 2 },
+  amount: { fontSize: 38, fontWeight: "200", marginTop: 10 },
+  currency: { fontSize: 16, fontWeight: "900" },
+  syncStatus: { marginTop: 15, paddingHorizontal: 10, paddingVertical: 4, backgroundColor: "rgba(0,255,0,0.05)", borderRadius: 4 },
+  syncStatusText: { color: "#00FF00", fontSize: 7, fontWeight: "bold", letterSpacing: 1 },
   section: { marginTop: 30, paddingHorizontal: 25 },
-  sectionTitle: {
-    color: "#333",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 2,
-    marginBottom: 15,
-  },
-  promoCard: {
-    backgroundColor: "#0A0A0A",
-    padding: 20,
-    borderRadius: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#111",
-  },
-  promoTitle: { color: "#FFF", fontSize: 13, fontWeight: "bold" },
-  promoDesc: { color: "#555", fontSize: 9, marginTop: 4 },
-  promoPrice: { fontSize: 12, fontWeight: "bold" },
-  ledgerCard: {
-    backgroundColor: "#050505",
-    borderRadius: 15,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#111",
-  },
-  ledgerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#111",
-  },
-  orderId: { color: "#AAA", fontSize: 12, fontWeight: "600" },
-  timeStamp: { color: "#333", fontSize: 8, marginTop: 2, fontWeight: "bold" },
-  credit: { color: "#00FF00", fontSize: 12, fontWeight: "bold" },
-  debit: { color: "#FF4444", fontSize: 12, fontWeight: "bold" },
+  sectionTitle: { color: "#2C3E50", fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 15 },
+  promoCard: { padding: 20, borderRadius: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderWidth: 1 },
+  promoTitle: { color: "#FFF", fontSize: 14, fontWeight: "bold" },
+  promoDesc: { color: "#5D6D7E", fontSize: 9, marginTop: 4, fontWeight: "600" },
+  promoPrice: { fontSize: 12, fontWeight: "900" },
+  ledgerCard: { borderRadius: 20, padding: 20, borderWidth: 1 },
+  ledgerRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 18, borderBottomWidth: 1 },
+  orderId: { color: "#FFF", fontSize: 12, fontWeight: "700" },
+  timeStamp: { color: "#5D6D7E", fontSize: 8, marginTop: 4, fontWeight: "900" },
+  credit: { color: "#00FF00", fontSize: 10, fontWeight: "900" },
 });
