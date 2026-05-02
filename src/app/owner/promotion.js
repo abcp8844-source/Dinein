@@ -7,7 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { dbService } from "../../services/dbService";
 import { useAuth } from "../../context/AuthContext";
@@ -26,12 +26,12 @@ export default function OwnerPromotion() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const THEME = {
-    bg: "#001529",         
-    card: "#002F56",       
-    accent: "#D4AF37",     
+    bg: "#001529",
+    card: "#002F56",
+    accent: "#D4AF37",
     textMain: "#FFFFFF",
     textSecondary: "#A6B1BB",
-    border: "#004B87"
+    border: "#004B87",
   };
 
   useEffect(() => {
@@ -60,24 +60,39 @@ export default function OwnerPromotion() {
   };
 
   const renderItem = ({ item }) => (
-    <View style={[styles.itemCard, { backgroundColor: THEME.card, borderColor: THEME.border }]}>
+    <View
+      style={[
+        styles.itemCard,
+        { backgroundColor: THEME.card, borderColor: THEME.border },
+      ]}
+    >
       <View style={styles.cardInfo}>
-        <Text style={[styles.itemName, { color: THEME.textMain }]}>{item.name}</Text>
+        <Text style={[styles.itemName, { color: THEME.textMain }]}>
+          {item.name}
+        </Text>
         <Text style={{ color: THEME.accent, fontSize: 12, fontWeight: "600" }}>
           {item.price} {userData?.currencyCode || "THB"}
         </Text>
       </View>
-      
-      <TouchableOpacity 
+
+      <TouchableOpacity
         onPress={() => toggleBoost(item)}
-        style={[styles.boostBtn, { backgroundColor: item.isBoosted ? THEME.accent : 'transparent' }]}
+        style={[
+          styles.boostBtn,
+          { backgroundColor: item.isBoosted ? THEME.accent : "transparent" },
+        ]}
       >
-        <Ionicons 
-          name={item.isBoosted ? "rocket" : "rocket-outline"} 
-          size={18} 
-          color={item.isBoosted ? "#000" : THEME.accent} 
+        <Ionicons
+          name={item.isBoosted ? "rocket" : "rocket-outline"}
+          size={18}
+          color={item.isBoosted ? "#000" : THEME.accent}
         />
-        <Text style={[styles.boostText, { color: item.isBoosted ? "#000" : THEME.accent }]}>
+        <Text
+          style={[
+            styles.boostText,
+            { color: item.isBoosted ? "#000" : THEME.accent },
+          ]}
+        >
           {item.isBoosted ? "ACTIVE" : "BOOST"}
         </Text>
       </TouchableOpacity>
@@ -88,9 +103,17 @@ export default function OwnerPromotion() {
     <SafeAreaView style={[styles.container, { backgroundColor: THEME.bg }]}>
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={[styles.title, { color: THEME.textMain }]}>Growth Center</Text>
-        <TouchableOpacity onPress={() => Alert.alert("Admin Sync", "Fetching latest rates...")}>
-          <Ionicons name="cloud-download-outline" size={24} color={THEME.accent} />
+        <Text style={[styles.title, { color: THEME.textMain }]}>
+          Growth Center
+        </Text>
+        <TouchableOpacity
+          onPress={() => Alert.alert("Admin Sync", "Fetching latest rates...")}
+        >
+          <Ionicons
+            name="cloud-download-outline"
+            size={24}
+            color={THEME.accent}
+          />
         </TouchableOpacity>
       </View>
 
@@ -100,15 +123,24 @@ export default function OwnerPromotion() {
         renderItem={renderItem}
         contentContainerStyle={{ padding: 20 }}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>No items available for promotion.</Text>
+          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>
+            No items available for promotion.
+          </Text>
         }
       />
 
       <View style={[styles.footer, { borderTopColor: THEME.border }]}>
-        <Text style={styles.disclaimer}>* Pricing & tiers managed by Admin protocol</Text>
-        <PremiumButton 
-          title="INITIALIZE NEW CAMPAIGN" 
-          onPress={() => Alert.alert("Request Sent", "Admin will review your growth request.")} 
+        <Text style={styles.disclaimer}>
+          * Pricing & tiers managed by Admin protocol
+        </Text>
+        <PremiumButton
+          title="INITIALIZE NEW CAMPAIGN"
+          onPress={() =>
+            Alert.alert(
+              "Request Sent",
+              "Admin will review your growth request.",
+            )
+          }
         />
       </View>
     </SafeAreaView>
@@ -117,7 +149,12 @@ export default function OwnerPromotion() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: {
+    padding: 25,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: { fontSize: 28, fontWeight: "900", letterSpacing: 1 },
   itemCard: {
     padding: 20,
@@ -134,13 +171,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: "#D4AF37"
+    borderColor: "#D4AF37",
   },
-  boostText: { fontSize: 9, fontWeight: '900', marginLeft: 6, letterSpacing: 1 },
+  boostText: {
+    fontSize: 9,
+    fontWeight: "900",
+    marginLeft: 6,
+    letterSpacing: 1,
+  },
   footer: { padding: 25, borderTopWidth: 1 },
-  disclaimer: { color: "#444", fontSize: 9, textAlign: 'center', marginBottom: 15, letterSpacing: 0.5 },
-  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 12 }
+  disclaimer: {
+    color: "#444",
+    fontSize: 9,
+    textAlign: "center",
+    marginBottom: 15,
+    letterSpacing: 0.5,
+  },
+  emptyText: { textAlign: "center", marginTop: 50, fontSize: 12 },
 });
