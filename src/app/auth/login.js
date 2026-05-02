@@ -8,11 +8,11 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
-import { useAuth } from "../../src/context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
-import { useTheme } from "../../src/theme/ThemeContext";
-import PremiumButton from "../../src/components/PremiumButton";
-import PremiumInput from "../../src/components/PremiumInput";
+import { useTheme } from "../theme/ThemeContext";
+import PremiumButton from "../components/PremiumButton";
+import PremiumInput from "../components/PremiumInput";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Login() {
