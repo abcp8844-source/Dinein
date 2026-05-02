@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,35 +17,48 @@ import * as Animatable from "react-native-animatable";
 
 /**
  * RESTORED: Future-Tech Logistics Queue
- * Logic: Order Valuation & Regional Node Validation (20-Country Sync)
- * Feature: Secured Asset Scanning for Global Settlement
+ * Logic: Order Valuation & Regional Node Validation
+ * Integrity: Standard Deep-Navy #020B18 | Real Data Binding
  */
 export default function Cart() {
   const router = useRouter();
   const { colors } = useTheme();
-  const { userData } = useAuth();
+  const { userData, updateProfile } = useAuth(); // Profile context for sync
   const [cartItems, setCartItems] = useState([]);
 
+  // REAL DATA SYNC: Pulling live assets from user data
+  useEffect(() => {
+    if (userData?.cart) {
+      setCartItems(userData.cart);
+    }
+  }, [userData?.cart]);
+
   // RESTORED: Global Currency & Node Synchronization Logic
-  const currency = userData?.currencyCode || "USD";
-  const country = userData?.countryName || "GLOBAL";
+  const currency = userData?.currencyCode || "THB";
+  const country = userData?.countryName || "Thailand";
 
   const calculateTotal = () => {
     return cartItems
-      .reduce((sum, item) => sum + parseFloat(item.price), 0)
+      .reduce((sum, item) => sum + parseFloat(item.price || 0), 0)
       .toFixed(2);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       Alert.alert(
         "QUEUE EMPTY",
-        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING.",
+        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING."
       );
       return;
     }
-    // Logic: Transition to Order Tracking & History Registry
-    router.replace("/(customer)/orders");
+    
+    try {
+      // LOGIC: Final settlement processing before registry
+      // Here you would typically trigger the payment or order creation service
+      router.replace("/(customer)/orders");
+    } catch (error) {
+      Alert.alert("SETTLEMENT ERROR", "CORE SYSTEM FAILED TO PROCESS ASSETS.");
+    }
   };
 
   const renderItem = ({ item, index }) => (
@@ -54,8 +67,8 @@ export default function Cart() {
       delay={index * 100}
       style={[styles.cartItem, { borderBottomColor: "#0A1A2F" }]}
     >
-      <View>
-        <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.itemName}>{item.name?.toUpperCase() || "UNKNOWN ASSET"}</Text>
         <Text style={styles.itemSub}>
           SECURED ASSET • {country.toUpperCase()} NODE
         </Text>
@@ -88,7 +101,7 @@ export default function Cart() {
 
       <FlatList
         data={cartItems}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
