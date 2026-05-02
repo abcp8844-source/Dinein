@@ -4,7 +4,7 @@
  * Target: 15 International Operational Nodes
  */
 
-import { db } from "../config/firebase"; // Assuming your firebase config is here
+import { db } from "./firebaseConfig"; 
 import {
   doc,
   updateDoc,
@@ -23,25 +23,18 @@ export const WalletEngine = {
       const transactionId = `PROMO-${Date.now()}`;
       const timestamp = new Date().toISOString();
 
-      // Path A: Regional Market Node (Owner Side)
       const ownerRef = doc(db, `markets/${countryCode}/owners`, ownerId);
-
-      // Path B: Global Admin Node (Admin Revenue Side)
       const adminRevenueRef = doc(db, "admin_finance", "global_revenue");
 
-      // Execution:
-      // 1. Decrement Owner Balance in their local currency
       await updateDoc(ownerRef, {
         balance: increment(-amount),
       });
 
-      // 2. Increment Admin Global Treasury
       await updateDoc(adminRevenueRef, {
         [`total_earnings_${currency}`]: increment(amount),
         total_transactions: increment(1),
       });
 
-      // 3. Record in Audit Ledger for Admin verification
       const ledgerRef = collection(db, "admin_audit_ledger");
       await addDoc(ledgerRef, {
         transactionId,
@@ -70,7 +63,6 @@ export const WalletEngine = {
     const refId = `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     try {
-      // Path: /markets/{ISO}/transactions
       const transactionRef = collection(
         db,
         `markets/${countryCode}/transactions`,
@@ -89,7 +81,6 @@ export const WalletEngine = {
 
       await addDoc(transactionRef, settlementRecord);
 
-      // Logic: Update Owner balance in their specific regional node
       const ownerRef = doc(db, `markets/${countryCode}/owners`, ownerId);
       await updateDoc(ownerRef, {
         balance: increment(amount),
