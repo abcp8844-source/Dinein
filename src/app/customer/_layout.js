@@ -1,11 +1,11 @@
 import { Tabs } from "expo-router";
-import { useTheme } from "../../context/ThemeContext";
+import { View } from "react-native";
+import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 
 /**
  * AI-CENTRIC CUSTOMER ARCHITECTURE
  * Engineered for Global Markets (15 Regions)
- * Integrated with Gemini AI Logic Nodes
  */
 export default function CustomerLayout() {
   const { colors } = useTheme();
@@ -13,7 +13,7 @@ export default function CustomerLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary, // #D4AF37 Gold
+        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: "#444444",
         tabBarStyle: {
           backgroundColor: "#000000",
@@ -22,7 +22,7 @@ export default function CustomerLayout() {
           paddingBottom: 15,
           paddingTop: 10,
           elevation: 20,
-          shadowColor: colors.primary, // AI Glowing Effect
+          shadowColor: colors.primary,
           shadowOpacity: 0.1,
         },
         tabBarLabelStyle: {
@@ -33,7 +33,6 @@ export default function CustomerLayout() {
         headerShown: false,
       }}
     >
-      {/* 📍 AI-SMART DISCOVER */}
       <Tabs.Screen
         name="home"
         options={{
@@ -44,7 +43,6 @@ export default function CustomerLayout() {
         }}
       />
 
-      {/* 🤖 GEMINI AI CORE (The Main Feature) */}
       <Tabs.Screen
         name="ai-assistant"
         options={{
