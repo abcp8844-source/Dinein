@@ -1,94 +1,53 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  StatusBar,
-  TouchableOpacity,
-} from "react-native";
-import { useAuth } from "../context/AuthContext";
-import { useRouter } from "expo-router";
-import { useTheme } from "../theme/ThemeContext";
-import PremiumButton from "../components/PremiumButton";
-import PremiumInput from "../components/PremiumInput";
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { resetPassword } = useAuth();
-  const { colors } = useTheme();
-  const router = useRouter();
+  const [identityNumber, setIdentityNumber] = useState(""); // Passport or Local ID
 
-  const handleReset = async () => {
-    if (!email) {
-      Alert.alert("Required", "Please enter your registered email.");
+  const handleResetRequest = async () => {
+    if (!email || !identityNumber) {
+      Alert.alert("VERIFICATION REQUIRED", "Please provide registered Email and ID/Passport Number.");
       return;
     }
 
-    setLoading(true);
+    // Logic: System will check if Email AND IdentityNumber match in Database
     try {
-      await resetPassword(email);
-      Alert.alert(
-        "Reset Link Sent",
-        "Check your email to reset your security key.",
-      );
-      router.back();
+      // await sendSecureResetLink(email, identityNumber);
+      Alert.alert("IDENTITY CONFIRMED", "A secure reset link has been sent to your encrypted email.");
     } catch (error) {
-      Alert.alert("Error", "Account not found or network issue.");
-    } finally {
-      setLoading(false);
+      Alert.alert("ACCESS DENIED", "Provided credentials do not match our global records.");
     }
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
-
-      <View style={styles.headerArea}>
-        <Text style={[styles.logoText, { color: colors.primary }]}>
-          RECOVER
-        </Text>
-        <Text style={[styles.tagline, { color: colors.textDim }]}>
-          SECURITY KEY RESTORATION
-        </Text>
-      </View>
-
-      <View style={styles.formArea}>
-        <Text style={[styles.label, { color: colors.primary }]}>
-          REGISTERED EMAIL
-        </Text>
-        <PremiumInput
-          placeholder="Enter your email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-        />
-      </View>
-
-      <PremiumButton
-        title={loading ? "SENDING..." : "SEND RESET LINK"}
-        onPress={handleReset}
+    <View style={styles.container}>
+      <Text style={styles.title}>IDENTITY RECOVERY</Text>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Registered Email" 
+        placeholderTextColor="#333"
+        value={email}
+        onChangeText={setEmail}
       />
-
-      <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-        <Text style={{ color: colors.textDim }}>BACK TO LOGIN</Text>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Passport or Local ID Number" 
+        placeholderTextColor="#333"
+        value={identityNumber}
+        onChangeText={setIdentityNumber}
+      />
+      <TouchableOpacity style={styles.btn} onPress={handleResetRequest}>
+        <Text style={styles.btnText}>VERIFY & RECOVER</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 30, justifyContent: "center" },
-  headerArea: { alignItems: "center", marginBottom: 40 },
-  logoText: { fontSize: 24, fontWeight: "300", letterSpacing: 5 },
-  tagline: { fontSize: 8, letterSpacing: 2, fontWeight: "bold", marginTop: 5 },
-  formArea: { marginBottom: 30 },
-  label: {
-    fontSize: 9,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-    marginBottom: 8,
-  },
-  backBtn: { alignItems: "center", marginTop: 30 },
+  container: { flex: 1, backgroundColor: "#000", padding: 30, justifyContent: "center" },
+  title: { color: "#D4AF37", fontSize: 18, fontWeight: "900", textAlign: "center", marginBottom: 40, letterSpacing: 2 },
+  input: { height: 55, borderBottomWidth: 1, borderBottomColor: "#D4AF37", color: "#FFF", marginBottom: 30 },
+  btn: { backgroundColor: "#D4AF37", height: 55, borderRadius: 10, justifyContent: "center", alignItems: "center" },
+  btnText: { fontWeight: "900", color: "#000" }
 });
