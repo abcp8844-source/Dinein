@@ -12,60 +12,60 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../theme/ThemeContext"; // FIXED: Corrected path
+import { db } from "../../services/firebaseConfig"; // Direct Firebase
+import { collection, query, where, onSnapshot } from "firebase/firestore"; // Real-time sync
 import { dbService } from "../../services/dbService";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-/**
- * PREMIUM INVENTORY CONTROL NODE
- * Purpose: Manage stock availability for the specific market node.
- */
 export default function ManageMenu() {
-  const { userData, marketISO } = useAuth();
-  const { colors } = useTheme();
+  const { userData } = useAuth();
   const router = useRouter();
 
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Theme Constants (Dark Navy Blue)
   const THEME = {
     bg: "#001529",
     card: "#002140",
-    accent: "#D4AF37", // Gold
+    accent: "#D4AF37",
     textMain: "#FFFFFF",
     textSecondary: "#A6B1BB",
   };
 
+  // --- REAL-TIME INVENTORY LISTENER ---
   useEffect(() => {
-    loadInventory();
-  }, []);
+    if (!userData?.uid) return;
 
-  const loadInventory = async () => {
-    try {
-      setLoading(true);
-      // Logic: Fetching items based on current market ISO (International Standard)
-      const items = await dbService.getMenuItems(marketISO || "TH");
-      setInventory(items || []);
-    } catch (error) {
-      console.error("Inventory Fetch Error:", error);
-    } finally {
+    // Fetch products only belonging to THIS owner
+    const q = query(
+      collection(db, "products"),
+      where("ownerId", "==", userData.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const items = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        // Fallback for safety if 'available' field is missing
+        available: doc.data().available ?? true 
+      }));
+      setInventory(items);
       setLoading(false);
-    }
-  };
+    }, (error) => {
+      console.error("Inventory Sync Error:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [userData]);
 
   const toggleAvailability = async (id, currentStatus) => {
-    // Logic: Updates availability in DB and reflects on customer app instantly
     try {
+      // Direct call to update status in Firebase
       await dbService.updateItemStatus(id, !currentStatus);
-      setInventory((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, available: !currentStatus } : item,
-        ),
-      );
     } catch (error) {
-      console.log("Status Update Failed");
+      console.log("Status Update Failed", error);
     }
   };
 
@@ -76,10 +76,13 @@ export default function ManageMenu() {
     >
       <View style={styles.itemInfo}>
         <Text style={[styles.itemName, { color: THEME.textMain }]}>
-          {item.name}
+          {item.itemName} {/* Updated key name from your UploadMenu code */}
         </Text>
         <Text style={[styles.itemPrice, { color: THEME.accent }]}>
           {item.price} {userData?.currencyCode || "THB"}
+        </Text>
+        <Text style={{color: THEME.textSecondary, fontSize: 10, marginTop: 4}}>
+          {item.category}
         </Text>
       </View>
       <View style={styles.actionArea}>
@@ -89,7 +92,7 @@ export default function ManageMenu() {
             { color: item.available ? "#00FF00" : "#FF3B30" },
           ]}
         >
-          {item.available ? "ACTIVE" : "HIDDEN"}
+          {item.available ? "AVAILABLE" : "OUT OF STOCK"}
         </Text>
         <Switch
           value={item.available}
@@ -112,16 +115,14 @@ export default function ManageMenu() {
         <Text style={[styles.headerTitle, { color: THEME.textMain }]}>
           INVENTORY CONTROL
         </Text>
-        <TouchableOpacity onPress={loadInventory}>
-          <Ionicons name="refresh-outline" size={24} color={THEME.accent} />
-        </TouchableOpacity>
+        <View style={{ width: 26 }} /> {/* Balance Spacer */}
       </View>
 
       {loading ? (
         <View style={styles.loaderArea}>
           <ActivityIndicator size="large" color={THEME.accent} />
           <Text style={{ color: THEME.textSecondary, marginTop: 10 }}>
-            Syncing Global Node...
+            Syncing Live Inventory...
           </Text>
         </View>
       ) : (
@@ -131,9 +132,17 @@ export default function ManageMenu() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>
-              No items found in your regional node.
-            </Text>
+            <View style={{marginTop: 100, alignItems: 'center'}}>
+               <Text style={[styles.emptyText, {color: THEME.textSecondary}]}>
+                No items found in your store.
+              </Text>
+              <TouchableOpacity 
+                style={{marginTop: 20, backgroundColor: THEME.accent, padding: 15, borderRadius: 10}}
+                onPress={() => router.push("/owner/upload-menu")}
+              >
+                <Text style={{fontWeight: '900', fontSize: 12}}>ADD FIRST ITEM</Text>
+              </TouchableOpacity>
+            </View>
           }
         />
       )}
@@ -175,9 +184,8 @@ const styles = StyleSheet.create({
   },
   loaderArea: { flex: 1, justifyContent: "center", alignItems: "center" },
   emptyText: {
-    color: "#444",
     textAlign: "center",
-    marginTop: 50,
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: '600'
   },
 });
