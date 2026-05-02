@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
-  PhoneAuthProvider
+  PhoneAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const MASTER_ADMIN_EMAIL = "abcp8844@gmail.com";
-  const MASTER_ADMIN_PASS = "abcp7863811"; 
+  const MASTER_ADMIN_PASS = "abcp7863811";
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
           if (docSnap.exists()) {
             let data = docSnap.data();
-            
+
             if (firebaseUser.email === MASTER_ADMIN_EMAIL) {
               data.role = "admin";
             }
@@ -69,9 +69,9 @@ export const AuthProvider = ({ children }) => {
         city: additionalData.city,
         phone: additionalData.phone,
         verification: {
-          method: additionalData.verificationMethod, 
+          method: additionalData.verificationMethod,
           idNumber: additionalData.idNumber,
-          verifiedAt: new Date().toISOString()
+          verifiedAt: new Date().toISOString(),
         },
         createdAt: new Date().toISOString(),
       };
@@ -92,7 +92,9 @@ export const AuthProvider = ({ children }) => {
   const logout = () => signOut(auth);
 
   return (
-    <AuthContext.Provider value={{ user, userData, loading, login, logout, register, sendOTP }}>
+    <AuthContext.Provider
+      value={{ user, userData, loading, login, logout, register, sendOTP }}
+    >
       {children}
     </AuthContext.Provider>
   );
