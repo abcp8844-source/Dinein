@@ -6,7 +6,12 @@ import { useTheme } from "../theme/ThemeContext";
  * EXECUTIVE UI COMPONENT: PREMIUM BUTTON
  * Supports Primary (Filled Gold) and Secondary (Outline Gold) variants.
  */
-export default function PremiumButton({ title, onPress, type = "primary", style }) {
+export default function PremiumButton({
+  title,
+  onPress,
+  type = "primary",
+  style,
+}) {
   const { colors, borderRadius } = useTheme();
   const isPrimary = type === "primary";
 

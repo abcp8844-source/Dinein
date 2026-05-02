@@ -10,8 +10,8 @@ const ThemeContext = createContext({});
 export const ThemeProvider = ({ children }) => {
   const theme = {
     colors: {
-      background: "#0A111F",      
-      primary: "#D4AF37",         
+      background: "#0A111F",
+      primary: "#D4AF37",
       secondary: "#FFFFFF",
       textMain: "#FDFDFD",
       textDim: "#A0AEC0",
@@ -33,9 +33,7 @@ export const ThemeProvider = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
   );
 };
 
