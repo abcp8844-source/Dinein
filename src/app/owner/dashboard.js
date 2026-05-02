@@ -7,19 +7,14 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  StatusBar,
+  StatusBar
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../theme/ThemeContext"; // FIXED: Corrected path for theme
+import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-/**
- * PREMIUM OWNER COMMAND CENTER
- * Features: Revenue Analytics | Live Order Stream | Store Control
- * Integrity: Technical paths aligned with the standard architecture.
- */
 export default function OwnerDashboard() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -43,17 +38,25 @@ export default function OwnerDashboard() {
     },
   ]);
 
+  // Theme Colors - Dark Navy Blue Focus
+  const THEME = {
+    bg: "#001529", // Dark Navy Blue
+    card: "#002140", // Slightly lighter navy for depth
+    accent: "#D4AF37", // Gold for highlights
+    textMain: "#FFFFFF", // Sharp White for readability
+    textSecondary: "#A6B1BB" // Muted blue-grey for labels
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#000" }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: THEME.bg }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         {/* --- BRAND & STATUS HEADER --- */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.brandTitle}>OWNER PANEL</Text>
-            <Text
-              style={[styles.storeName, { color: colors.primary || "#D4AF37" }]}
-            >
+            <Text style={[styles.brandTitle, { color: THEME.textSecondary }]}>OWNER PANEL</Text>
+            <Text style={[styles.storeName, { color: THEME.accent }]}>
               {userData?.restaurantName || "Premium Hub"}
             </Text>
           </View>
@@ -61,7 +64,7 @@ export default function OwnerDashboard() {
             onPress={() => setIsOnline(!isOnline)}
             style={[
               styles.statusToggle,
-              { backgroundColor: isOnline ? "#113311" : "#331111" },
+              { backgroundColor: isOnline ? "#06402B" : "#4D0F0F" }
             ]}
           >
             <View
@@ -82,26 +85,17 @@ export default function OwnerDashboard() {
         </View>
 
         {/* --- REVENUE SNAPSHOT --- */}
-        <Animatable.View animation="fadeInUp" style={styles.revenueCard}>
-          <Text style={styles.cardLabel}>TODAY'S REVENUE</Text>
-          <Text
-            style={[
-              styles.revenueAmount,
-              { color: colors.primary || "#D4AF37" },
-            ]}
-          >
+        <Animatable.View animation="fadeInUp" style={[styles.revenueCard, { backgroundColor: THEME.card }]}>
+          <Text style={[styles.cardLabel, { color: THEME.textSecondary }]}>TODAY'S REVENUE</Text>
+          <Text style={[styles.revenueAmount, { color: THEME.accent }]}>
             4,850{" "}
             <Text style={styles.currency}>
               {userData?.currencyCode || "THB"}
             </Text>
           </Text>
-          <View style={styles.aiBriefing}>
-            <Ionicons
-              name="trending-up"
-              size={16}
-              color={colors.primary || "#D4AF37"}
-            />
-            <Text style={styles.aiBriefText}>
+          <View style={[styles.aiBriefing, { borderTopColor: THEME.bg }]}>
+            <Ionicons name="trending-up" size={16} color={THEME.accent} />
+            <Text style={[styles.aiBriefText, { color: THEME.textMain }]}>
               AI Forecast: High demand expected in 2 hours.
             </Text>
           </View>
@@ -110,35 +104,26 @@ export default function OwnerDashboard() {
         {/* --- QUICK ACTION GRID --- */}
         <View style={styles.actionGrid}>
           <TouchableOpacity
-            style={styles.actionBox}
+            style={[styles.actionBox, { backgroundColor: THEME.card }]}
             onPress={() => router.push("/owner/ai-consultant")}
           >
-            <Ionicons
-              name="sparkles"
-              size={24}
-              color={colors.primary || "#D4AF37"}
-            />
-            <Text style={styles.actionLabel}>AI CONSULTANT</Text>
+            <Ionicons name="sparkles" size={24} color={THEME.accent} />
+            <Text style={[styles.actionLabel, { color: THEME.textSecondary }]}>AI CONSULTANT</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.actionBox}
+            style={[styles.actionBox, { backgroundColor: THEME.card }]}
             onPress={() => router.push("/owner/manage-menu")}
           >
-            <Ionicons name="fast-food-outline" size={24} color="#FFF" />
-            <Text style={styles.actionLabel}>MANAGE MENU</Text>
+            <Ionicons name="fast-food-outline" size={24} color={THEME.textMain} />
+            <Text style={[styles.actionLabel, { color: THEME.textSecondary }]}>MANAGE MENU</Text>
           </TouchableOpacity>
         </View>
 
         {/* --- LIVE ORDERS SECTION --- */}
         <View style={styles.orderSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>LIVE INCOMING ORDERS</Text>
-            <Text
-              style={[
-                styles.orderCount,
-                { color: colors.primary || "#D4AF37" },
-              ]}
-            >
+            <Text style={[styles.sectionTitle, { color: THEME.textSecondary }]}>LIVE INCOMING ORDERS</Text>
+            <Text style={[styles.orderCount, { color: THEME.accent }]}>
               {orders.length} ACTIVE
             </Text>
           </View>
@@ -147,21 +132,21 @@ export default function OwnerDashboard() {
             <Animatable.View
               key={order.id}
               animation="fadeInLeft"
-              style={styles.orderCard}
+              style={[styles.orderCard, { backgroundColor: THEME.card }]}
             >
               <View style={styles.orderMeta}>
-                <Text style={styles.orderId}>{order.id}</Text>
-                <Text style={styles.orderTime}>{order.time}</Text>
+                <Text style={[styles.orderId, { color: THEME.textSecondary }]}>{order.id}</Text>
+                <Text style={[styles.orderTime, { color: THEME.accent }]}>{order.time}</Text>
               </View>
-              <Text style={styles.orderItem}>{order.item}</Text>
+              <Text style={[styles.orderItem, { color: THEME.textMain }]}>{order.item}</Text>
               <View style={styles.orderFooter}>
-                <Text style={styles.orderPrice}>
+                <Text style={[styles.orderPrice, { color: THEME.textMain }]}>
                   {order.price} {userData?.currencyCode || "THB"}
                 </Text>
                 <TouchableOpacity
                   style={[
                     styles.acceptBtn,
-                    { backgroundColor: colors.primary || "#D4AF37" },
+                    { backgroundColor: THEME.accent },
                   ]}
                 >
                   <Text style={styles.acceptBtnText}>ACCEPT</Text>
@@ -184,12 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  brandTitle: {
-    color: "#444",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
+  brandTitle: { fontSize: 10, fontWeight: "900", letterSpacing: 2 },
   storeName: { fontSize: 24, fontWeight: "900", marginTop: 5 },
   statusToggle: {
     flexDirection: "row",
@@ -203,18 +183,11 @@ const styles = StyleSheet.create({
   revenueCard: {
     marginHorizontal: 25,
     padding: 30,
-    backgroundColor: "#050505",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#111",
+    borderColor: "rgba(255,255,255,0.05)",
   },
-  cardLabel: {
-    color: "#444",
-    fontSize: 9,
-    fontWeight: "900",
-    letterSpacing: 2,
-    marginBottom: 10,
-  },
+  cardLabel: { fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 10 },
   revenueAmount: { fontSize: 36, fontWeight: "900" },
   currency: { fontSize: 14, fontWeight: "400" },
   aiBriefing: {
@@ -222,15 +195,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 15,
     borderTopWidth: 1,
-    borderTopColor: "#111",
     paddingTop: 15,
   },
-  aiBriefText: {
-    color: "#EEE",
-    fontSize: 10,
-    marginLeft: 10,
-    fontWeight: "600",
-  },
+  aiBriefText: { fontSize: 10, marginLeft: 10, fontWeight: "600" },
   actionGrid: {
     flexDirection: "row",
     paddingHorizontal: 25,
@@ -239,60 +206,30 @@ const styles = StyleSheet.create({
   },
   actionBox: {
     width: "48%",
-    backgroundColor: "#080808",
     padding: 25,
     borderRadius: 20,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#111",
+    borderColor: "rgba(255,255,255,0.05)",
   },
-  actionLabel: {
-    color: "#AAA",
-    fontSize: 8,
-    fontWeight: "900",
-    marginTop: 12,
-    letterSpacing: 1,
-  },
+  actionLabel: { fontSize: 8, fontWeight: "900", marginTop: 12, letterSpacing: 1 },
   orderSection: { marginTop: 40, paddingHorizontal: 25, paddingBottom: 100 },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    color: "#333",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
+  sectionHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+  sectionTitle: { fontSize: 10, fontWeight: "900", letterSpacing: 2 },
   orderCount: { fontSize: 10, fontWeight: "bold" },
   orderCard: {
-    backgroundColor: "#0A0A0A",
     padding: 20,
     borderRadius: 20,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#111",
+    borderColor: "rgba(255,255,255,0.05)",
   },
-  orderMeta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  orderId: { color: "#444", fontSize: 10, fontWeight: "900" },
+  orderMeta: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
+  orderId: { fontSize: 10, fontWeight: "900" },
   orderTime: { fontSize: 10, fontWeight: "bold" },
-  orderItem: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 15,
-  },
-  orderFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  orderPrice: { color: "#FFF", fontSize: 14, fontWeight: "bold" },
+  orderItem: { fontSize: 16, fontWeight: "bold", marginBottom: 15 },
+  orderFooter: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  orderPrice: { fontSize: 14, fontWeight: "bold" },
   acceptBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10 },
   acceptBtnText: { color: "#000", fontSize: 10, fontWeight: "900" },
 });
