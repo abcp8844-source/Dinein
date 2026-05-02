@@ -32,7 +32,7 @@ export default function AddressSetup() {
       if (status !== "granted") {
         Alert.alert(
           "PERMISSION DENIED",
-          "LOCATION ACCESS IS CRITICAL FOR LOGISTICS PRECISION."
+          "LOCATION ACCESS IS CRITICAL FOR LOGISTICS PRECISION.",
         );
         return;
       }
@@ -40,7 +40,7 @@ export default function AddressSetup() {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      
+
       const reverseGeo = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -77,8 +77,11 @@ export default function AddressSetup() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <Animatable.View animation="fadeInUp" duration={800} style={styles.content}>
-        
+      <Animatable.View
+        animation="fadeInUp"
+        duration={800}
+        style={styles.content}
+      >
         <View style={styles.iconHeader}>
           <MaterialCommunityIcons name="target" size={40} color="#D4AF37" />
         </View>
@@ -97,7 +100,11 @@ export default function AddressSetup() {
           </Text>
           {address && (
             <View style={styles.verifiedBadge}>
-              <MaterialCommunityIcons name="check-decagram" size={12} color="#D4AF37" />
+              <MaterialCommunityIcons
+                name="check-decagram"
+                size={12}
+                color="#D4AF37"
+              />
               <Text style={styles.verifiedText}>STATION VERIFIED</Text>
             </View>
           )}
@@ -110,7 +117,11 @@ export default function AddressSetup() {
         />
 
         {address && (
-          <TouchableOpacity onPress={finalizeSetup} style={styles.confirmBtn} activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={finalizeSetup}
+            style={styles.confirmBtn}
+            activeOpacity={0.7}
+          >
             <Text style={styles.confirmText}>CONFIRM & ESTABLISH LINK</Text>
           </TouchableOpacity>
         )}
@@ -120,16 +131,65 @@ export default function AddressSetup() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000", justifyContent: "center", padding: 30 },
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    padding: 30,
+  },
   content: { width: "100%", alignItems: "center" },
   iconHeader: { marginBottom: 20 },
-  title: { fontSize: 22, fontWeight: "900", letterSpacing: 4, color: "#FFF", textAlign: "center" },
-  subtitle: { fontSize: 8, textAlign: "center", marginTop: 12, letterSpacing: 2, color: "#444", fontWeight: "bold" },
-  addressDisplay: { width: "100%", marginVertical: 45, padding: 30, borderRadius: 25, backgroundColor: "#0A0A0A", borderWidth: 1, borderColor: "#111" },
-  addressLabel: { fontSize: 8, fontWeight: "900", marginBottom: 15, letterSpacing: 2, color: "#D4AF37" },
-  addressText: { color: "#FFF", fontSize: 14, fontWeight: "300", lineHeight: 24, letterSpacing: 0.5 },
+  title: {
+    fontSize: 22,
+    fontWeight: "900",
+    letterSpacing: 4,
+    color: "#FFF",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 8,
+    textAlign: "center",
+    marginTop: 12,
+    letterSpacing: 2,
+    color: "#444",
+    fontWeight: "bold",
+  },
+  addressDisplay: {
+    width: "100%",
+    marginVertical: 45,
+    padding: 30,
+    borderRadius: 25,
+    backgroundColor: "#0A0A0A",
+    borderWidth: 1,
+    borderColor: "#111",
+  },
+  addressLabel: {
+    fontSize: 8,
+    fontWeight: "900",
+    marginBottom: 15,
+    letterSpacing: 2,
+    color: "#D4AF37",
+  },
+  addressText: {
+    color: "#FFF",
+    fontSize: 14,
+    fontWeight: "300",
+    lineHeight: 24,
+    letterSpacing: 0.5,
+  },
   verifiedBadge: { flexDirection: "row", alignItems: "center", marginTop: 20 },
-  verifiedText: { color: "#D4AF37", fontSize: 8, fontWeight: "900", marginLeft: 6, letterSpacing: 1 },
+  verifiedText: {
+    color: "#D4AF37",
+    fontSize: 8,
+    fontWeight: "900",
+    marginLeft: 6,
+    letterSpacing: 1,
+  },
   confirmBtn: { marginTop: 30, paddingVertical: 10 },
-  confirmText: { fontSize: 10, fontWeight: "900", letterSpacing: 2, color: "#D4AF37" },
+  confirmText: {
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 2,
+    color: "#D4AF37",
+  },
 });

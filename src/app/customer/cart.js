@@ -34,7 +34,7 @@ export default function Cart() {
     if (cartItems.length === 0) {
       Alert.alert(
         "QUEUE EMPTY",
-        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING."
+        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING.",
       );
       return;
     }
@@ -42,14 +42,16 @@ export default function Cart() {
   };
 
   const renderItem = ({ item, index }) => (
-    <Animatable.View 
-      animation="fadeInLeft" 
-      delay={index * 100} 
+    <Animatable.View
+      animation="fadeInLeft"
+      delay={index * 100}
       style={styles.cartItem}
     >
       <View>
         <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
-        <Text style={styles.itemSub}>VERIFIED ASSET • {country.toUpperCase()}</Text>
+        <Text style={styles.itemSub}>
+          VERIFIED ASSET • {country.toUpperCase()}
+        </Text>
       </View>
       <Text style={styles.itemPrice}>
         {item.price} {currency}
@@ -60,7 +62,7 @@ export default function Cart() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      
+
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="chevron-back" size={20} color="#D4AF37" />
@@ -93,10 +95,7 @@ export default function Cart() {
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.checkoutBtn}
-          onPress={handleCheckout}
-        >
+        <TouchableOpacity style={styles.checkoutBtn} onPress={handleCheckout}>
           <Text style={styles.btnText}>CONFIRM LOGISTICS</Text>
         </TouchableOpacity>
       </Animatable.View>
@@ -114,8 +113,19 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
   },
-  backBtn: { padding: 10, backgroundColor: "#0A0A0A", borderRadius: 12, borderWidth: 1, borderColor: "#111" },
-  headerTitle: { fontSize: 12, fontWeight: "900", letterSpacing: 4, color: "#FFF" },
+  backBtn: {
+    padding: 10,
+    backgroundColor: "#0A0A0A",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#111",
+  },
+  headerTitle: {
+    fontSize: 12,
+    fontWeight: "900",
+    letterSpacing: 4,
+    color: "#FFF",
+  },
   listContent: { padding: 25 },
   cartItem: {
     flexDirection: "row",
@@ -125,11 +135,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#0A0A0A",
   },
-  itemName: { fontSize: 14, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
-  itemSub: { fontSize: 8, marginTop: 6, letterSpacing: 1, color: "#444", fontWeight: "bold" },
+  itemName: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
+  },
+  itemSub: {
+    fontSize: 8,
+    marginTop: 6,
+    letterSpacing: 1,
+    color: "#444",
+    fontWeight: "bold",
+  },
   itemPrice: { fontSize: 13, fontWeight: "900", color: "#D4AF37" },
   emptyContainer: { alignItems: "center", marginTop: 150 },
-  emptyText: { marginTop: 25, fontSize: 9, fontWeight: "900", letterSpacing: 3, color: "#222" },
+  emptyText: {
+    marginTop: 25,
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 3,
+    color: "#222",
+  },
   footer: {
     padding: 35,
     backgroundColor: "#0A0A0A",
@@ -138,11 +165,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#111",
   },
-  totalRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, alignItems: "center" },
-  totalLabel: { fontSize: 9, fontWeight: "900", letterSpacing: 2, color: "#444" },
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    alignItems: "center",
+  },
+  totalLabel: {
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    color: "#444",
+  },
   priceContainer: { flexDirection: "row", alignItems: "baseline" },
   totalValue: { fontSize: 28, fontWeight: "300", color: "#FFF" },
-  currencyLabel: { fontSize: 12, fontWeight: "900", color: "#D4AF37", marginLeft: 8 },
+  currencyLabel: {
+    fontSize: 12,
+    fontWeight: "900",
+    color: "#D4AF37",
+    marginLeft: 8,
+  },
   checkoutBtn: {
     height: 65,
     backgroundColor: "#D4AF37",
