@@ -9,8 +9,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useTheme } from "../../theme/ThemeContext"; 
-import { useAuth } from "../../context/AuthContext"; 
+import { useTheme } from "../../theme/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
@@ -22,7 +22,7 @@ export default function Cart() {
   const router = useRouter();
   const { colors } = useTheme();
   const { userData } = useAuth();
-  const [cartItems, setCartItems] = useState([]); 
+  const [cartItems, setCartItems] = useState([]);
 
   const currency = userData?.currencyCode || "THB";
 
@@ -34,18 +34,25 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      Alert.alert("QUEUE EMPTY", "No assets selected for logistics processing.");
+      Alert.alert(
+        "QUEUE EMPTY",
+        "No assets selected for logistics processing.",
+      );
       return;
     }
     // Corrected Path for Expo Router (Parentheses structure)
-    router.replace("/(customer)/orders"); 
+    router.replace("/(customer)/orders");
   };
 
   const renderItem = ({ item }) => (
     <View style={[styles.cartItem, { borderBottomColor: colors.border }]}>
       <View>
-        <Text style={[styles.itemName, { color: colors.textMain }]}>{item.itemName}</Text>
-        <Text style={[styles.itemSub, { color: colors.textDim }]}>VERIFIED ASSET</Text>
+        <Text style={[styles.itemName, { color: colors.textMain }]}>
+          {item.itemName}
+        </Text>
+        <Text style={[styles.itemSub, { color: colors.textDim }]}>
+          VERIFIED ASSET
+        </Text>
       </View>
       <Text style={[styles.itemPrice, { color: colors.primary }]}>
         {item.price} {currency}
@@ -54,13 +61,17 @@ export default function Cart() {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color={colors.textMain} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.textMain }]}>LOGISTICS QUEUE</Text>
-        <View style={{ width: 24 }} /> 
+        <Text style={[styles.headerTitle, { color: colors.textMain }]}>
+          LOGISTICS QUEUE
+        </Text>
+        <View style={{ width: 24 }} />
       </Animatable.View>
 
       <FlatList
@@ -71,21 +82,28 @@ export default function Cart() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="cube-outline" size={50} color={colors.border} />
-            <Text style={[styles.emptyText, { color: colors.textDim }]}>NO ASSETS IN QUEUE</Text>
+            <Text style={[styles.emptyText, { color: colors.textDim }]}>
+              NO ASSETS IN QUEUE
+            </Text>
           </View>
         }
       />
 
-      <Animatable.View animation="fadeInUp" style={[styles.footer, { backgroundColor: colors.cardBg }]}>
+      <Animatable.View
+        animation="fadeInUp"
+        style={[styles.footer, { backgroundColor: colors.cardBg }]}
+      >
         <View style={styles.totalRow}>
-          <Text style={[styles.totalLabel, { color: colors.textDim }]}>TOTAL VALUATION</Text>
+          <Text style={[styles.totalLabel, { color: colors.textDim }]}>
+            TOTAL VALUATION
+          </Text>
           <Text style={[styles.totalValue, { color: colors.primary }]}>
             {calculateTotal()} {currency}
           </Text>
         </View>
 
-        <TouchableOpacity 
-          style={[styles.checkoutBtn, { backgroundColor: colors.primary }]} 
+        <TouchableOpacity
+          style={[styles.checkoutBtn, { backgroundColor: colors.primary }]}
           onPress={handleCheckout}
         >
           <Text style={styles.btnText}>CONFIRM LOGISTICS</Text>
@@ -97,12 +115,12 @@ export default function Cart() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { 
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    alignItems: "center", 
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
-    marginTop: 10 
+    marginTop: 10,
   },
   headerTitle: { fontSize: 12, fontWeight: "900", letterSpacing: 3 },
   listContent: { padding: 25 },
@@ -117,7 +135,12 @@ const styles = StyleSheet.create({
   itemSub: { fontSize: 10, marginTop: 4, letterSpacing: 1 },
   itemPrice: { fontSize: 14, fontWeight: "900" },
   emptyContainer: { alignItems: "center", marginTop: 100 },
-  emptyText: { marginTop: 20, fontSize: 10, fontWeight: "bold", letterSpacing: 2 },
+  emptyText: {
+    marginTop: 20,
+    fontSize: 10,
+    fontWeight: "bold",
+    letterSpacing: 2,
+  },
   footer: {
     padding: 30,
     borderTopLeftRadius: 30,
@@ -128,7 +151,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 25,
-    alignItems: "center"
+    alignItems: "center",
   },
   totalLabel: { fontSize: 10, fontWeight: "900", letterSpacing: 1 },
   totalValue: { fontSize: 22, fontWeight: "900" },
