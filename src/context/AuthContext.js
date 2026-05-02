@@ -39,14 +39,19 @@ export const AuthProvider = ({ children }) => {
             }
 
             // 2. ROLE PROTECTION: Ensure Master Admin is recognized
-            if (firebaseUser.email.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase()) {
+            if (
+              firebaseUser.email.toLowerCase() ===
+              MASTER_ADMIN_EMAIL.toLowerCase()
+            ) {
               data.role = "admin";
             }
 
             setUserData(data);
-            
+
             // 3. ACTIVITY TRACKER: Update last active status silently
-            updateDoc(docRef, { lastActive: new Date().toISOString() }).catch(() => {});
+            updateDoc(docRef, { lastActive: new Date().toISOString() }).catch(
+              () => {},
+            );
           }
         });
       } else {
@@ -89,7 +94,7 @@ export const AuthProvider = ({ children }) => {
           method: additionalData.verificationMethod || "none",
           idNumber: additionalData.idNumber || "none",
           idOrigin: additionalData.idOrigin || additionalData.country,
-          isApproved: false, 
+          isApproved: false,
         },
         createdAt: new Date().toISOString(),
         lastActive: new Date().toISOString(),
@@ -105,7 +110,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     // Admin Security Check
-    if (email.toLowerCase() === MASTER_ADMIN_EMAIL && password !== MASTER_ADMIN_PASS) {
+    if (
+      email.toLowerCase() === MASTER_ADMIN_EMAIL &&
+      password !== MASTER_ADMIN_PASS
+    ) {
       throw new Error("UNAUTHORIZED_ADMIN_ATTEMPT");
     }
     return signInWithEmailAndPassword(auth, email, password);
@@ -114,7 +122,9 @@ export const AuthProvider = ({ children }) => {
   const logout = () => signOut(auth);
 
   return (
-    <AuthContext.Provider value={{ user, userData, loading, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, userData, loading, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );

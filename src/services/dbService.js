@@ -20,16 +20,15 @@ import {
  * Feature: Automatic Admin Commission & Country Filtering.
  */
 export const dbService = {
-
   // --- 1. GLOBAL PRODUCT MANAGEMENT ---
   // Filters products by country ISO code to ensure localized business.
   getMenuItems: async (countryCode, category = "all") => {
     try {
       const menuRef = collection(db, "products");
       let q = query(
-        menuRef, 
+        menuRef,
         where("country", "==", countryCode), // Essential for 20-country setup
-        orderBy("createdAt", "desc")
+        orderBy("createdAt", "desc"),
       );
 
       if (category !== "all") {
@@ -49,7 +48,7 @@ export const dbService = {
     try {
       const orderRef = collection(db, "orders");
       // Calculating Admin Commission (e.g., 10%)
-      const commissionAmount = orderData.totalAmount * 0.10; 
+      const commissionAmount = orderData.totalAmount * 0.1;
       const ownerNetEarning = orderData.totalAmount - commissionAmount;
 
       const docRef = await addDoc(orderRef, {
@@ -76,14 +75,18 @@ export const dbService = {
       const ownerRef = doc(db, "users", ownerId);
 
       // 1. Update Admin Treasury (Commission & Promotion Fees)
-      await setDoc(adminFinanceRef, {
-        [`commissionEarnings_${currency}`]: increment(amount * 0.10),
-        lastSettlement: serverTimestamp(),
-      }, { merge: true });
+      await setDoc(
+        adminFinanceRef,
+        {
+          [`commissionEarnings_${currency}`]: increment(amount * 0.1),
+          lastSettlement: serverTimestamp(),
+        },
+        { merge: true },
+      );
 
       // 2. Update Owner Wallet (Net after commission)
       await updateDoc(ownerRef, {
-        walletBalance: increment(amount * 0.90)
+        walletBalance: increment(amount * 0.9),
       });
 
       return { success: true };
@@ -107,5 +110,5 @@ export const dbService = {
       console.error("SUPPORT_TICKET_ERROR:", error);
       throw error;
     }
-  }
+  },
 };
