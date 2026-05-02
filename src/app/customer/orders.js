@@ -131,12 +131,7 @@ export default function Orders() {
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>LOGISTICS ARCHIVE</Text>
-        <View
-          style={[
-            styles.goldLine,
-            { backgroundColor: colors.primary || "#D4AF37" },
-          ]}
-        />
+        <View style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]} />
       </View>
 
       {loading ? (
