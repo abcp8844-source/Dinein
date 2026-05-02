@@ -6,12 +6,25 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useTheme } from "../../theme/ThemeContext"; 
+import { useAuth } from "../../context/AuthContext"; 
+import { Ionicons } from "@expo/vector-icons";
+import * as Animatable from "react-native-animatable";
 
+/**
+ * CUSTOMER CART - LOGISTICS QUEUE
+ * Logic: Asset management before final transaction verification.
+ */
 export default function Cart() {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState([]); // This will be populated from state/context
+  const { colors } = useTheme();
+  const { userData } = useAuth();
+  const [cartItems, setCartItems] = useState([]); 
+
+  const currency = userData?.currencyCode || "THB";
 
   const calculateTotal = () => {
     return cartItems
@@ -21,92 +34,109 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      Alert.alert("Cart", "Your selection is empty.");
+      Alert.alert("QUEUE EMPTY", "No assets selected for logistics processing.");
       return;
     }
-    Alert.alert("Dining Table", "Order submitted for verification.");
-    router.replace("/order-management");
+    // Corrected Path for Expo Router (Parentheses structure)
+    router.replace("/(customer)/orders"); 
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>YOUR SELECTION</Text>
-        <View style={styles.goldLine} />
+  const renderItem = ({ item }) => (
+    <View style={[styles.cartItem, { borderBottomColor: colors.border }]}>
+      <View>
+        <Text style={[styles.itemName, { color: colors.textMain }]}>{item.itemName}</Text>
+        <Text style={[styles.itemSub, { color: colors.textDim }]}>VERIFIED ASSET</Text>
       </View>
+      <Text style={[styles.itemPrice, { color: colors.primary }]}>
+        {item.price} {currency}
+      </Text>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Animatable.View animation="fadeInDown" style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={24} color={colors.textMain} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.textMain }]}>LOGISTICS QUEUE</Text>
+        <View style={{ width: 24 }} /> 
+      </Animatable.View>
 
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cartItem}>
-            <Text style={styles.itemName}>{item.itemName}</Text>
-            <Text style={styles.itemPrice}>{item.price}</Text>
-          </View>
-        )}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>NO ITEMS SELECTED</Text>
+          <View style={styles.emptyContainer}>
+            <Ionicons name="cube-outline" size={50} color={colors.border} />
+            <Text style={[styles.emptyText, { color: colors.textDim }]}>NO ASSETS IN QUEUE</Text>
+          </View>
         }
       />
 
-      <View style={styles.footer}>
+      <Animatable.View animation="fadeInUp" style={[styles.footer, { backgroundColor: colors.cardBg }]}>
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>TOTAL AMOUNT</Text>
-          <Text style={styles.totalValue}>{calculateTotal()} THB</Text>
+          <Text style={[styles.totalLabel, { color: colors.textDim }]}>TOTAL VALUATION</Text>
+          <Text style={[styles.totalValue, { color: colors.primary }]}>
+            {calculateTotal()} {currency}
+          </Text>
         </View>
 
-        <TouchableOpacity style={styles.checkoutBtn} onPress={handleCheckout}>
-          <Text style={styles.btnText}>CONFIRM ORDER</Text>
+        <TouchableOpacity 
+          style={[styles.checkoutBtn, { backgroundColor: colors.primary }]} 
+          onPress={handleCheckout}
+        >
+          <Text style={styles.btnText}>CONFIRM LOGISTICS</Text>
         </TouchableOpacity>
-      </View>
-    </View>
+      </Animatable.View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 25, backgroundColor: "#8B0000" },
-  header: { marginTop: 50, marginBottom: 30, alignItems: "center" },
-  headerTitle: {
-    color: "#D4AF37",
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 3,
+  container: { flex: 1 },
+  header: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    padding: 20,
+    marginTop: 10 
   },
-  goldLine: { width: 40, height: 2, backgroundColor: "#D4AF37", marginTop: 8 },
+  headerTitle: { fontSize: 12, fontWeight: "900", letterSpacing: 3 },
+  listContent: { padding: 25 },
   cartItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 15,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(212, 175, 55, 0.2)",
+    alignItems: "center",
+    paddingVertical: 20,
+    borderBottomWidth: 1,
   },
-  itemName: { color: "#FDF5E6", fontSize: 16 },
-  itemPrice: { color: "#D4AF37", fontWeight: "bold" },
-  emptyText: {
-    color: "#A68D5F",
-    textAlign: "center",
-    marginTop: 50,
-    letterSpacing: 1,
-  },
+  itemName: { fontSize: 16, fontWeight: "bold" },
+  itemSub: { fontSize: 10, marginTop: 4, letterSpacing: 1 },
+  itemPrice: { fontSize: 14, fontWeight: "900" },
+  emptyContainer: { alignItems: "center", marginTop: 100 },
+  emptyText: { marginTop: 20, fontSize: 10, fontWeight: "bold", letterSpacing: 2 },
   footer: {
-    borderTopWidth: 1,
-    borderTopColor: "#D4AF37",
-    paddingTop: 20,
-    marginBottom: 20,
+    padding: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    elevation: 20,
   },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 25,
+    alignItems: "center"
   },
-  totalLabel: { color: "#A68D5F", fontSize: 12, letterSpacing: 1 },
-  totalValue: { color: "#D4AF37", fontSize: 18, fontWeight: "bold" },
+  totalLabel: { fontSize: 10, fontWeight: "900", letterSpacing: 1 },
+  totalValue: { fontSize: 22, fontWeight: "900" },
   checkoutBtn: {
-    backgroundColor: "#D4AF37",
-    height: 55,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 2,
+    borderRadius: 15,
   },
-  btnText: { color: "#660000", fontWeight: "bold", letterSpacing: 2 },
+  btnText: { color: "#000", fontWeight: "900", letterSpacing: 2, fontSize: 12 },
 });
