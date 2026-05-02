@@ -16,6 +16,12 @@ import PremiumButton from "../../components/PremiumButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Wallet & Liquidity Registry
+ * Logic: Asset Balance Sync & Dynamic Gateway Mapping
+ * Feature: Secured Settlement Nodes for 20 Locked Global Markets
+ * Integrity: Aligned with the finalized "Locked" market list including Italy and Canada.
+ */
 export default function Wallet() {
   const { userData } = useAuth();
   const { colors } = useTheme();
@@ -34,13 +40,18 @@ export default function Wallet() {
       const bal = await dbService.getWalletBalance(userData?.uid);
       setBalance(bal || 0);
     } catch (error) {
-      // Logic Sync
+      console.error("Wallet Sync Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🛡️ LOCKED 20 COUNTRIES SYSTEM (AS PER IMAGE)
+  /**
+   * 🛡️ SECURED GATEWAY MAPPING
+   * Verified for 20 Core Markets: Thailand, China, Singapore, Turkey, US, UK, UAE, Saudi Arabia, 
+   * Japan, South Korea, Germany, France, Italy, Canada, Malaysia, Indonesia, Vietnam, Hong Kong, 
+   * Australia, and Switzerland.
+   */
   const getGlobalPaymentMethods = () => {
     const methods = {
       Thailand: ["PROMPTPAY QR", "TRUEMONEY"],
@@ -77,11 +88,11 @@ export default function Wallet() {
         contentContainerStyle={{ padding: 25 }}
       >
         <Animatable.View animation="fadeInDown" style={styles.headerArea}>
-          <Text style={[styles.headerLabel, { color: colors.primary }]}>
+          <Text style={[styles.headerLabel, { color: colors.primary || "#D4AF37" }]}>
             LIQUIDITY HUB
           </Text>
           <View
-            style={[styles.goldLine, { backgroundColor: colors.primary }]}
+            style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]}
           />
         </Animatable.View>
 
@@ -95,7 +106,7 @@ export default function Wallet() {
           <Text style={styles.balanceTitle}>SECURE ASSET BALANCE</Text>
           {loading ? (
             <ActivityIndicator
-              color={colors.primary}
+              color={colors.primary || "#D4AF37"}
               style={{ marginVertical: 20 }}
             />
           ) : (
@@ -103,7 +114,7 @@ export default function Wallet() {
               <Text style={styles.balanceAmount}>
                 {balance.toLocaleString()}
               </Text>
-              <Text style={[styles.currencyCode, { color: colors.primary }]}>
+              <Text style={[styles.currencyCode, { color: colors.primary || "#D4AF37" }]}>
                 {currency}
               </Text>
             </View>
@@ -126,11 +137,11 @@ export default function Wallet() {
                 <MaterialCommunityIcons
                   name="shield-check"
                   size={18}
-                  color={colors.primary}
+                  color={colors.primary || "#D4AF37"}
                 />
                 <Text style={styles.methodName}>{method}</Text>
               </View>
-              <Text style={[styles.linkText, { color: colors.primary }]}>
+              <Text style={[styles.linkText, { color: colors.primary || "#D4AF37" }]}>
                 SECURE LINK
               </Text>
             </TouchableOpacity>
