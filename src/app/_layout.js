@@ -25,7 +25,7 @@ function RootLayoutNav() {
     // 1. If not logged in, force to login screen
     if (!user) {
       if (!inAuthGroup) router.replace("/(auth)/login");
-    } 
+    }
     // 2. If logged in, check roles and direct to correct dashboard
     else if (user && userData) {
       if (userData.role === "admin") {
