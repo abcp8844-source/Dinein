@@ -7,36 +7,42 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  StatusBar,
+  SafeAreaView
 } from "react-native";
 import { db } from "../../services/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "../../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
 
 /**
- * SHOP PROFILE SYSTEM - AI & GLOBAL SYNCED
- * Designed to outperform Grab & Line Man via Precision Data
+ * HIGH-VISIBILITY SHOP SETUP
+ * Features: High-contrast inputs for maximum clarity.
  */
 export default function ShopSetup() {
   const { userData } = useAuth();
+  
+  // CLEAR VISIBILITY THEME
+  const THEME = {
+    bg: "#001529",         // Dark Navy Background
+    inputBg: "#002F56",    // Lighter Navy (Emerging from background)
+    accent: "#D4AF37",     // Gold Highlights
+    textMain: "#FFFFFF",   // Sharp White
+    textSecondary: "#A6B1BB",
+    border: "#004B87"      // Defined borders for clarity
+  };
+
   const [shopName, setShopName] = useState("");
   const [contact, setContact] = useState("");
   const [openingHours, setOpeningHours] = useState("");
-
-  // 📍 Precision Location (Grab-Style Breakdown)
   const [city, setCity] = useState(userData?.locationData?.city || "");
   const [area, setArea] = useState(userData?.locationData?.area || "");
   const [street, setStreet] = useState(userData?.locationData?.street || "");
-  const [landmark, setLandmark] = useState(
-    userData?.locationData?.landmark || "",
-  );
+  const [landmark, setLandmark] = useState(userData?.locationData?.landmark || "");
 
   const handleSaveProfile = async () => {
-    // 🛡️ Strict Validation for International Standards
     if (!shopName || !city || !area || !street || !contact) {
-      Alert.alert(
-        "System Protocol",
-        "Exact location data is required for Global Indexing.",
-      );
+      Alert.alert("Input Required", "Please fill all mandatory fields.");
       return;
     }
 
@@ -47,177 +53,127 @@ export default function ShopSetup() {
           name: shopName,
           contact: contact,
           hours: openingHours,
-          country: userData?.countryName || "Global Market",
-          isoCode: userData?.isoCode || "INTL",
-          currency: userData?.currencyCode || "USD",
-
-          // 🤖 AI-Optimized Location Object
-          locationData: {
-            city,
-            area,
-            street,
-            landmark,
-            formattedAddress: `${street}, ${area}, ${city}`,
-            geoSync: true, // Ready for Google Maps/Gemini integration
-          },
-
+          locationData: { city, area, street, landmark },
           updatedAt: new Date().toISOString(),
         },
-        { merge: true },
+        { merge: true }
       );
-
-      Alert.alert(
-        "Global Success",
-        "Your business profile is now live across the 15-market network.",
-      );
+      Alert.alert("Success", "Profile synchronized successfully.");
     } catch (error) {
-      Alert.alert(
-        "Sync Error",
-        "Failed to broadcast profile to regional servers.",
-      );
+      Alert.alert("Error", "Failed to update profile.");
     }
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>EXECUTIVE SHOP SETUP</Text>
-        <Text style={styles.regionStatus}>
-          SYNCED WITH: {userData?.countryName || "Global System"}
-        </Text>
-        <View style={styles.goldLine} />
-      </View>
-
-      <View style={styles.form}>
-        <Text style={styles.label}>BUSINESS IDENTITY</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Official Business Name"
-          placeholderTextColor="#444"
-          value={shopName}
-          onChangeText={setShopName}
-        />
-
-        <Text style={styles.label}>PRECISE LOGISTICS (MAP DATA)</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.input, { flex: 1, marginRight: 10 }]}
-            placeholder="City"
-            placeholderTextColor="#444"
-            value={city}
-            onChangeText={setCity}
-          />
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            placeholder="District / Area"
-            placeholderTextColor="#444"
-            value={area}
-            onChangeText={setArea}
-          />
+    <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bg }}>
+      <StatusBar barStyle="light-content" />
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: THEME.accent }]}>BUSINESS IDENTITY</Text>
+          <Text style={[styles.regionStatus, { color: THEME.textSecondary }]}>
+            MARKET: {userData?.countryName?.toUpperCase() || "GLOBAL NODE"}
+          </Text>
         </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Street Name, Building & Door Number"
-          placeholderTextColor="#444"
-          value={street}
-          onChangeText={setStreet}
-        />
+        <View style={styles.form}>
+          {/* Identity Section */}
+          <Text style={[styles.label, { color: THEME.accent }]}>OFFICIAL NAME</Text>
+          <View style={[styles.inputContainer, { backgroundColor: THEME.inputBg, borderColor: THEME.border }]}>
+            <TextInput
+              style={[styles.input, { color: THEME.textMain }]}
+              placeholder="Enter Shop Name"
+              placeholderTextColor="#666"
+              value={shopName}
+              onChangeText={setShopName}
+            />
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Landmark (e.g., Near Medical Center)"
-          placeholderTextColor="#444"
-          value={landmark}
-          onChangeText={setLandmark}
-        />
+          {/* Location Section - Emerging Layout */}
+          <Text style={[styles.label, { color: THEME.accent }]}>PRECISE LOCATION</Text>
+          <View style={styles.row}>
+            <View style={[styles.inputContainer, { flex: 1, marginRight: 10, backgroundColor: THEME.inputBg, borderColor: THEME.border }]}>
+              <TextInput
+                style={[styles.input, { color: THEME.textMain }]}
+                placeholder="City"
+                placeholderTextColor="#666"
+                value={city}
+                onChangeText={setCity}
+              />
+            </View>
+            <View style={[styles.inputContainer, { flex: 1, backgroundColor: THEME.inputBg, borderColor: THEME.border }]}>
+              <TextInput
+                style={[styles.input, { color: THEME.textMain }]}
+                placeholder="Area"
+                placeholderTextColor="#666"
+                value={area}
+                onChangeText={setArea}
+              />
+            </View>
+          </View>
 
-        <Text style={styles.label}>GLOBAL CONTACT & TIMING</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="International Contact Number"
-          placeholderTextColor="#444"
-          keyboardType="phone-pad"
-          value={contact}
-          onChangeText={setContact}
-        />
+          <View style={[styles.inputContainer, { backgroundColor: THEME.inputBg, borderColor: THEME.border, marginTop: 10 }]}>
+            <TextInput
+              style={[styles.input, { color: THEME.textMain }]}
+              placeholder="Street / Building / Door"
+              placeholderTextColor="#666"
+              value={street}
+              onChangeText={setStreet}
+            />
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Operational Hours (e.g., 24/7 or 08:00 - 22:00)"
-          placeholderTextColor="#444"
-          value={openingHours}
-          onChangeText={setOpeningHours}
-        />
+          {/* Contact Section */}
+          <Text style={[styles.label, { color: THEME.accent }]}>COMMUNICATION</Text>
+          <View style={[styles.inputContainer, { backgroundColor: THEME.inputBg, borderColor: THEME.border }]}>
+            <TextInput
+              style={[styles.input, { color: THEME.textMain }]}
+              placeholder="Contact Number"
+              placeholderTextColor="#666"
+              keyboardType="phone-pad"
+              value={contact}
+              onChangeText={setContact}
+            />
+          </View>
 
-        <TouchableOpacity
-          style={styles.saveBtn}
-          onPress={handleSaveProfile}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.btnText}>ESTABLISH GLOBAL PROFILE</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <TouchableOpacity
+            style={[styles.saveBtn, { backgroundColor: THEME.accent }]}
+            onPress={handleSaveProfile}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.btnText}>SAVE BUSINESS PROFILE</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: "#000", padding: 30 },
-  header: { marginTop: 50, marginBottom: 40, alignItems: "center" },
-  headerTitle: {
-    color: "#D4AF37",
-    fontSize: 24,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
-  regionStatus: {
-    color: "#666",
-    fontSize: 10,
-    marginTop: 8,
-    fontWeight: "bold",
-    letterSpacing: 1,
-  },
-  goldLine: { width: 50, height: 2, backgroundColor: "#D4AF37", marginTop: 15 },
-  label: {
-    color: "#D4AF37",
-    fontSize: 10,
-    fontWeight: "bold",
-    letterSpacing: 2,
-    marginBottom: 12,
-    marginTop: 10,
-    opacity: 0.8,
-  },
-  form: { width: "100%" },
+  container: { padding: 25, paddingBottom: 50 },
+  header: { marginTop: 20, marginBottom: 35 },
+  headerTitle: { fontSize: 26, fontWeight: "900", letterSpacing: 1 },
+  regionStatus: { fontSize: 10, fontWeight: "bold", marginTop: 5, letterSpacing: 1.5 },
+  label: { fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 12, marginTop: 25 },
   row: { flexDirection: "row" },
-  input: {
+  inputContainer: {
+    borderRadius: 15,
+    borderWidth: 1.5,
+    paddingHorizontal: 15,
     height: 55,
-    borderBottomWidth: 1,
-    borderBottomColor: "#1A1A1A",
-    color: "#FFF",
-    marginBottom: 20,
-    fontSize: 15,
-    paddingHorizontal: 5,
+    justifyContent: "center",
+    elevation: 3, // Shadow for "emerging" effect
   },
+  input: { fontSize: 16, fontWeight: "600" },
   saveBtn: {
-    backgroundColor: "#D4AF37",
     height: 60,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 5,
-    marginTop: 30,
+    borderRadius: 18,
+    marginTop: 50,
     shadowColor: "#D4AF37",
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.4,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 8,
   },
-  btnText: {
-    color: "#000",
-    fontWeight: "bold",
-    letterSpacing: 2,
-    fontSize: 13,
-  },
+  btnText: { color: "#000", fontWeight: "900", letterSpacing: 1.5, fontSize: 14 },
 });
