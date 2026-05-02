@@ -24,7 +24,8 @@ import * as Animatable from "react-native-animatable";
  * Integrity: Standard Deep-Navy #020B18 | Real Data Binding
  */
 export default function ItemDetails() {
-  const { id, name, price, description, restaurantId, restaurantName } = useLocalSearchParams();
+  const { id, name, price, description, restaurantId, restaurantName } =
+    useLocalSearchParams();
   const { userData } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
@@ -82,8 +83,10 @@ export default function ItemDetails() {
       >
         <Animatable.View animation="fadeInDown" style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{name?.toUpperCase() || "UNKNOWN ASSET"}</Text>
-            <TouchableOpacity 
+            <Text style={styles.title}>
+              {name?.toUpperCase() || "UNKNOWN ASSET"}
+            </Text>
+            <TouchableOpacity
               onPress={() => router.back()}
               style={[styles.statusBadge, { backgroundColor: "#0A1A2F" }]}
             >
@@ -162,7 +165,9 @@ export default function ItemDetails() {
           ]}
         >
           <Text style={styles.descTitle}>ASSET SPECIFICATIONS</Text>
-          <Text style={styles.description}>{description || "NO SPECIFICATIONS LOADED FROM ARCHIVE."}</Text>
+          <Text style={styles.description}>
+            {description || "NO SPECIFICATIONS LOADED FROM ARCHIVE."}
+          </Text>
         </Animatable.View>
 
         <Animatable.View
@@ -202,7 +207,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  title: { fontSize: 24, fontWeight: "900", color: "#FFF", letterSpacing: 1, flex: 1 },
+  title: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#FFF",
+    letterSpacing: 1,
+    flex: 1,
+  },
   statusBadge: {
     padding: 10,
     borderRadius: 50,

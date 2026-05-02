@@ -29,7 +29,7 @@ export default function AddressSetup() {
   const router = useRouter();
 
   // Ensuring country name defaults to user's real data
-  const country = userData?.countryName || "Thailand"; 
+  const country = userData?.countryName || "Thailand";
 
   const handleIdentifyLocation = async () => {
     setLoading(true);
@@ -39,7 +39,7 @@ export default function AddressSetup() {
       if (status !== "granted") {
         Alert.alert(
           "ACCESS DENIED",
-          "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS."
+          "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS.",
         );
         return;
       }
@@ -64,7 +64,8 @@ export default function AddressSetup() {
           city: first.city || first.region || "",
           lat: location.coords.latitude,
           lng: location.coords.longitude,
-          formattedAddress: `${first.streetNumber || ""} ${first.street || ""}, ${first.city || ""}`.trim()
+          formattedAddress:
+            `${first.streetNumber || ""} ${first.street || ""}, ${first.city || ""}`.trim(),
         };
         setAddress(locationData);
       }
@@ -79,9 +80,9 @@ export default function AddressSetup() {
     if (!address) return;
     try {
       // REAL DATA UPDATE: Syncing with Firebase via AuthContext
-      await updateProfile({ 
+      await updateProfile({
         locationData: address,
-        addressInitialized: true 
+        addressInitialized: true,
       });
       router.replace("/(customer)/home");
     } catch (error) {

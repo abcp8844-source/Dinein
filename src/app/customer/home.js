@@ -37,7 +37,8 @@ export default function Home() {
 
   // REAL DATA MAPPING: Pulling directly from User Context
   const currency = userData?.currencyCode || "THB";
-  const location = userData?.locationData?.city || userData?.location?.city || "GLOBAL NODE";
+  const location =
+    userData?.locationData?.city || userData?.location?.city || "GLOBAL NODE";
 
   useEffect(() => {
     fetchMenu();
@@ -48,7 +49,9 @@ export default function Home() {
     const hours = new Date().getHours();
     // Logic: Time-based AI protocol matching
     if (hours < 12)
-      setAiMessage(`AM_PROTOCOL: OPTIMIZING ENERGY IN ${location.toUpperCase()}.`);
+      setAiMessage(
+        `AM_PROTOCOL: OPTIMIZING ENERGY IN ${location.toUpperCase()}.`,
+      );
     else if (hours < 18)
       setAiMessage(`SYSTEM_SYNC: HIGH-PERFORMANCE DETECTED.`);
     else setAiMessage(`PM_PROTOCOL: ANALYZING COMFORT-TIER OPTIONS.`);
@@ -59,7 +62,7 @@ export default function Home() {
       setLoading(true);
       // REAL DATA RETRIEVAL: Fetching items from Firebase
       const data = await dbService.getMenuItems();
-      
+
       // OPTIONAL: Filter items based on availability or user's region if needed
       setItems(data);
       setFilteredItems(data);
@@ -80,7 +83,7 @@ export default function Home() {
       (item) =>
         item.name?.toLowerCase().includes(text.toLowerCase()) ||
         item.description?.toLowerCase().includes(text.toLowerCase()) ||
-        item.restaurantName?.toLowerCase().includes(text.toLowerCase())
+        item.restaurantName?.toLowerCase().includes(text.toLowerCase()),
     );
     setFilteredItems(filtered);
   };
@@ -101,7 +104,9 @@ export default function Home() {
         ]}
       >
         <View style={styles.itemMeta}>
-          <Text style={styles.itemName}>{item.name?.toUpperCase() || "ITEM"}</Text>
+          <Text style={styles.itemName}>
+            {item.name?.toUpperCase() || "ITEM"}
+          </Text>
           <View style={styles.distanceRow}>
             <Ionicons
               name="location-sharp"
@@ -209,7 +214,14 @@ export default function Home() {
             renderItem={renderMenuItem}
             contentContainerStyle={styles.listPadding}
             ListEmptyComponent={
-              <Text style={{ color: "#5D6D7E", textAlign: "center", marginTop: 20, fontSize: 10 }}>
+              <Text
+                style={{
+                  color: "#5D6D7E",
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontSize: 10,
+                }}
+              >
                 NO ASSETS FOUND IN THIS REGION.
               </Text>
             }

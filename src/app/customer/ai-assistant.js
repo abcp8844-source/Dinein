@@ -40,7 +40,7 @@ export default function AiAssistant() {
       const city = userData?.location?.city || "Thailand";
       const region = userData?.countryName || "Global";
       const systemPrompt = `Role: Customer Food Assistant. Location: ${city}. Region: ${region}. Transfer Rule: If user asks for human/admin, use: "Connecting to our human support expert..."`;
-      
+
       try {
         const response = await generateAIResponse(systemPrompt);
         setMessages([{ id: "1", text: response, sender: "ai" }]);

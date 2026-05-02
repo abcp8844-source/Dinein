@@ -47,11 +47,11 @@ export default function Cart() {
     if (cartItems.length === 0) {
       Alert.alert(
         "QUEUE EMPTY",
-        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING."
+        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING.",
       );
       return;
     }
-    
+
     try {
       // LOGIC: Final settlement processing before registry
       // Here you would typically trigger the payment or order creation service
@@ -68,7 +68,9 @@ export default function Cart() {
       style={[styles.cartItem, { borderBottomColor: "#0A1A2F" }]}
     >
       <View style={{ flex: 1 }}>
-        <Text style={styles.itemName}>{item.name?.toUpperCase() || "UNKNOWN ASSET"}</Text>
+        <Text style={styles.itemName}>
+          {item.name?.toUpperCase() || "UNKNOWN ASSET"}
+        </Text>
         <Text style={styles.itemSub}>
           SECURED ASSET • {country.toUpperCase()} NODE
         </Text>

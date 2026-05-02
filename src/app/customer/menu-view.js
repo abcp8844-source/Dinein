@@ -37,27 +37,27 @@ export default function MenuView() {
     const menuRef = collection(db, "menus");
     const q = query(menuRef, where("active", "==", true));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMenuItems(items);
-      setLoading(false);
-    }, (error) => {
-      console.error("SYNC_ERROR:", error);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setMenuItems(items);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("SYNC_ERROR:", error);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe();
   }, []);
 
   const renderItem = ({ item, index }) => (
-    <Animatable.View
-      animation="fadeInUp"
-      duration={600}
-      delay={index * 50}
-    >
+    <Animatable.View animation="fadeInUp" duration={600} delay={index * 50}>
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={() =>
@@ -73,7 +73,9 @@ export default function MenuView() {
       >
         <View style={styles.cardInfo}>
           <Text style={styles.itemName}>
-            {item.name?.toUpperCase() || item.itemName?.toUpperCase() || "UNKNOWN ASSET"}
+            {item.name?.toUpperCase() ||
+              item.itemName?.toUpperCase() ||
+              "UNKNOWN ASSET"}
           </Text>
           <Text numberOfLines={2} style={styles.itemDesc}>
             {item.description || "NO ARCHIVE DATA AVAILABLE."}
@@ -117,7 +119,9 @@ export default function MenuView() {
       {loading ? (
         <View style={styles.emptyContainer}>
           <ActivityIndicator size="small" color={colors.primary || "#D4AF37"} />
-          <Text style={[styles.emptyText, { marginTop: 15 }]}>SYNCHRONIZING CORE...</Text>
+          <Text style={[styles.emptyText, { marginTop: 15 }]}>
+            SYNCHRONIZING CORE...
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -182,7 +186,12 @@ const styles = StyleSheet.create({
   },
   priceContainer: { flex: 0.25, alignItems: "flex-end" },
   priceText: { fontSize: 18, fontWeight: "900", letterSpacing: 0.5 },
-  currencyLabel: { fontSize: 8, fontWeight: "900", color: "#5D6D7E", marginTop: 2 },
+  currencyLabel: {
+    fontSize: 8,
+    fontWeight: "900",
+    color: "#5D6D7E",
+    marginTop: 2,
+  },
   emptyContainer: { marginTop: 150, alignItems: "center" },
   emptyText: {
     color: "#1B2631",
