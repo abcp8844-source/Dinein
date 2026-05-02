@@ -7,16 +7,18 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  StatusBar
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../theme/ThemeContext"; // FIXED: Corrected path for theme
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
 /**
  * PREMIUM OWNER COMMAND CENTER
  * Features: Revenue Analytics | Live Order Stream | Store Control
+ * Integrity: Technical paths aligned with the standard architecture.
  */
 export default function OwnerDashboard() {
   const { userData } = useAuth();
@@ -42,13 +44,14 @@ export default function OwnerDashboard() {
   ]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#000" }]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* --- BRAND & STATUS HEADER --- */}
         <View style={styles.header}>
           <View>
             <Text style={styles.brandTitle}>OWNER PANEL</Text>
-            <Text style={[styles.storeName, { color: colors.primary }]}>
+            <Text style={[styles.storeName, { color: colors.primary || "#D4AF37" }]}>
               {userData?.restaurantName || "Premium Hub"}
             </Text>
           </View>
@@ -79,14 +82,14 @@ export default function OwnerDashboard() {
         {/* --- REVENUE SNAPSHOT --- */}
         <Animatable.View animation="fadeInUp" style={styles.revenueCard}>
           <Text style={styles.cardLabel}>TODAY'S REVENUE</Text>
-          <Text style={[styles.revenueAmount, { color: colors.primary }]}>
+          <Text style={[styles.revenueAmount, { color: colors.primary || "#D4AF37" }]}>
             4,850{" "}
             <Text style={styles.currency}>
               {userData?.currencyCode || "THB"}
             </Text>
           </Text>
           <View style={styles.aiBriefing}>
-            <Ionicons name="trending-up" size={16} color={colors.primary} />
+            <Ionicons name="trending-up" size={16} color={colors.primary || "#D4AF37"} />
             <Text style={styles.aiBriefText}>
               AI Forecast: High demand expected in 2 hours.
             </Text>
@@ -99,7 +102,7 @@ export default function OwnerDashboard() {
             style={styles.actionBox}
             onPress={() => router.push("/owner/ai-consultant")}
           >
-            <Ionicons name="sparkles" size={24} color={colors.primary} />
+            <Ionicons name="sparkles" size={24} color={colors.primary || "#D4AF37"} />
             <Text style={styles.actionLabel}>AI CONSULTANT</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -115,7 +118,7 @@ export default function OwnerDashboard() {
         <View style={styles.orderSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>LIVE INCOMING ORDERS</Text>
-            <Text style={[styles.orderCount, { color: colors.primary }]}>
+            <Text style={[styles.orderCount, { color: colors.primary || "#D4AF37" }]}>
               {orders.length} ACTIVE
             </Text>
           </View>
@@ -138,7 +141,7 @@ export default function OwnerDashboard() {
                 <TouchableOpacity
                   style={[
                     styles.acceptBtn,
-                    { backgroundColor: colors.primary },
+                    { backgroundColor: colors.primary || "#D4AF37" },
                   ]}
                 >
                   <Text style={styles.acceptBtnText}>ACCEPT</Text>
@@ -153,7 +156,7 @@ export default function OwnerDashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1 },
   header: {
     padding: 30,
     paddingTop: 50,
@@ -257,7 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   orderId: { color: "#444", fontSize: 10, fontWeight: "900" },
-  orderTime: { color: "#D4AF37", fontSize: 10, fontWeight: "bold" },
+  orderTime: { fontSize: 10, fontWeight: "bold" },
   orderItem: {
     color: "#FFF",
     fontSize: 16,
