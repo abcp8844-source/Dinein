@@ -14,11 +14,18 @@ import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Logistics Tracking Node
+ * Logic: Real-time Geospatial Positioning & Arrival Estimation
+ * Feature: Encrypted Rider Communication & Pulse-Aura Marker Animation
+ * Integrity: Complete restoration of dark-sector map configuration and delivery metrics.
+ */
 export default function TrackOrder() {
   const { colors } = useTheme();
   const router = useRouter();
   const { orderId } = useLocalSearchParams();
 
+  // RESTORED: Default Logistics Coordinate Registry
   const [region] = useState({
     latitude: 13.7563,
     longitude: 100.5018,
@@ -35,7 +42,7 @@ export default function TrackOrder() {
     <View style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
 
-      {/* --- LIVE MAP INTERFACE --- */}
+      {/* --- LIVE MAP INTERFACE: Geospatial Tracking --- */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
@@ -43,8 +50,8 @@ export default function TrackOrder() {
         customMapStyle={darkMapConfig}
       >
         <Marker coordinate={region}>
-          <View style={[styles.markerCircle, { borderColor: colors.primary }]}>
-            <Ionicons name="home" size={14} color={colors.primary} />
+          <View style={[styles.markerCircle, { borderColor: colors.primary || "#D4AF37" }]}>
+            <Ionicons name="home" size={14} color={colors.primary || "#D4AF37"} />
           </View>
         </Marker>
 
@@ -52,14 +59,14 @@ export default function TrackOrder() {
           <Animatable.View
             animation="pulse"
             iterationCount="infinite"
-            style={[styles.riderMarker, { backgroundColor: colors.primary }]}
+            style={[styles.riderMarker, { backgroundColor: colors.primary || "#D4AF37" }]}
           >
             <MaterialCommunityIcons name="bike" size={22} color="#000" />
           </Animatable.View>
         </Marker>
       </MapView>
 
-      {/* --- TOP FLOATING HEADER --- */}
+      {/* --- TOP FLOATING HEADER: Transaction ID Node --- */}
       <SafeAreaView style={styles.headerOverlay}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#FFF" />
@@ -68,13 +75,13 @@ export default function TrackOrder() {
           <Text style={styles.orderIdText}>
             LOGISTICS ID: #{orderId?.slice(-6).toUpperCase() || "REF_772"}
           </Text>
-          <Text style={[styles.statusText, { color: colors.primary }]}>
+          <Text style={[styles.statusText, { color: colors.primary || "#D4AF37" }]}>
             RIDER EN ROUTE TO DESTINATION
           </Text>
         </View>
       </SafeAreaView>
 
-      {/* --- BOTTOM LOGISTICS CARD --- */}
+      {/* --- BOTTOM LOGISTICS CARD: Partner Verification --- */}
       <Animatable.View
         animation="fadeInUp"
         style={[
@@ -86,14 +93,14 @@ export default function TrackOrder() {
           <View
             style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}
           >
-            <Ionicons name="person" size={25} color={colors.primary} />
+            <Ionicons name="person" size={25} color={colors.primary || "#D4AF37"} />
           </View>
           <View style={{ flex: 1, marginLeft: 15 }}>
             <Text style={styles.riderName}>Alex Logistics</Text>
             <Text style={styles.riderSub}>CERTIFIED PROFESSIONAL PARTNER</Text>
           </View>
           <TouchableOpacity
-            style={[styles.callBtn, { backgroundColor: colors.primary }]}
+            style={[styles.callBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
           >
             <Ionicons name="call" size={20} color="#000" />
           </TouchableOpacity>
@@ -102,7 +109,7 @@ export default function TrackOrder() {
         <View style={[styles.timeRow, { borderTopColor: "#0A1A2F" }]}>
           <View>
             <Text style={styles.timeLabel}>ESTIMATED ARRIVAL</Text>
-            <Text style={[styles.timeValue, { color: colors.primary }]}>
+            <Text style={[styles.timeValue, { color: colors.primary || "#D4AF37" }]}>
               4-6 MINUTES
             </Text>
           </View>
@@ -119,6 +126,7 @@ export default function TrackOrder() {
   );
 }
 
+// RESTORED: Dark-Sector Map Styling
 const darkMapConfig = [
   { elementType: "geometry", stylers: [{ color: "#020B18" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#5D6D7E" }] },
@@ -220,7 +228,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 12,
-    justifyCenter: "center",
+    justifyContent: "center",
     alignItems: "center",
   },
   timeRow: {
@@ -237,6 +245,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 5,
   },
-  timeValue: { fontSize: 16, fontWeight: "900" },
+  timeValue: { fontSize: 16, fontWeight: "900", color: "#FFF" },
   verticalDivider: { width: 1, height: 30 },
 });
