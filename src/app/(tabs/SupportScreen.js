@@ -1,7 +1,7 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../theme/ThemeContext';
+import React from "react";
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../theme/ThemeContext";
 
 /**
  * CUSTOMER TABS LAYOUT
@@ -15,20 +15,22 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#020B18', // Midnight Navy
-          borderTopColor: 'rgba(212, 175, 55, 0.2)', // Dimmed Gold Border
+          backgroundColor: "#020B18", // Midnight Navy
+          borderTopColor: "rgba(212, 175, 55, 0.2)", // Dimmed Gold Border
           height: 65,
           paddingBottom: 10,
         },
-        tabBarActiveTintColor: '#D4AF37', // Premium Gold
-        tabBarInactiveTintColor: '#5D6D7E',
+        tabBarActiveTintColor: "#D4AF37", // Premium Gold
+        tabBarInactiveTintColor: "#5D6D7E",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'HOME',
-          tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={22} color={color} />,
+          title: "HOME",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home-outline" size={22} color={color} />
+          ),
         }}
       />
 
@@ -36,16 +38,20 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="SupportScreen"
         options={{
-          title: 'SUPPORT',
-          tabBarIcon: ({ color }) => <Ionicons name="help-buoy-outline" size={22} color={color} />,
+          title: "SUPPORT",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="help-buoy-outline" size={22} color={color} />
+          ),
         }}
       />
 
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'PROFILE',
-          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={22} color={color} />,
+          title: "PROFILE",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person-outline" size={22} color={color} />
+          ),
         }}
       />
     </Tabs>
