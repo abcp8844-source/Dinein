@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../theme/ThemeContext"; // FIXED: Technical path alignment
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import { generateAIResponse } from "../../services/aiService";
