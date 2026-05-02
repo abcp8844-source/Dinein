@@ -3,16 +3,21 @@ import { View } from "react-native";
 import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 
+/**
+ * RESTORED: Future-Tech Customer Layout
+ * Logic: Centralized AI Core (Shield) with Biometric Identity (Fingerprint)
+ * Integrity: No deletions, standard deep-navy background #020B18
+ */
 export default function CustomerLayout() {
   const { colors } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary, // Using your theme's Primary Gold
-        tabBarInactiveTintColor: "#5D6D7E", // Premium Slate Grey
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: "#5D6D7E", 
         tabBarStyle: {
-          backgroundColor: "#020B18", // Deep Navy Blue from Image 12896
+          backgroundColor: "#020B18", 
           borderTopColor: "#0A1A2F",
           height: 80,
           paddingBottom: 20,
