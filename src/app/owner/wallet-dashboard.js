@@ -12,9 +12,11 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import * as Animatable from "react-native-animatable";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // Added for navigation
 
 export default function OwnerWallet() {
   const { userData } = useAuth();
+  const router = useRouter();
 
   const THEME = {
     bg: "#020B18",
@@ -26,10 +28,13 @@ export default function OwnerWallet() {
     danger: "#FF3B30",
   };
 
-  // REAL DATA SYNC: Pulling directly from AuthContext / Firebase
+  // --- REAL DATA SYNC ---
+  // Using actual fields from your AuthContext/Firebase
   const currency = userData?.currencyCode || "THB";
   const balance = userData?.walletBalance || 0;
-  const transactions = userData?.recentTransactions || [];
+  
+  // Safely mapping transactions from userData
+  const transactions = userData?.transactions || []; 
 
   const renderTransaction = ({ item }) => (
     <View
@@ -40,24 +45,26 @@ export default function OwnerWallet() {
     >
       <View style={styles.iconCircle}>
         <Ionicons
-          name={item.type === "IN" ? "arrow-down-circle" : "arrow-up-circle"}
+          name={item.type === "CREDIT" || item.type === "IN" ? "arrow-down-circle" : "arrow-up-circle"}
           size={24}
-          color={item.type === "IN" ? THEME.success : THEME.danger}
+          color={item.type === "CREDIT" || item.type === "IN" ? THEME.success : THEME.danger}
         />
       </View>
       <View style={{ flex: 1, marginLeft: 15 }}>
         <Text style={[styles.ledgerLabel, { color: "#FFF" }]}>
-          {item.label}
+          {item.label || item.description || "Transaction"}
         </Text>
-        <Text style={styles.ledgerDate}>{item.date}</Text>
+        <Text style={styles.ledgerDate}>
+          {item.date || new Date(item.createdAt).toLocaleDateString()}
+        </Text>
       </View>
       <Text
         style={[
           styles.ledgerAmount,
-          { color: item.type === "IN" ? THEME.success : THEME.danger },
+          { color: item.type === "CREDIT" || item.type === "IN" ? THEME.success : THEME.danger },
         ]}
       >
-        {item.type === "IN" ? "+" : "-"}
+        {item.type === "CREDIT" || item.type === "IN" ? "+" : "-"}
         {item.amount}
       </Text>
     </View>
@@ -66,6 +73,15 @@ export default function OwnerWallet() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bg }}>
       <StatusBar barStyle="light-content" />
+      
+      {/* Back Button Added for Functionality */}
+      <TouchableOpacity 
+        onPress={() => router.back()} 
+        style={{paddingHorizontal: 20, paddingTop: 10}}
+      >
+        <Ionicons name="chevron-back" size={28} color={THEME.gold} />
+      </TouchableOpacity>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <Animatable.View animation="fadeIn" style={styles.header}>
           <Text style={[styles.marketTitle, { color: THEME.gold }]}>
@@ -74,7 +90,7 @@ export default function OwnerWallet() {
           <View style={[styles.balanceBox, { borderColor: THEME.gold }]}>
             <Text style={styles.totalLabel}>CURRENT SETTLEMENT BALANCE</Text>
             <Text style={[styles.mainAmount, { color: "#FFF" }]}>
-              {balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}{" "}
+              {Number(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}{" "}
               <Text style={{ color: THEME.gold }}>{currency}</Text>
             </Text>
           </View>
@@ -90,7 +106,7 @@ export default function OwnerWallet() {
           {transactions.length > 0 ? (
             <FlatList
               data={transactions}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => item.id || index.toString()}
               renderItem={renderTransaction}
               scrollEnabled={false}
             />
@@ -107,7 +123,8 @@ export default function OwnerWallet() {
           <TouchableOpacity
             style={[styles.actionBtn, { backgroundColor: THEME.gold }]}
             onPress={() => {
-              /* Real withdrawal logic link */
+              // Link to your real withdrawal or top-up screen
+              router.push("/owner/withdraw"); 
             }}
           >
             <Text style={styles.btnText}>INITIATE WITHDRAWAL</Text>
@@ -119,7 +136,7 @@ export default function OwnerWallet() {
 }
 
 const styles = StyleSheet.create({
-  header: { padding: 40, alignItems: "center", marginTop: 20 },
+  header: { paddingHorizontal: 40, paddingBottom: 40, alignItems: "center", marginTop: 10 },
   marketTitle: {
     fontSize: 10,
     fontWeight: "900",
@@ -140,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 1.5,
   },
-  mainAmount: { fontSize: 38, fontWeight: "300", marginTop: 10 },
+  mainAmount: { fontSize: 32, fontWeight: "300", marginTop: 10 },
   nodeStatus: {
     marginTop: 20,
     paddingHorizontal: 15,
@@ -149,7 +166,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   statusText: { color: "#00FF00", fontSize: 8, fontWeight: "900" },
-  section: { paddingHorizontal: 25, marginTop: 20 },
+  section: { paddingHorizontal: 25, marginTop: 10 },
   sectionTitle: {
     fontSize: 10,
     fontWeight: "900",
@@ -183,7 +200,7 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
     borderRadius: 20,
   },
-  actionRow: { padding: 25, marginTop: 10 },
+  actionRow: { padding: 25, marginTop: 10, marginBottom: 40 },
   actionBtn: {
     height: 60,
     borderRadius: 18,
