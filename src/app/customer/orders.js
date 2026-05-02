@@ -77,7 +77,9 @@ export default function Orders() {
     >
       <View style={styles.cardHeader}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.itemName}>{item.itemName?.toUpperCase() || "GLOBAL ASSET"}</Text>
+          <Text style={styles.itemName}>
+            {item.itemName?.toUpperCase() || "GLOBAL ASSET"}
+          </Text>
           <Text style={styles.orderId}>
             NODE ID: #{item.id?.slice(-8).toUpperCase()}
           </Text>
@@ -169,7 +171,9 @@ export default function Orders() {
                 size={40}
                 color="#1B2631"
               />
-              <Text style={styles.emptyText}>NO ACTIVE TRANSACTIONS IN ARCHIVE</Text>
+              <Text style={styles.emptyText}>
+                NO ACTIVE TRANSACTIONS IN ARCHIVE
+              </Text>
             </View>
           }
         />
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     marginBottom: 20,
-    marginHorizontal: 25
+    marginHorizontal: 25,
   },
   cardHeader: {
     flexDirection: "row",

@@ -96,7 +96,8 @@ export default function TrackOrder() {
         </TouchableOpacity>
         <View style={styles.orderInfo}>
           <Text style={styles.orderIdText}>
-            LOGISTICS ID: #{orderId?.toString().slice(-8).toUpperCase() || "SYNCING..."}
+            LOGISTICS ID: #
+            {orderId?.toString().slice(-8).toUpperCase() || "SYNCING..."}
           </Text>
           <Text
             style={[styles.statusText, { color: colors.primary || "#D4AF37" }]}
@@ -165,8 +166,16 @@ export default function TrackOrder() {
 const darkMapConfig = [
   { elementType: "geometry", stylers: [{ color: "#020B18" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#5D6D7E" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#0A1A2F" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#010812" }] },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#0A1A2F" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#010812" }],
+  },
 ];
 
 const styles = StyleSheet.create({
@@ -192,18 +201,86 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   orderInfo: { marginLeft: 15, flex: 1 },
-  orderIdText: { color: "#FFF", fontSize: 11, fontWeight: "900", letterSpacing: 1 },
-  statusText: { fontSize: 9, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
-  markerCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: "#020B18", borderWidth: 2, justifyContent: "center", alignItems: "center" },
-  riderMarker: { width: 44, height: 44, borderRadius: 12, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "#FFF" },
-  detailsCard: { position: "absolute", bottom: 40, left: 20, right: 20, borderRadius: 30, padding: 25, borderWidth: 1 },
-  riderProfile: { flexDirection: "row", alignItems: "center", marginBottom: 25 },
-  avatarPlaceholder: { width: 50, height: 50, borderRadius: 15, justifyContent: "center", alignItems: "center" },
+  orderIdText: {
+    color: "#FFF",
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+  statusText: {
+    fontSize: 9,
+    fontWeight: "900",
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+  markerCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#020B18",
+    borderWidth: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  riderMarker: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#FFF",
+  },
+  detailsCard: {
+    position: "absolute",
+    bottom: 40,
+    left: 20,
+    right: 20,
+    borderRadius: 30,
+    padding: 25,
+    borderWidth: 1,
+  },
+  riderProfile: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  avatarPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   riderName: { color: "#FFF", fontSize: 15, fontWeight: "900" },
-  riderSub: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
-  callBtn: { width: 45, height: 45, borderRadius: 12, justifyContent: "center", alignItems: "center" },
-  timeRow: { flexDirection: "row", justifyContext: "space-between", alignItems: "center", borderTopWidth: 1, paddingTop: 20 },
-  timeLabel: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", letterSpacing: 1, marginBottom: 5 },
+  riderSub: {
+    color: "#5D6D7E",
+    fontSize: 8,
+    fontWeight: "900",
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+  callBtn: {
+    width: 45,
+    height: 45,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  timeRow: {
+    flexDirection: "row",
+    justifyContext: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    paddingTop: 20,
+  },
+  timeLabel: {
+    color: "#5D6D7E",
+    fontSize: 8,
+    fontWeight: "900",
+    letterSpacing: 1,
+    marginBottom: 5,
+  },
   timeValue: { fontSize: 16, fontWeight: "900", color: "#FFF" },
   verticalDivider: { width: 1, height: 30 },
 });

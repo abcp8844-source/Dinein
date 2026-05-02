@@ -66,7 +66,6 @@ export default function CustomerProfile() {
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         {/* --- PROFILE HEADER: Identity Verification Node --- */}
         <Animatable.View animation="fadeIn" style={styles.header}>
           <View
@@ -86,10 +85,13 @@ export default function CustomerProfile() {
             </View>
           </View>
           <Text style={styles.userName}>
-            {userData?.fullName?.toUpperCase() || userData?.name?.toUpperCase() || "UNREGISTERED USER"}
+            {userData?.fullName?.toUpperCase() ||
+              userData?.name?.toUpperCase() ||
+              "UNREGISTERED USER"}
           </Text>
           <Text style={[styles.userRegion, { color: "#5D6D7E" }]}>
-            📍 {userData?.countryName?.toUpperCase() || "SYNCING GLOBAL NODE..."}
+            📍{" "}
+            {userData?.countryName?.toUpperCase() || "SYNCING GLOBAL NODE..."}
           </Text>
         </Animatable.View>
 

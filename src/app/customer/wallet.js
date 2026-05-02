@@ -28,7 +28,7 @@ export default function Wallet() {
   // REAL DATA SYNC: Pulling live assets from the authenticated node
   const balance = userData?.walletBalance || 0;
   const currency = userData?.currencyCode || "USD";
-  const country = userData?.idOrigin || "Global"; 
+  const country = userData?.idOrigin || "Global";
 
   // REAL LOGIC: Geographic Gateway Filter for 20 Countries
   const getGlobalPaymentMethods = () => {
@@ -170,19 +170,64 @@ export default function Wallet() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   headerArea: { marginBottom: 40, marginTop: 20 },
-  headerLabel: { fontSize: 10, fontWeight: "900", letterSpacing: 4, marginBottom: 10 },
+  headerLabel: {
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 4,
+    marginBottom: 10,
+  },
   goldLine: { width: 40, height: 2, borderRadius: 1 },
-  balanceCard: { width: "100%", padding: 35, borderRadius: 30, borderWidth: 1, alignItems: "center" },
-  balanceTitle: { color: "#5D6D7E", fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 15 },
+  balanceCard: {
+    width: "100%",
+    padding: 35,
+    borderRadius: 30,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  balanceTitle: {
+    color: "#5D6D7E",
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    marginBottom: 15,
+  },
   amountRow: { flexDirection: "row", alignItems: "flex-end" },
   balanceAmount: { color: "#FFF", fontSize: 38, fontWeight: "300" },
-  currencyCode: { fontSize: 12, fontWeight: "900", marginLeft: 10, marginBottom: 8 },
+  currencyCode: {
+    fontSize: 12,
+    fontWeight: "900",
+    marginLeft: 10,
+    marginBottom: 8,
+  },
   gatewaySection: { marginTop: 40 },
-  sectionTitle: { color: "#2C3E50", fontSize: 9, fontWeight: "900", letterSpacing: 1.5, marginBottom: 20 },
-  methodItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 20, borderBottomWidth: 1 },
+  sectionTitle: {
+    color: "#2C3E50",
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 1.5,
+    marginBottom: 20,
+  },
+  methodItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+  },
   methodMain: { flexDirection: "row", alignItems: "center" },
-  methodName: { color: "#FFF", fontSize: 13, fontWeight: "700", marginLeft: 12 },
+  methodName: {
+    color: "#FFF",
+    fontSize: 13,
+    fontWeight: "700",
+    marginLeft: 12,
+  },
   linkText: { fontSize: 8, fontWeight: "900", letterSpacing: 1 },
   footer: { marginTop: 50, alignItems: "center" },
-  safetyDisclaimer: { color: "#1B2631", fontSize: 8, fontWeight: "900", marginTop: 20, letterSpacing: 1 },
+  safetyDisclaimer: {
+    color: "#1B2631",
+    fontSize: 8,
+    fontWeight: "900",
+    marginTop: 20,
+    letterSpacing: 1,
+  },
 });
