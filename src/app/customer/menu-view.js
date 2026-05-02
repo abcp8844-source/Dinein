@@ -20,23 +20,23 @@ export default function MenuView() {
   useEffect(() => {
     const menuRef = collection(db, "menus");
     const q = query(menuRef, where("active", "==", true)); // Production Logic
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({ 
-        id: doc.id, 
-        ...doc.data() 
+      const items = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       }));
       setMenuItems(items);
       setLoading(false);
     });
-    
+
     return () => unsubscribe();
   }, []);
 
   const renderItem = ({ item }) => (
-    <Animatable.View 
-      animation="fadeInUp" 
-      duration={800} 
+    <Animatable.View
+      animation="fadeInUp"
+      duration={800}
       style={styles.menuCard}
     >
       <View style={styles.cardInfo}>
@@ -54,7 +54,7 @@ export default function MenuView() {
   return (
     <View style={[styles.container, { backgroundColor: "#000" }]}>
       <StatusBar barStyle="light-content" />
-      
+
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <Text style={styles.headerTitle}>CUISINE SELECTION</Text>
         <View style={styles.goldLine} />
@@ -85,17 +85,17 @@ export default function MenuView() {
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 20 },
   header: { marginTop: 60, marginBottom: 40, alignItems: "center" },
-  headerTitle: { 
-    color: "#D4AF37", 
-    fontSize: 14, 
-    fontWeight: "900", 
-    letterSpacing: 5 
+  headerTitle: {
+    color: "#D4AF37",
+    fontSize: 14,
+    fontWeight: "900",
+    letterSpacing: 5,
   },
-  goldLine: { 
-    width: 25, 
-    height: 1.5, 
-    backgroundColor: "#D4AF37", 
-    marginTop: 12 
+  goldLine: {
+    width: 25,
+    height: 1.5,
+    backgroundColor: "#D4AF37",
+    marginTop: 12,
   },
   menuCard: {
     flexDirection: "row",
@@ -108,32 +108,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardInfo: { flex: 0.7 },
-  itemName: { 
-    color: "#FFF", 
-    fontSize: 13, 
-    fontWeight: "800", 
+  itemName: {
+    color: "#FFF",
+    fontSize: 13,
+    fontWeight: "800",
     letterSpacing: 1,
-    marginBottom: 6 
+    marginBottom: 6,
   },
-  itemDesc: { 
-    color: "#666", 
-    fontSize: 10, 
+  itemDesc: {
+    color: "#666",
+    fontSize: 10,
     lineHeight: 16,
-    fontWeight: "400" 
+    fontWeight: "400",
   },
   priceContainer: { flex: 0.3, alignItems: "flex-end" },
-  priceText: { 
-    color: "#D4AF37", 
-    fontSize: 16, 
+  priceText: {
+    color: "#D4AF37",
+    fontSize: 16,
     fontWeight: "900",
-    letterSpacing: 0.5 
+    letterSpacing: 0.5,
   },
   emptyContainer: { marginTop: 100, alignItems: "center" },
-  emptyText: { 
-    color: "#222", 
-    fontSize: 9, 
-    letterSpacing: 3, 
-    fontWeight: "bold" 
+  emptyText: {
+    color: "#222",
+    fontSize: 9,
+    letterSpacing: 3,
+    fontWeight: "bold",
   },
   orderBtn: {
     backgroundColor: "#D4AF37",
@@ -151,10 +151,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 10,
   },
-  btnText: { 
-    color: "#000", 
-    fontWeight: "900", 
-    letterSpacing: 2, 
-    fontSize: 11 
+  btnText: {
+    color: "#000",
+    fontWeight: "900",
+    letterSpacing: 2,
+    fontSize: 11,
   },
 });
