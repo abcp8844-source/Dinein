@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../theme/ThemeContext"; // FIXED: Technical path alignment
+import { useTheme } from "../../theme/ThemeContext"; 
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import { generateAIResponse } from "../../services/aiService";
@@ -28,15 +28,17 @@ export default function OwnerAiConsultant() {
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef();
 
+  // --- REAL-TIME BUSINESS CONTEXT INITIALIZATION ---
   useEffect(() => {
     const initializeBusinessIntelligence = async () => {
       setLoading(true);
+      // Actual data from your AuthContext
       const systemPrompt = `
         Role: Strategic Business AI for Restaurant Owner. 
-        Context: Location ${userData?.location?.city || "Thailand"}.
-        Task: Provide a brief weather-impact report and one local market insight.
-        Privacy: Maintain business confidentiality. 
-        Support: If business help is needed beyond AI, advise using the Admin Support link.
+        Owner Name: ${userData?.name || "Partner"}
+        Business: ${userData?.restaurantName || "Store"}
+        Location: ${userData?.locationData?.city || "Thailand"}.
+        Task: Provide a greeting and a brief strategic insight for today.
       `;
 
       try {
@@ -55,7 +57,7 @@ export default function OwnerAiConsultant() {
       }
     };
     initializeBusinessIntelligence();
-  }, []);
+  }, [userData]);
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || loading) return;
@@ -71,11 +73,9 @@ export default function OwnerAiConsultant() {
     setLoading(true);
 
     const securePrompt = `
-      Instructions:
-      - You are a Business Consultant. 
-      - Topics: Market Trends, Logistics, Weather, Growth.
-      - Escalation: If the owner is frustrated or needs direct technical help, say: "Direct Admin support is available. I am alerting the team to assist you further."
+      Context: Owner of ${userData?.restaurantName || "a local shop"}.
       User Query: ${currentInput}
+      Guideline: Be professional, brief, and suggest admin support if it's a technical error.
     `;
 
     try {
@@ -147,7 +147,6 @@ export default function OwnerAiConsultant() {
           </View>
         </View>
 
-        {/* DIRECT ADMIN SUPPORT BUTTON */}
         <TouchableOpacity onPress={() => router.push("/support/admin-direct")}>
           <Ionicons name="headset-outline" size={24} color={colors.primary} />
         </TouchableOpacity>
@@ -164,7 +163,7 @@ export default function OwnerAiConsultant() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={100}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <View style={styles.inputArea}>
           <View style={styles.inputContainer}>
