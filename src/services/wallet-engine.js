@@ -1,9 +1,3 @@
-/**
- * GLOBAL FINANCIAL SETTLEMENT ENGINE
- * Core Logic: Market Isolation & Revenue Routing
- * Target: 15 International Operational Nodes
- */
-
 import { db } from "./firebaseConfig";
 import {
   doc,
@@ -13,6 +7,11 @@ import {
   addDoc,
 } from "firebase/firestore";
 
+/**
+ * GLOBAL FINANCIAL SETTLEMENT ENGINE
+ * Core Logic: Market Isolation & Revenue Routing
+ * Target: 20 International Operational Nodes (Locked)
+ */
 export const WalletEngine = {
   /**
    * 1. PROMOTION BILLING (Owner to Master Admin)
@@ -23,6 +22,7 @@ export const WalletEngine = {
       const transactionId = `PROMO-${Date.now()}`;
       const timestamp = new Date().toISOString();
 
+      // Isolated Market Path
       const ownerRef = doc(db, `markets/${countryCode}/owners`, ownerId);
       const adminRevenueRef = doc(db, "admin_finance", "global_revenue");
 
@@ -48,25 +48,20 @@ export const WalletEngine = {
 
       return { success: true, ref: transactionId };
     } catch (error) {
-      console.error("[FINANCIAL_ERROR]: Billing Failed", error);
       return { success: false, error: error.message };
     }
   },
 
   /**
    * 2. REGIONAL SETTLEMENT (Customer to Owner)
-   * Strictly isolated within the country node.
+   * Strictly isolated within the verified country node.
    */
   processOrderPayment: async (transactionData) => {
-    const { customerId, ownerId, amount, currency, countryCode } =
-      transactionData;
+    const { customerId, ownerId, amount, currency, countryCode } = transactionData;
     const refId = `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     try {
-      const transactionRef = collection(
-        db,
-        `markets/${countryCode}/transactions`,
-      );
+      const transactionRef = collection(db, `markets/${countryCode}/transactions`);
 
       const settlementRecord = {
         refId,
@@ -88,15 +83,13 @@ export const WalletEngine = {
 
       return { success: true, receipt: settlementRecord };
     } catch (error) {
-      return {
-        success: false,
-        message: "Settlement Failed: Regional Network Error",
-      };
+      return { success: false, message: "Settlement Failed" };
     }
   },
 
   /**
    * 3. MASTER CURRENCY FORMATTER
+   * Dynamically formats based on regional ISO standards.
    */
   displayBalance: (value, currencyCode) => {
     return new Intl.NumberFormat("en-US", {
@@ -106,3 +99,4 @@ export const WalletEngine = {
     }).format(value);
   },
 };
+
