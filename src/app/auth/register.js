@@ -29,7 +29,10 @@ export default function Register() {
   const handleRegistration = async () => {
     // Basic Validation
     if (!email || !password || !idNumber) {
-      Alert.alert("SECURITY BREACH", "All identity fields are mandatory for global access.");
+      Alert.alert(
+        "SECURITY BREACH",
+        "All identity fields are mandatory for global access.",
+      );
       return;
     }
 
@@ -41,11 +44,14 @@ export default function Register() {
         verification: {
           method: verificationType,
           id: idNumber, // This is crucial for Forgot Password later
-          origin: verificationType === "passport" ? passportOrigin : selectedCountry.name,
+          origin:
+            verificationType === "passport"
+              ? passportOrigin
+              : selectedCountry.name,
           timestamp: new Date().toISOString(),
         },
       };
-      
+
       // Strict DB Entry
       await register(email, password, role, registrationData);
       router.replace(role === "owner" ? "/(owner)/home" : "/(customer)/home");
@@ -53,6 +59,6 @@ export default function Register() {
       Alert.alert("REGISTRY ERROR", error.message);
     }
   };
-  
+
   // UI remains the same as previous high-end gold theme
 }
