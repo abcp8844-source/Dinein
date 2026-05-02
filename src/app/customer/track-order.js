@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,26 +6,21 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
+  StatusBar,
 } from "react-native";
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps"; // 📍 Optimized Map Engine
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useTheme } from "../../context/ThemeContext";
-import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../theme/ThemeContext";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-/**
- * GLOBAL LOGISTICS TRACKER
- * Features: Real-time Geo-fencing | Live Rider Telemetry
- * Optimized for 200MB-250MB App Footprint
- */
 export default function TrackOrder() {
   const { colors } = useTheme();
   const router = useRouter();
   const { orderId } = useLocalSearchParams();
 
-  // 🛡️ Initial Mock Coordinates (To be replaced by Firebase Live Data)
   const [region] = useState({
-    latitude: 13.7563, // Example: Bangkok
+    latitude: 13.7563, 
     longitude: 100.5018,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
@@ -37,27 +32,29 @@ export default function TrackOrder() {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: "#020B18" }]}>
+      <StatusBar barStyle="light-content" />
+      
       {/* --- LIVE MAP INTERFACE --- */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={region}
-        customMapStyle={mapStyle} // 🌑 Dark Mode Map
+        customMapStyle={darkMapConfig} 
       >
-        <Marker coordinate={region} title="Your Location">
+        <Marker coordinate={region}>
           <View style={[styles.markerCircle, { borderColor: colors.primary }]}>
-            <Ionicons name="home" size={15} color={colors.primary} />
+            <Ionicons name="home" size={14} color={colors.primary} />
           </View>
         </Marker>
 
-        <Marker coordinate={riderLocation} title="Rider">
+        <Marker coordinate={riderLocation}>
           <Animatable.View
             animation="pulse"
             iterationCount="infinite"
-            style={styles.riderMarker}
+            style={[styles.riderMarker, { backgroundColor: colors.primary }]}
           >
-            <Ionicons name="bicycle" size={20} color="#000" />
+            <MaterialCommunityIcons name="bike" size={22} color="#000" />
           </Animatable.View>
         </Marker>
       </MapView>
@@ -69,21 +66,23 @@ export default function TrackOrder() {
         </TouchableOpacity>
         <View style={styles.orderInfo}>
           <Text style={styles.orderIdText}>
-            TRACKING ORDER #{orderId?.slice(-6).toUpperCase()}
+            LOGISTICS ID: #{orderId?.slice(-6).toUpperCase() || "REF_772"}
           </Text>
           <Text style={[styles.statusText, { color: colors.primary }]}>
-            RIDER IS NEARBY
+            RIDER EN ROUTE TO DESTINATION
           </Text>
         </View>
       </SafeAreaView>
 
       {/* --- BOTTOM LOGISTICS CARD --- */}
-      <Animatable.View animation="fadeInUp" style={styles.detailsCard}>
+      <Animatable.View animation="fadeInUp" style={[styles.detailsCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
         <View style={styles.riderProfile}>
-          <View style={styles.avatarPlaceholder} />
+          <View style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}>
+             <Ionicons name="person" size={25} color={colors.primary} />
+          </View>
           <View style={{ flex: 1, marginLeft: 15 }}>
             <Text style={styles.riderName}>Alex Logistics</Text>
-            <Text style={styles.riderSub}>Certified Professional Delivery</Text>
+            <Text style={styles.riderSub}>CERTIFIED PROFESSIONAL PARTNER</Text>
           </View>
           <TouchableOpacity
             style={[styles.callBtn, { backgroundColor: colors.primary }]}
@@ -92,12 +91,12 @@ export default function TrackOrder() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.timeRow}>
+        <View style={[styles.timeRow, { borderTopColor: "#0A1A2F" }]}>
           <View>
             <Text style={styles.timeLabel}>ESTIMATED ARRIVAL</Text>
-            <Text style={styles.timeValue}>4-6 MINUTES</Text>
+            <Text style={[styles.timeValue, { color: colors.primary }]}>4-6 MINUTES</Text>
           </View>
-          <View style={styles.verticalDivider} />
+          <View style={[styles.verticalDivider, { backgroundColor: "#0A1A2F" }]} />
           <View>
             <Text style={styles.timeLabel}>DISTANCE</Text>
             <Text style={styles.timeValue}>1.2 KM</Text>
@@ -108,61 +107,51 @@ export default function TrackOrder() {
   );
 }
 
-const mapStyle = [
-  { elementType: "geometry", stylers: [{ color: "#212121" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#303030" }],
-  },
+const darkMapConfig = [
+  { elementType: "geometry", stylers: [{ color: "#020B18" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#5D6D7E" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#0A1A2F" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#010812" }] }
 ];
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000" },
+  container: { flex: 1 },
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
   headerOverlay: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
+    top: 40,
+    left: 20,
+    right: 20,
     flexDirection: "row",
     alignItems: "center",
   },
   backBtn: {
     width: 45,
     height: 45,
-    borderRadius: 22,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    borderRadius: 15,
+    backgroundColor: "rgba(5, 17, 33, 0.9)",
     justifyContent: "center",
     alignItems: "center",
   },
   orderInfo: { marginLeft: 15, flex: 1 },
-  orderIdText: {
-    color: "#FFF",
-    fontSize: 12,
-    fontWeight: "900",
-    letterSpacing: 1,
-  },
-  statusText: { fontSize: 10, fontWeight: "bold", marginTop: 4 },
+  orderIdText: { color: "#FFF", fontSize: 11, fontWeight: "900", letterSpacing: 1 },
+  statusText: { fontSize: 9, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
   markerCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#000",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#020B18",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
   },
   riderMarker: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#D4AF37",
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
@@ -170,50 +159,32 @@ const styles = StyleSheet.create({
   },
   detailsCard: {
     position: "absolute",
-    bottom: 40,
+    bottom: 30,
     left: 20,
     right: 20,
-    backgroundColor: "#0A0A0A",
-    borderRadius: 25,
+    borderRadius: 30,
     padding: 25,
     borderWidth: 1,
-    borderColor: "#1A1A1A",
   },
-  riderProfile: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 25,
-  },
+  riderProfile: { flexDirection: "row", alignItems: "center", marginBottom: 25 },
   avatarPlaceholder: {
     width: 50,
     height: 50,
-    borderRadius: 25,
-    backgroundColor: "#1A1A1A",
-  },
-  riderName: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-  riderSub: { color: "#444", fontSize: 10, fontWeight: "bold", marginTop: 2 },
-  callBtn: {
-    width: 45,
-    height: 45,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
   },
+  riderName: { color: "#FFF", fontSize: 15, fontWeight: "900" },
+  riderSub: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", marginTop: 4, letterSpacing: 0.5 },
+  callBtn: { width: 45, height: 45, borderRadius: 12, justifyCenter: "center", alignItems: "center" },
   timeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#1A1A1A",
     paddingTop: 20,
   },
-  timeLabel: {
-    color: "#444",
-    fontSize: 8,
-    fontWeight: "900",
-    letterSpacing: 1,
-    marginBottom: 5,
-  },
-  timeValue: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-  verticalDivider: { width: 1, height: 30, backgroundColor: "#1A1A1A" },
+  timeLabel: { color: "#5D6D7E", fontSize: 8, fontWeight: "900", letterSpacing: 1, marginBottom: 5 },
+  timeValue: { fontSize: 16, fontWeight: "900" },
+  verticalDivider: { width: 1, height: 30 },
 });
