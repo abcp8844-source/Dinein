@@ -23,13 +23,13 @@ export default function ManageOrders() {
 
   // PREMIUM VISIBILITY COLORS
   const THEME = {
-    bg: "#001529",         // Dark Navy Background
-    card: "#002F56",       // Lighter Navy (Box stays visible/clear)
-    accent: "#D4AF37",     // Premium Gold for highlights
-    textMain: "#FFFFFF",   // Sharp White for readability
+    bg: "#001529", // Dark Navy Background
+    card: "#002F56", // Lighter Navy (Box stays visible/clear)
+    accent: "#D4AF37", // Premium Gold for highlights
+    textMain: "#FFFFFF", // Sharp White for readability
     textSecondary: "#A6B1BB",
     addressBox: "#003A6B", // Even clearer box for delivery info
-    border: "#004B87"      // Sharp border for definition
+    border: "#004B87", // Sharp border for definition
   };
 
   useEffect(() => {
@@ -48,7 +48,10 @@ export default function ManageOrders() {
   const updateStatus = async (orderId, status) => {
     try {
       await dbService.updateOrderStatus(orderId, status);
-      Alert.alert("System Notification", `Order is now: ${status.toUpperCase()}`);
+      Alert.alert(
+        "System Notification",
+        `Order is now: ${status.toUpperCase()}`,
+      );
       loadIncomingOrders();
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -56,9 +59,16 @@ export default function ManageOrders() {
   };
 
   const renderOrder = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: THEME.card, borderColor: THEME.border }]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: THEME.card, borderColor: THEME.border },
+      ]}
+    >
       <View style={styles.cardHeader}>
-        <Text style={[styles.itemTitle, { color: THEME.textMain }]}>{item.itemName}</Text>
+        <Text style={[styles.itemTitle, { color: THEME.textMain }]}>
+          {item.itemName}
+        </Text>
         <Text style={[styles.priceTag, { color: THEME.accent }]}>
           {item.price} {item.currency || "THB"}
         </Text>
@@ -66,7 +76,9 @@ export default function ManageOrders() {
 
       {/* 📍 DELIVERY BOX - High Contrast */}
       <View style={[styles.addressBox, { backgroundColor: THEME.addressBox }]}>
-        <Text style={[styles.addressLabel, { color: THEME.accent }]}>DELIVERY TO:</Text>
+        <Text style={[styles.addressLabel, { color: THEME.accent }]}>
+          DELIVERY TO:
+        </Text>
         <Text style={[styles.addressText, { color: THEME.textMain }]}>
           📍 {item.customerLocation?.street || "No Street Provided"}
         </Text>
@@ -76,7 +88,9 @@ export default function ManageOrders() {
       </View>
 
       <View style={styles.statusRow}>
-        <Text style={{ color: THEME.textSecondary, fontSize: 12 }}>Status:</Text>
+        <Text style={{ color: THEME.textSecondary, fontSize: 12 }}>
+          Status:
+        </Text>
         <Text style={[styles.statusText, { color: THEME.accent }]}>
           {item.status.toUpperCase()}
         </Text>
@@ -107,7 +121,9 @@ export default function ManageOrders() {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={28} color={THEME.textMain} />
         </TouchableOpacity>
-        <Text style={[styles.headerText, { color: THEME.textMain }]}>Incoming Orders</Text>
+        <Text style={[styles.headerText, { color: THEME.textMain }]}>
+          Incoming Orders
+        </Text>
       </View>
 
       <FlatList
@@ -116,7 +132,9 @@ export default function ManageOrders() {
         renderItem={renderOrder}
         contentContainerStyle={{ padding: 20 }}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>No active orders.</Text>
+          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>
+            No active orders.
+          </Text>
         }
       />
     </SafeAreaView>
@@ -134,17 +152,30 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 5,
   },
-  cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
   itemTitle: { fontSize: 18, fontWeight: "bold" },
   priceTag: { fontSize: 16, fontWeight: "900" },
   addressBox: { padding: 12, borderRadius: 12, marginBottom: 15 },
   addressLabel: { fontSize: 8, fontWeight: "bold", marginBottom: 4 },
   addressText: { fontSize: 13, fontWeight: "600" },
   cityText: { fontSize: 11 },
-  statusRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+  statusRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
   statusText: { fontWeight: "900", fontSize: 12 },
   btnRow: { flexDirection: "row", justifyContent: "space-between" },
-  actionBtn: { paddingVertical: 12, borderRadius: 12, flex: 0.47, alignItems: "center" },
+  actionBtn: {
+    paddingVertical: 12,
+    borderRadius: 12,
+    flex: 0.47,
+    alignItems: "center",
+  },
   btnText: { color: "#FFF", fontSize: 12, fontWeight: "bold" },
   emptyText: { textAlign: "center", marginTop: 50 },
 });
