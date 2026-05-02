@@ -30,7 +30,10 @@ export default function AddressSetup() {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("ACCESS DENIED", "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS.");
+        Alert.alert(
+          "ACCESS DENIED",
+          "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS.",
+        );
         return;
       }
 
@@ -75,13 +78,18 @@ export default function AddressSetup() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <Animatable.View animation="fadeInUp" style={styles.content}>
-        
         <View style={styles.iconBox}>
-          <MaterialCommunityIcons name="map-marker-radius-outline" size={40} color="#FF3B30" />
+          <MaterialCommunityIcons
+            name="map-marker-radius-outline"
+            size={40}
+            color="#FF3B30"
+          />
         </View>
 
         <Text style={styles.title}>LOGISTICS NODE</Text>
-        <Text style={styles.subtitle}>ESTABLISHING CONNECTION POINT: {country.toUpperCase()}</Text>
+        <Text style={styles.subtitle}>
+          ESTABLISHING CONNECTION POINT: {country.toUpperCase()}
+        </Text>
 
         <View style={styles.displayCard}>
           <Text style={styles.label}>COORDINATES DETECTED:</Text>
@@ -109,14 +117,50 @@ export default function AddressSetup() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#020B18", justifyContent: "center", padding: 30 },
+  container: {
+    flex: 1,
+    backgroundColor: "#020B18",
+    justifyContent: "center",
+    padding: 30,
+  },
   content: { width: "100%", alignItems: "center" },
   iconBox: { marginBottom: 25 },
   title: { fontSize: 22, fontWeight: "900", letterSpacing: 4, color: "#FFF" },
-  subtitle: { fontSize: 8, color: "#5D6D7E", marginTop: 10, letterSpacing: 1.5, fontWeight: "bold" },
-  displayCard: { width: "100%", marginVertical: 40, padding: 30, backgroundColor: "#0A1A2F", borderRadius: 20, borderWidth: 1, borderColor: "#1B2631" },
-  label: { fontSize: 8, fontWeight: "900", color: "#D4AF37", marginBottom: 15, letterSpacing: 1 },
-  addressText: { color: "#FFF", fontSize: 13, fontWeight: "300", lineHeight: 22, letterSpacing: 0.5 },
+  subtitle: {
+    fontSize: 8,
+    color: "#5D6D7E",
+    marginTop: 10,
+    letterSpacing: 1.5,
+    fontWeight: "bold",
+  },
+  displayCard: {
+    width: "100%",
+    marginVertical: 40,
+    padding: 30,
+    backgroundColor: "#0A1A2F",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#1B2631",
+  },
+  label: {
+    fontSize: 8,
+    fontWeight: "900",
+    color: "#D4AF37",
+    marginBottom: 15,
+    letterSpacing: 1,
+  },
+  addressText: {
+    color: "#FFF",
+    fontSize: 13,
+    fontWeight: "300",
+    lineHeight: 22,
+    letterSpacing: 0.5,
+  },
   confirmBtn: { marginTop: 30 },
-  confirmText: { fontSize: 10, fontWeight: "900", color: "#D4AF37", letterSpacing: 2 }
+  confirmText: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: "#D4AF37",
+    letterSpacing: 2,
+  },
 });

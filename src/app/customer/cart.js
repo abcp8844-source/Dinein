@@ -32,17 +32,26 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      Alert.alert("QUEUE EMPTY", "NO ASSETS SELECTED FOR LOGISTICS PROCESSING.");
+      Alert.alert(
+        "QUEUE EMPTY",
+        "NO ASSETS SELECTED FOR LOGISTICS PROCESSING.",
+      );
       return;
     }
     router.replace("/(customer)/orders");
   };
 
   const renderItem = ({ item, index }) => (
-    <Animatable.View animation="fadeInLeft" delay={index * 100} style={[styles.cartItem, { borderBottomColor: "#0A1A2F" }]}>
+    <Animatable.View
+      animation="fadeInLeft"
+      delay={index * 100}
+      style={[styles.cartItem, { borderBottomColor: "#0A1A2F" }]}
+    >
       <View>
         <Text style={styles.itemName}>{item.itemName?.toUpperCase()}</Text>
-        <Text style={styles.itemSub}>SECURED ASSET • {country.toUpperCase()} NODE</Text>
+        <Text style={styles.itemSub}>
+          SECURED ASSET • {country.toUpperCase()} NODE
+        </Text>
       </View>
       <Text style={[styles.itemPrice, { color: colors.primary }]}>
         {item.price} {currency}
@@ -59,7 +68,11 @@ export default function Cart() {
           <Ionicons name="chevron-back" size={20} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>LOGISTICS QUEUE</Text>
-        <MaterialCommunityIcons name="shield-lock-outline" size={20} color="#FF3B30" />
+        <MaterialCommunityIcons
+          name="shield-lock-outline"
+          size={20}
+          color="#FF3B30"
+        />
       </Animatable.View>
 
       <FlatList
@@ -70,23 +83,38 @@ export default function Cart() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Animatable.View animation="pulse" iterationCount="infinite">
-              <MaterialCommunityIcons name="package-variant-closed" size={60} color="#0A1A2F" />
+              <MaterialCommunityIcons
+                name="package-variant-closed"
+                size={60}
+                color="#0A1A2F"
+              />
             </Animatable.View>
             <Text style={styles.emptyText}>NO ACTIVE ASSETS IN QUEUE</Text>
           </View>
         }
       />
 
-      <Animatable.View animation="fadeInUp" style={[styles.footer, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+      <Animatable.View
+        animation="fadeInUp"
+        style={[
+          styles.footer,
+          { backgroundColor: "#051121", borderColor: "#0A1A2F" },
+        ]}
+      >
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>TOTAL VALUATION</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.totalValue}>{calculateTotal()}</Text>
-            <Text style={[styles.currencyLabel, { color: colors.primary }]}>{currency}</Text>
+            <Text style={[styles.currencyLabel, { color: colors.primary }]}>
+              {currency}
+            </Text>
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.checkoutBtn, { backgroundColor: colors.primary }]} onPress={handleCheckout}>
+        <TouchableOpacity
+          style={[styles.checkoutBtn, { backgroundColor: colors.primary }]}
+          onPress={handleCheckout}
+        >
           <Text style={styles.btnText}>CONFIRM SETTLEMENT</Text>
         </TouchableOpacity>
       </Animatable.View>
@@ -96,22 +124,87 @@ export default function Cart() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 25, paddingTop: 20, paddingBottom: 15 },
-  backBtn: { padding: 10, backgroundColor: "#0A1A2F", borderRadius: 12, borderWidth: 1, borderColor: "#1B2631" },
-  headerTitle: { fontSize: 11, fontWeight: "900", letterSpacing: 3, color: "#FFF" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 25,
+    paddingTop: 20,
+    paddingBottom: 15,
+  },
+  backBtn: {
+    padding: 10,
+    backgroundColor: "#0A1A2F",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#1B2631",
+  },
+  headerTitle: {
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 3,
+    color: "#FFF",
+  },
   listContent: { padding: 25 },
-  cartItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 25, borderBottomWidth: 1 },
-  itemName: { fontSize: 14, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
-  itemSub: { fontSize: 8, marginTop: 6, letterSpacing: 1, color: "#5D6D7E", fontWeight: "900" },
+  cartItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 25,
+    borderBottomWidth: 1,
+  },
+  itemName: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
+  },
+  itemSub: {
+    fontSize: 8,
+    marginTop: 6,
+    letterSpacing: 1,
+    color: "#5D6D7E",
+    fontWeight: "900",
+  },
   itemPrice: { fontSize: 14, fontWeight: "900" },
   emptyContainer: { alignItems: "center", marginTop: 150 },
-  emptyText: { marginTop: 25, fontSize: 9, fontWeight: "900", letterSpacing: 3, color: "#1B2631" },
-  footer: { padding: 35, borderTopLeftRadius: 40, borderTopRightRadius: 40, borderWidth: 1 },
-  totalRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, alignItems: "center" },
-  totalLabel: { fontSize: 9, fontWeight: "900", letterSpacing: 2, color: "#5D6D7E" },
+  emptyText: {
+    marginTop: 25,
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 3,
+    color: "#1B2631",
+  },
+  footer: {
+    padding: 35,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    borderWidth: 1,
+  },
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    alignItems: "center",
+  },
+  totalLabel: {
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    color: "#5D6D7E",
+  },
   priceContainer: { flexDirection: "row", alignItems: "baseline" },
   totalValue: { fontSize: 32, fontWeight: "300", color: "#FFF" },
   currencyLabel: { fontSize: 12, fontWeight: "900", marginLeft: 8 },
-  checkoutBtn: { height: 65, justifyContent: "center", alignItems: "center", borderRadius: 20, shadowColor: "#D4AF37", shadowOpacity: 0.2, shadowRadius: 15, elevation: 5 },
+  checkoutBtn: {
+    height: 65,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    shadowColor: "#D4AF37",
+    shadowOpacity: 0.2,
+    shadowRadius: 15,
+    elevation: 5,
+  },
   btnText: { color: "#000", fontWeight: "900", letterSpacing: 2, fontSize: 12 },
 });
