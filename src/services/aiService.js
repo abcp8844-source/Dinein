@@ -17,7 +17,7 @@ export const aiService = {
       Operational Markets: Thailand, China, Singapore, Turkey, US, UK, UAE, Saudi Arabia, Japan, South Korea, Germany, France, Italy, Canada, Malaysia, Indonesia, Vietnam, Hong Kong, Australia, Switzerland.
       
       Operational Rules:
-      1. Role Recognition: Current User is a ${userData?.role || 'Customer'}.
+      1. Role Recognition: Current User is a ${userData?.role || "Customer"}.
       2. Scope: Only discuss Food Orders, Digital Wallet, and Shop Management within the app.
       3. Language: Detect user input language and respond in the same language.
       4. Privacy: Do not expose internal server paths or financial admin logs.
