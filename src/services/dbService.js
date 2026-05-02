@@ -11,11 +11,10 @@ import {
   getDoc,
   setDoc,
   increment,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 
 export const dbService = {
-  
   // --- 1. PRODUCT & MENU MANAGEMENT ---
   /**
    * Fetches products globally or by category.
@@ -24,10 +23,15 @@ export const dbService = {
   getMenuItems: async (category = "all") => {
     try {
       const menuRef = collection(db, "products");
-      const q = category === "all" 
-        ? query(menuRef, orderBy("createdAt", "desc"))
-        : query(menuRef, where("category", "==", category), orderBy("createdAt", "desc"));
-        
+      const q =
+        category === "all"
+          ? query(menuRef, orderBy("createdAt", "desc"))
+          : query(
+              menuRef,
+              where("category", "==", category),
+              orderBy("createdAt", "desc"),
+            );
+
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -59,9 +63,9 @@ export const dbService = {
   updateOrderStatus: async (orderId, newStatus) => {
     try {
       const orderDoc = doc(db, "orders", orderId);
-      await updateDoc(orderDoc, { 
+      await updateDoc(orderDoc, {
         status: newStatus,
-        updatedAt: serverTimestamp() 
+        updatedAt: serverTimestamp(),
       });
       return true;
     } catch (error) {
@@ -97,16 +101,20 @@ export const dbService = {
       const adminTreasuryRef = doc(db, "admin_finance", "global_revenue");
 
       await updateDoc(ownerRef, { walletBalance: increment(-amount) });
-      
-      await setDoc(adminTreasuryRef, {
-        [`total_revenue_${currency}`]: increment(amount),
-        lastSettlement: serverTimestamp(),
-      }, { merge: true });
+
+      await setDoc(
+        adminTreasuryRef,
+        {
+          [`total_revenue_${currency}`]: increment(amount),
+          lastSettlement: serverTimestamp(),
+        },
+        { merge: true },
+      );
 
       return { success: true };
     } catch (error) {
       console.error("Financial Settlement Error:", error);
       throw error;
     }
-  }
+  },
 };
