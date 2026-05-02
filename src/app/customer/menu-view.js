@@ -56,7 +56,9 @@ export default function MenuView() {
         <Text style={styles.itemDesc}>{item.description}</Text>
       </View>
       <View style={styles.priceContainer}>
-        <Text style={[styles.priceText, { color: colors.primary || "#D4AF37" }]}>
+        <Text
+          style={[styles.priceText, { color: colors.primary || "#D4AF37" }]}
+        >
           {item.currency || "$"} {item.price}
         </Text>
       </View>
@@ -73,10 +75,17 @@ export default function MenuView() {
           size={24}
           color={colors.primary || "#D4AF37"}
         />
-        <Text style={[styles.headerTitle, { color: colors.primary || "#D4AF37" }]}>
+        <Text
+          style={[styles.headerTitle, { color: colors.primary || "#D4AF37" }]}
+        >
           CUISINE SELECTION
         </Text>
-        <View style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]} />
+        <View
+          style={[
+            styles.goldLine,
+            { backgroundColor: colors.primary || "#D4AF37" },
+          ]}
+        />
       </Animatable.View>
 
       <FlatList
@@ -96,7 +105,10 @@ export default function MenuView() {
 
       <TouchableOpacity
         activeOpacity={0.8}
-        style={[styles.orderBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
+        style={[
+          styles.orderBtn,
+          { backgroundColor: colors.primary || "#D4AF37" },
+        ]}
       >
         <Text style={styles.btnText}>PROCEED TO RESERVATION</Text>
       </TouchableOpacity>

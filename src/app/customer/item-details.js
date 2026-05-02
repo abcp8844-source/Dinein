@@ -78,10 +78,17 @@ export default function ItemDetails() {
             </View>
           </View>
           <View style={styles.priceContainer}>
-            <Text style={[styles.price, { color: colors.primary || "#D4AF37" }]}>
+            <Text
+              style={[styles.price, { color: colors.primary || "#D4AF37" }]}
+            >
               {price}
             </Text>
-            <Text style={[styles.currencyLabel, { color: colors.primary || "#D4AF37" }]}>
+            <Text
+              style={[
+                styles.currencyLabel,
+                { color: colors.primary || "#D4AF37" },
+              ]}
+            >
               {currency}
             </Text>
           </View>

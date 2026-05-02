@@ -118,7 +118,12 @@ export default function AiAssistant() {
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>AI CORE ASSISTANT</Text>
-          <Text style={[styles.onlineStatus, { color: colors.primary || "#D4AF37" }]}>
+          <Text
+            style={[
+              styles.onlineStatus,
+              { color: colors.primary || "#D4AF37" },
+            ]}
+          >
             {loading ? "● ENCRYPTING" : "● SECURED CONNECTION"}
           </Text>
         </View>
@@ -154,7 +159,10 @@ export default function AiAssistant() {
             <TouchableOpacity
               onPress={handleSendMessage}
               disabled={loading}
-              style={[styles.sendBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
+              style={[
+                styles.sendBtn,
+                { backgroundColor: colors.primary || "#D4AF37" },
+              ]}
             >
               {loading ? (
                 <ActivityIndicator size="small" color="#000" />

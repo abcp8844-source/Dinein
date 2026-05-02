@@ -97,7 +97,11 @@ export default function Home() {
         <View style={styles.itemMeta}>
           <Text style={styles.itemName}>{item.name?.toUpperCase()}</Text>
           <View style={styles.distanceRow}>
-            <Ionicons name="location-sharp" size={10} color={colors.primary || "#D4AF37"} />
+            <Ionicons
+              name="location-sharp"
+              size={10}
+              color={colors.primary || "#D4AF37"}
+            />
             <Text style={styles.distanceText}>
               {item.restaurantName || "VERIFIED SOURCE"}
             </Text>
@@ -107,7 +111,9 @@ export default function Home() {
           </Text>
         </View>
         <View style={styles.priceContainer}>
-          <Text style={[styles.priceTag, { color: colors.primary || "#D4AF37" }]}>
+          <Text
+            style={[styles.priceTag, { color: colors.primary || "#D4AF37" }]}
+          >
             {item.price}
           </Text>
           <Text style={styles.currencyLabel}>{currency}</Text>

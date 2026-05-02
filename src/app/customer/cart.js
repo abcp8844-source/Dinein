@@ -72,7 +72,11 @@ export default function Cart() {
 
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="chevron-back" size={20} color={colors.primary || "#D4AF37"} />
+          <Ionicons
+            name="chevron-back"
+            size={20}
+            color={colors.primary || "#D4AF37"}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>LOGISTICS QUEUE</Text>
         <MaterialCommunityIcons
@@ -112,14 +116,22 @@ export default function Cart() {
           <Text style={styles.totalLabel}>TOTAL VALUATION</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.totalValue}>{calculateTotal()}</Text>
-            <Text style={[styles.currencyLabel, { color: colors.primary || "#D4AF37" }]}>
+            <Text
+              style={[
+                styles.currencyLabel,
+                { color: colors.primary || "#D4AF37" },
+              ]}
+            >
               {currency}
             </Text>
           </View>
         </View>
 
         <TouchableOpacity
-          style={[styles.checkoutBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
+          style={[
+            styles.checkoutBtn,
+            { backgroundColor: colors.primary || "#D4AF37" },
+          ]}
           onPress={handleCheckout}
         >
           <Text style={styles.btnText}>CONFIRM SETTLEMENT</Text>

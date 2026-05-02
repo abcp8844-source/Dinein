@@ -113,8 +113,13 @@ export default function AddressSetup() {
 
         {address && (
           <TouchableOpacity onPress={finalizeSetup} style={styles.confirmBtn}>
-            <Text style={[styles.confirmText, { color: colors.primary || "#D4AF37" }]}>
-                CONFIRM & PROCEED
+            <Text
+              style={[
+                styles.confirmText,
+                { color: colors.primary || "#D4AF37" },
+              ]}
+            >
+              CONFIRM & PROCEED
             </Text>
           </TouchableOpacity>
         )}

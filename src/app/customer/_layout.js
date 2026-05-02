@@ -15,9 +15,9 @@ export default function CustomerLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: "#5D6D7E", 
+        tabBarInactiveTintColor: "#5D6D7E",
         tabBarStyle: {
-          backgroundColor: "#020B18", 
+          backgroundColor: "#020B18",
           borderTopColor: "#0A1A2F",
           height: 80,
           paddingBottom: 20,
