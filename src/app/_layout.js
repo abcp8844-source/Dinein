@@ -32,20 +32,19 @@ function RootLayoutNav() {
     // 1. GUEST GATEKEEPER: Redirect to Login if not authenticated
     if (!user) {
       if (!inAuthGroup) router.replace("/(auth)/login");
-    } 
+    }
     // 2. ROLE-BASED ACCESS CONTROL (RBAC)
     else if (user && userData) {
-      
       // ADMIN ACCESS: Direct to Global Dashboard & Financial Nodes
       if (userData.role === "admin") {
         if (!inAdminGroup) router.replace("/(admin)/dashboard");
-      } 
-      
+      }
+
       // OWNER ACCESS: Direct to Shop Management & Local Wallet
       else if (userData.role === "owner") {
         if (!inOwnerGroup) router.replace("/(owner)/owner-wallet");
-      } 
-      
+      }
+
       // CUSTOMER ACCESS: Direct to Tabs (Includes SupportScreen)
       else {
         if (inAdminGroup || inOwnerGroup || inAuthGroup) {
@@ -64,28 +63,22 @@ function RootLayoutNav() {
       }}
     >
       {/* AUTHENTICATION STACK */}
-      <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+      <Stack.Screen name="(auth)" options={{ animation: "fade" }} />
 
       {/* ADMIN INFRASTRUCTURE */}
-      <Stack.Screen 
-        name="(admin)" 
-        options={{ 
+      <Stack.Screen
+        name="(admin)"
+        options={{
           gestureEnabled: false,
-          headerShown: false 
-        }} 
+          headerShown: false,
+        }}
       />
 
       {/* OWNER MANAGEMENT NODES */}
-      <Stack.Screen 
-        name="(owner)" 
-        options={{ gestureEnabled: false }} 
-      />
+      <Stack.Screen name="(owner)" options={{ gestureEnabled: false }} />
 
       {/* CUSTOMER TABS & SUPPORT SCREEN */}
-      <Stack.Screen 
-        name="(tabs)" 
-        options={{ gestureEnabled: false }} 
-      />
+      <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
