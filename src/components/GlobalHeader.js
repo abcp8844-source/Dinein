@@ -11,9 +11,10 @@ import { MARKET_REGISTRY } from "../constants/market-registry";
 
 export default function GlobalHeader() {
   const { userData, updateGlobalPreference } = useAuth();
-  
+
   const currentMarket =
-    MARKET_REGISTRY.find((m) => m.iso === userData?.isoCode) || MARKET_REGISTRY[0];
+    MARKET_REGISTRY.find((m) => m.iso === userData?.isoCode) ||
+    MARKET_REGISTRY[0];
 
   return (
     <View style={styles.headerBody}>
@@ -23,7 +24,9 @@ export default function GlobalHeader() {
           <View>
             {/* Back to your original App Name */}
             <Text style={styles.brandTitle}>DINING TABLE</Text>
-            <Text style={styles.regionName}>{currentMarket.name.toUpperCase()}</Text>
+            <Text style={styles.regionName}>
+              {currentMarket.name.toUpperCase()}
+            </Text>
           </View>
         </View>
 
@@ -31,7 +34,8 @@ export default function GlobalHeader() {
           style={styles.langTrigger}
           onPress={() =>
             updateGlobalPreference({
-              preferredLang: userData?.appLang === "EN" ? currentMarket.langCode : "EN",
+              preferredLang:
+                userData?.appLang === "EN" ? currentMarket.langCode : "EN",
             })
           }
         >
@@ -49,8 +53,8 @@ export default function GlobalHeader() {
             <TouchableOpacity
               key={item.iso}
               style={[
-                styles.node, 
-                userData?.isoCode === item.iso && styles.activeNode
+                styles.node,
+                userData?.isoCode === item.iso && styles.activeNode,
               ]}
               onPress={() =>
                 updateGlobalPreference({
