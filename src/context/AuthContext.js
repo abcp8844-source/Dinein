@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       try {
         if (firebaseUser) {
           setUser(firebaseUser);
-          
+
           // REAL-TIME SYNC: Listens to any changes in balance or orders instantly
           const docRef = doc(db, "users", firebaseUser.uid);
           unsubscribeSnapshot = onSnapshot(docRef, (docSnap) => {
@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }) => {
               setUserData(data);
             }
           });
-
         } else {
           setUser(null);
           setUserData(null);
@@ -59,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, role, additionalData) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // REAL PRODUCTION PROFILE: Ensuring no dummy keys exist
       const userProfile = {
         uid: res.user.uid,
@@ -69,17 +68,17 @@ export const AuthProvider = ({ children }) => {
         isoCode: additionalData.isoCode,
         currencyCode: additionalData.currencyCode,
         phone: additionalData.phone,
-        
+
         // FINANCIAL CORE: Initialized at zero for real tracking
         walletBalance: 0,
         recentTransactions: [],
-        
+
         verification: {
           method: additionalData.verificationMethod,
           idNumber: additionalData.idNumber,
           idOrigin: additionalData.idOrigin,
           verifiedAt: new Date().toISOString(),
-          isApproved: false // Requires admin check for real business
+          isApproved: false, // Requires admin check for real business
         },
         createdAt: new Date().toISOString(),
         lastActive: new Date().toISOString(),
@@ -94,7 +93,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    if (email.toLowerCase() === MASTER_ADMIN_EMAIL && password !== MASTER_ADMIN_PASS) {
+    if (
+      email.toLowerCase() === MASTER_ADMIN_EMAIL &&
+      password !== MASTER_ADMIN_PASS
+    ) {
       throw new Error("ADMIN_ACCESS_DENIED");
     }
     return signInWithEmailAndPassword(auth, email, password);
