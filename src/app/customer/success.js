@@ -41,7 +41,10 @@ export default function OrderSuccess() {
         <Animatable.View
           animation="pulse"
           iterationCount="infinite"
-          style={[styles.iconCircle, { backgroundColor: colors.primary || "#D4AF37" }]}
+          style={[
+            styles.iconCircle,
+            { backgroundColor: colors.primary || "#D4AF37" },
+          ]}
         >
           <MaterialCommunityIcons name="check-bold" size={45} color="#000" />
         </Animatable.View>
@@ -60,7 +63,10 @@ export default function OrderSuccess() {
           <View style={styles.receiptHeader}>
             <Text style={styles.receiptLabel}>DIGITAL RECEIPT</Text>
             <View
-              style={[styles.statusDot, { backgroundColor: colors.primary || "#D4AF37" }]}
+              style={[
+                styles.statusDot,
+                { backgroundColor: colors.primary || "#D4AF37" },
+              ]}
             />
           </View>
 
@@ -83,7 +89,12 @@ export default function OrderSuccess() {
               TOTAL SETTLED
             </Text>
             <View style={styles.priceStack}>
-              <Text style={[styles.totalAmount, { color: colors.primary || "#D4AF37" }]}>
+              <Text
+                style={[
+                  styles.totalAmount,
+                  { color: colors.primary || "#D4AF37" },
+                ]}
+              >
                 {amount}
               </Text>
               <Text style={styles.currencyCode}>{currency}</Text>

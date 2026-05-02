@@ -57,14 +57,22 @@ export default function CustomerProfile() {
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         {/* --- PROFILE HEADER: Identity Verification Node --- */}
         <Animatable.View animation="fadeIn" style={styles.header}>
-          <View style={[styles.avatarBorder, { borderColor: colors.primary || "#D4AF37" }]}>
+          <View
+            style={[
+              styles.avatarBorder,
+              { borderColor: colors.primary || "#D4AF37" },
+            ]}
+          >
             <View
               style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}
             >
-              <Ionicons name="person" size={40} color={colors.primary || "#D4AF37"} />
+              <Ionicons
+                name="person"
+                size={40}
+                color={colors.primary || "#D4AF37"}
+              />
             </View>
           </View>
           <Text style={styles.userName}>
@@ -87,7 +95,9 @@ export default function CustomerProfile() {
             onPress={() => router.push("/(customer)/wallet")}
           >
             <Text style={styles.statLabel}>BALANCE</Text>
-            <Text style={[styles.statValue, { color: colors.primary || "#D4AF37" }]}>
+            <Text
+              style={[styles.statValue, { color: colors.primary || "#D4AF37" }]}
+            >
               {userData?.walletBalance || "0.00"}{" "}
               <Text style={styles.currency}>
                 {userData?.currencyCode || "THB"}

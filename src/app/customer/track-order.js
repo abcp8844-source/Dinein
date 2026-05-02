@@ -50,8 +50,17 @@ export default function TrackOrder() {
         customMapStyle={darkMapConfig}
       >
         <Marker coordinate={region}>
-          <View style={[styles.markerCircle, { borderColor: colors.primary || "#D4AF37" }]}>
-            <Ionicons name="home" size={14} color={colors.primary || "#D4AF37"} />
+          <View
+            style={[
+              styles.markerCircle,
+              { borderColor: colors.primary || "#D4AF37" },
+            ]}
+          >
+            <Ionicons
+              name="home"
+              size={14}
+              color={colors.primary || "#D4AF37"}
+            />
           </View>
         </Marker>
 
@@ -59,7 +68,10 @@ export default function TrackOrder() {
           <Animatable.View
             animation="pulse"
             iterationCount="infinite"
-            style={[styles.riderMarker, { backgroundColor: colors.primary || "#D4AF37" }]}
+            style={[
+              styles.riderMarker,
+              { backgroundColor: colors.primary || "#D4AF37" },
+            ]}
           >
             <MaterialCommunityIcons name="bike" size={22} color="#000" />
           </Animatable.View>
@@ -75,7 +87,9 @@ export default function TrackOrder() {
           <Text style={styles.orderIdText}>
             LOGISTICS ID: #{orderId?.slice(-6).toUpperCase() || "REF_772"}
           </Text>
-          <Text style={[styles.statusText, { color: colors.primary || "#D4AF37" }]}>
+          <Text
+            style={[styles.statusText, { color: colors.primary || "#D4AF37" }]}
+          >
             RIDER EN ROUTE TO DESTINATION
           </Text>
         </View>
@@ -93,14 +107,21 @@ export default function TrackOrder() {
           <View
             style={[styles.avatarPlaceholder, { backgroundColor: "#0A1A2F" }]}
           >
-            <Ionicons name="person" size={25} color={colors.primary || "#D4AF37"} />
+            <Ionicons
+              name="person"
+              size={25}
+              color={colors.primary || "#D4AF37"}
+            />
           </View>
           <View style={{ flex: 1, marginLeft: 15 }}>
             <Text style={styles.riderName}>Alex Logistics</Text>
             <Text style={styles.riderSub}>CERTIFIED PROFESSIONAL PARTNER</Text>
           </View>
           <TouchableOpacity
-            style={[styles.callBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
+            style={[
+              styles.callBtn,
+              { backgroundColor: colors.primary || "#D4AF37" },
+            ]}
           >
             <Ionicons name="call" size={20} color="#000" />
           </TouchableOpacity>
@@ -109,7 +130,9 @@ export default function TrackOrder() {
         <View style={[styles.timeRow, { borderTopColor: "#0A1A2F" }]}>
           <View>
             <Text style={styles.timeLabel}>ESTIMATED ARRIVAL</Text>
-            <Text style={[styles.timeValue, { color: colors.primary || "#D4AF37" }]}>
+            <Text
+              style={[styles.timeValue, { color: colors.primary || "#D4AF37" }]}
+            >
               4-6 MINUTES
             </Text>
           </View>
