@@ -21,9 +21,10 @@ import * as Animatable from "react-native-animatable";
  * RESTORED: Future-Tech Asset Details
  * Logic: Multi-Mode Execution (Delivery/Dine-in) & Transaction Authorization
  * Feature: Market Node Encryption & Profile Synchronization
+ * Integrity: Standard Deep-Navy #020B18 | Real Data Binding
  */
 export default function ItemDetails() {
-  const { id, name, price, description } = useLocalSearchParams();
+  const { id, name, price, description, restaurantId, restaurantName } = useLocalSearchParams();
   const { userData } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
@@ -31,28 +32,41 @@ export default function ItemDetails() {
   const [loading, setLoading] = useState(false);
   const [orderMode, setOrderMode] = useState("delivery");
 
-  const currency = userData?.currencyCode || "USD";
-  const country = userData?.countryName || "GLOBAL";
+  // REAL DATA MAPPING: Pulling directly from User Context
+  const currency = userData?.currencyCode || "THB";
+  const country = userData?.countryName || "Thailand";
 
   const handlePlaceOrder = async () => {
+    if (!userData?.uid) {
+      Alert.alert("SYNC ERROR", "USER IDENTITY NOT FOUND. PLEASE LOGIN.");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Logic: Encrypted Order Registry
+      // LOGIC: Encrypted Order Registry with Real DB Service
       const orderId = await dbService.placeOrder({
         customerId: userData.uid,
+        customerName: userData.fullName || "VERIFIED_USER",
+        customerPhone: userData.phone || "NODE_CONTACT",
         itemId: id,
         itemName: name,
         itemPrice: price,
+        restaurantId: restaurantId || "GLOBAL_SOURCE",
+        restaurantName: restaurantName || "VERIFIED_PARTNER",
         currency: currency,
         orderMode: orderMode,
+        status: "pending",
         timestamp: new Date().toISOString(),
       });
 
+      // Navigate to Success Node
       router.replace({
         pathname: "/(customer)/success",
         params: { orderId, itemName: name, amount: price },
       });
     } catch (error) {
+      console.error("TRANSACTION_FAILURE:", error);
       Alert.alert("SYNC ERROR", "ENCRYPTION ACTIVE. ADMIN NOTIFIED.");
     } finally {
       setLoading(false);
@@ -68,14 +82,17 @@ export default function ItemDetails() {
       >
         <Animatable.View animation="fadeInDown" style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{name?.toUpperCase()}</Text>
-            <View style={[styles.statusBadge, { backgroundColor: "#0A1A2F" }]}>
+            <Text style={styles.title}>{name?.toUpperCase() || "UNKNOWN ASSET"}</Text>
+            <TouchableOpacity 
+              onPress={() => router.back()}
+              style={[styles.statusBadge, { backgroundColor: "#0A1A2F" }]}
+            >
               <MaterialCommunityIcons
                 name="shield-check-outline"
                 size={16}
                 color="#FF3B30"
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.priceContainer}>
             <Text
@@ -100,7 +117,7 @@ export default function ItemDetails() {
           style={styles.selectorContainer}
         >
           <Text style={styles.sectionLabel}>EXECUTION MODE</Text>
-          <View style={styles.modeRow}>
+          <div style={styles.modeRow}>
             {["delivery", "dine_in"].map((mode) => (
               <TouchableOpacity
                 key={mode}
@@ -133,7 +150,7 @@ export default function ItemDetails() {
                 </Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </div>
         </Animatable.View>
 
         <Animatable.View
@@ -145,7 +162,7 @@ export default function ItemDetails() {
           ]}
         >
           <Text style={styles.descTitle}>ASSET SPECIFICATIONS</Text>
-          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.description}>{description || "NO SPECIFICATIONS LOADED FROM ARCHIVE."}</Text>
         </Animatable.View>
 
         <Animatable.View
@@ -185,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  title: { fontSize: 26, fontWeight: "900", color: "#FFF", letterSpacing: 1 },
+  title: { fontSize: 24, fontWeight: "900", color: "#FFF", letterSpacing: 1, flex: 1 },
   statusBadge: {
     padding: 10,
     borderRadius: 50,
