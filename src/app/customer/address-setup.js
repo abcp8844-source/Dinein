@@ -9,15 +9,15 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
-import PremiumButton from "../../components/PremiumButton";
+import { useAuth } from "../../context/AuthContext"; // Path Verified
+import { useTheme } from "../../theme/ThemeContext"; // Path Verified
+import PremiumButton from "../../components/PremiumButton"; // Path Verified
 import * as Animatable from "react-native-animatable";
 
 export default function AddressSetup() {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { updateProfile } = useAuth(); // Removed unused 'userData'
+  const { updateProfile } = useAuth(); 
   const { colors } = useTheme();
   const router = useRouter();
 
@@ -28,7 +28,7 @@ export default function AddressSetup() {
       if (status !== "granted") {
         Alert.alert(
           "Permission Denied",
-          "Location access is vital for precision delivery.",
+          "Location access is vital for precision delivery."
         );
         return;
       }
@@ -53,7 +53,7 @@ export default function AddressSetup() {
         });
       }
     } catch (error) {
-      console.error("GPS_SYNC_ERROR:", error); // Added logging for SonarCloud
+      console.error("GPS_SYNC_ERROR:", error);
       Alert.alert("GPS Error", "Unable to sync with regional satellites.");
     } finally {
       setLoading(false);
@@ -64,7 +64,8 @@ export default function AddressSetup() {
     if (!address) return;
     try {
       await updateProfile({ location: address });
-      router.replace("/customer/home");
+      // Corrected navigation to parentheses structure
+      router.replace("/(customer)/home");
     } catch (error) {
       console.error("PROFILE_UPDATE_ERROR:", error);
       Alert.alert("Error", "Failed to save address. Please try again.");
@@ -72,17 +73,17 @@ export default function AddressSetup() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background || "#000" }]}>
       <Animatable.View animation="fadeInUp" style={styles.content}>
         <Text style={[styles.title, { color: "#FFF" }]}>
           DELIVERY PRECISION
         </Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.subtitle, { color: colors.textDim || "#444" }]}>
           Aligning your global profile with local logistics.
         </Text>
 
-        <View style={styles.addressDisplay}>
-          <Text style={styles.addressLabel}>DETECTED ADDRESS:</Text>
+        <View style={[styles.addressDisplay, { backgroundColor: "#050505", borderColor: "#111" }]}>
+          <Text style={[styles.addressLabel, { color: colors.primary || "#D4AF37" }]}>DETECTED ADDRESS:</Text>
           <Text style={styles.addressText}>
             {address
               ? `${address.house} ${address.street}, ${address.city}`
@@ -111,11 +112,10 @@ export default function AddressSetup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
     justifyContent: "center",
     padding: 30,
   },
-  content: { width: "100%" }, // Added for layout stability
+  content: { width: "100%" },
   title: {
     fontSize: 24,
     fontWeight: "900",
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
-    color: "#444",
     fontSize: 10,
     textAlign: "center",
     marginTop: 10,
@@ -132,13 +131,10 @@ const styles = StyleSheet.create({
   addressDisplay: {
     marginVertical: 40,
     padding: 25,
-    backgroundColor: "#050505",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#111",
   },
   addressLabel: {
-    color: "#D4AF37",
     fontSize: 9,
     fontWeight: "bold",
     marginBottom: 10,
