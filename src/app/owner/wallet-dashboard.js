@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -13,51 +13,23 @@ import { useAuth } from "../../context/AuthContext";
 import * as Animatable from "react-native-animatable";
 import { Ionicons } from "@expo/vector-icons";
 
-/**
- * EXECUTIVE WALLET NODE - PREMIUM ARCHITECTURE
- * Sync: 20-Market Global Network (LOCKED)
- * Theme: Deep Dark Gold & Obsidian
- */
 export default function OwnerWallet() {
   const { userData } = useAuth();
 
   const THEME = {
-    bg: "#020B18", // Deep Obsidian
-    card: "#051121", // Midnight Blue
-    gold: "#D4AF37", // Premium Dark Gold
-    goldLight: "#F1D592", // Highlight Gold
-    border: "#1A2A3A", // Subtle Definition
+    bg: "#020B18", 
+    card: "#051121", 
+    gold: "#D4AF37", 
+    goldLight: "#F1D592", 
+    border: "#1A2A3A", 
     success: "#00FF00",
     danger: "#FF3B30",
   };
 
-  const currency = userData?.currencyCode || "USD";
-  const [balance, setBalance] = useState(5850.75);
-
-  // Mock Data: Financial Flow
-  const transactions = [
-    {
-      id: "1",
-      type: "IN",
-      label: "Order Settlement",
-      amount: "+120.00",
-      date: "May 02, 2026",
-    },
-    {
-      id: "2",
-      type: "OUT",
-      label: "Market Promotion Fee",
-      amount: "-500.00",
-      date: "May 02, 2026",
-    },
-    {
-      id: "3",
-      type: "IN",
-      label: "Regional Bonus Sync",
-      amount: "+50.00",
-      date: "May 01, 2026",
-    },
-  ];
+  // REAL DATA SYNC: Pulling directly from AuthContext / Firebase
+  const currency = userData?.currencyCode || "THB";
+  const balance = userData?.walletBalance || 0;
+  const transactions = userData?.recentTransactions || [];
 
   const renderTransaction = ({ item }) => (
     <View
@@ -85,7 +57,7 @@ export default function OwnerWallet() {
           { color: item.type === "IN" ? THEME.success : THEME.danger },
         ]}
       >
-        {item.amount}
+        {item.type === "IN" ? "+" : "-"}{item.amount}
       </Text>
     </View>
   );
@@ -94,42 +66,49 @@ export default function OwnerWallet() {
     <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bg }}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* PREMIUM GOLD HEADER */}
+        
         <Animatable.View animation="fadeIn" style={styles.header}>
           <Text style={[styles.marketTitle, { color: THEME.gold }]}>
-            GLOBAL REVENUE NODE
+            EXECUTIVE REVENUE NODE
           </Text>
           <View style={[styles.balanceBox, { borderColor: THEME.gold }]}>
-            <Text style={styles.totalLabel}>AVAILABLE BALANCE</Text>
+            <Text style={styles.totalLabel}>CURRENT SETTLEMENT BALANCE</Text>
             <Text style={[styles.mainAmount, { color: "#FFF" }]}>
-              {balance.toLocaleString()}{" "}
+              {balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}{" "}
               <Text style={{ color: THEME.gold }}>{currency}</Text>
             </Text>
           </View>
           <View style={styles.nodeStatus}>
-            <Text style={styles.statusText}>● 20-MARKET REGISTRY: SECURE</Text>
+            <Text style={styles.statusText}>● ENCRYPTED LEDGER ACTIVE</Text>
           </View>
         </Animatable.View>
 
-        {/* FINANCIAL FLOW CONTROL */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: THEME.gold }]}>
-            FINANCIAL LOGISTICS
+            TRANSACTION HISTORY
           </Text>
-          <FlatList
-            data={transactions}
-            keyExtractor={(item) => item.id}
-            renderItem={renderTransaction}
-            scrollEnabled={false}
-          />
+          {transactions.length > 0 ? (
+            <FlatList
+              data={transactions}
+              keyExtractor={(item) => item.id}
+              renderItem={renderTransaction}
+              scrollEnabled={false}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              <Text style={{ color: "#5D6D7E", fontSize: 12 }}>
+                No recent financial activity detected.
+              </Text>
+            </View>
+          )}
         </View>
 
-        {/* ACTION PANEL */}
         <View style={styles.actionRow}>
           <TouchableOpacity
             style={[styles.actionBtn, { backgroundColor: THEME.gold }]}
+            onPress={() => {/* Real withdrawal logic link */}}
           >
-            <Text style={styles.btnText}>WITHDRAW TO BANK</Text>
+            <Text style={styles.btnText}>INITIATE WITHDRAWAL</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -159,12 +138,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 1.5,
   },
-  mainAmount: { fontSize: 40, fontWeight: "200", marginTop: 10 },
+  mainAmount: { fontSize: 38, fontWeight: "300", marginTop: 10 },
   nodeStatus: {
     marginTop: 20,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    backgroundColor: "rgba(0,255,0,0.1)",
+    backgroundColor: "rgba(0,255,0,0.05)",
     borderRadius: 10,
   },
   statusText: { color: "#00FF00", fontSize: 8, fontWeight: "900" },
@@ -194,13 +173,20 @@ const styles = StyleSheet.create({
   ledgerLabel: { fontSize: 14, fontWeight: "bold" },
   ledgerDate: { fontSize: 9, color: "#5D6D7E", marginTop: 3 },
   ledgerAmount: { fontSize: 15, fontWeight: "900" },
+  emptyState: {
+    padding: 40,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1A2A3A",
+    borderStyle: "dashed",
+    borderRadius: 20,
+  },
   actionRow: { padding: 25, marginTop: 10 },
   actionBtn: {
     height: 60,
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 8,
   },
   btnText: { color: "#000", fontWeight: "900", letterSpacing: 1.5 },
 });
