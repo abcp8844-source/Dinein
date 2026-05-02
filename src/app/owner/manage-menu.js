@@ -40,22 +40,26 @@ export default function ManageMenu() {
     // Fetch products only belonging to THIS owner
     const q = query(
       collection(db, "products"),
-      where("ownerId", "==", userData.uid)
+      where("ownerId", "==", userData.uid),
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        // Fallback for safety if 'available' field is missing
-        available: doc.data().available ?? true 
-      }));
-      setInventory(items);
-      setLoading(false);
-    }, (error) => {
-      console.error("Inventory Sync Error:", error);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          // Fallback for safety if 'available' field is missing
+          available: doc.data().available ?? true,
+        }));
+        setInventory(items);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Inventory Sync Error:", error);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe();
   }, [userData]);
@@ -81,7 +85,9 @@ export default function ManageMenu() {
         <Text style={[styles.itemPrice, { color: THEME.accent }]}>
           {item.price} {userData?.currencyCode || "THB"}
         </Text>
-        <Text style={{color: THEME.textSecondary, fontSize: 10, marginTop: 4}}>
+        <Text
+          style={{ color: THEME.textSecondary, fontSize: 10, marginTop: 4 }}
+        >
           {item.category}
         </Text>
       </View>
@@ -132,15 +138,22 @@ export default function ManageMenu() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
-            <View style={{marginTop: 100, alignItems: 'center'}}>
-               <Text style={[styles.emptyText, {color: THEME.textSecondary}]}>
+            <View style={{ marginTop: 100, alignItems: "center" }}>
+              <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>
                 No items found in your store.
               </Text>
-              <TouchableOpacity 
-                style={{marginTop: 20, backgroundColor: THEME.accent, padding: 15, borderRadius: 10}}
+              <TouchableOpacity
+                style={{
+                  marginTop: 20,
+                  backgroundColor: THEME.accent,
+                  padding: 15,
+                  borderRadius: 10,
+                }}
                 onPress={() => router.push("/owner/upload-menu")}
               >
-                <Text style={{fontWeight: '900', fontSize: 12}}>ADD FIRST ITEM</Text>
+                <Text style={{ fontWeight: "900", fontSize: 12 }}>
+                  ADD FIRST ITEM
+                </Text>
               </TouchableOpacity>
             </View>
           }
@@ -186,6 +199,6 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: "center",
     fontSize: 14,
-    fontWeight: '600'
+    fontWeight: "600",
   },
 });
