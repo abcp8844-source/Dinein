@@ -22,18 +22,23 @@ function RootLayoutNav() {
     const inAdminGroup = segments[0] === "(admin)";
     const inOwnerGroup = segments[0] === "(owner)";
 
+    // 1. If not logged in, force to login screen
     if (!user) {
       if (!inAuthGroup) router.replace("/(auth)/login");
-    } else if (user && userData) {
-      if (inAdminGroup && userData.role !== "admin") {
-        router.replace("/(customer)/home");
-      } else if (inOwnerGroup && userData.role !== "owner") {
-        router.replace("/(customer)/home");
-      } else if (inAuthGroup) {
-        if (userData.role === "admin") router.replace("/(admin)/dashboard");
-        else if (userData.role === "owner")
-          router.replace("/(owner)/owner-wallet");
-        else router.replace("/(customer)/home");
+    } 
+    // 2. If logged in, check roles and direct to correct dashboard
+    else if (user && userData) {
+      if (userData.role === "admin") {
+        // Master Admin Route
+        if (!inAdminGroup) router.replace("/(admin)/dashboard");
+      } else if (userData.role === "owner") {
+        // Owner Wallet/Home Route
+        if (!inOwnerGroup) router.replace("/(owner)/owner-wallet");
+      } else {
+        // Customer Home Route
+        if (inAdminGroup || inOwnerGroup || inAuthGroup) {
+          router.replace("/(customer)/home");
+        }
       }
     }
   }, [user, userData, loading, segments]);
