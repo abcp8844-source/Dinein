@@ -7,129 +7,108 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  StatusBar
 } from "react-native";
 import { dbService } from "../../services/dbService";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../theme/ThemeContext";
 import PremiumButton from "../../components/PremiumButton";
+import { Ionicons } from "@expo/vector-icons";
 
 /**
- * GLOBAL GROWTH & PROMOTION SYSTEM
- * Automated Currency Sync for 15 Markets | High-Visibility Logic
+ * OWNER PROMOTION HUB
+ * Logic: Owner-led Boost System with Admin Rate Synchronization.
+ * Theme: Dark Navy High-Visibility Architecture.
  */
 export default function OwnerPromotion() {
   const { userData } = useAuth();
-  const { colors } = useTheme();
   const [myItems, setMyItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // 🛡️ Anchoring: Regional settings from owner profile
-  const currency = userData?.currencyCode || "USD";
-  const region = userData?.isoCode || "Global";
+  const THEME = {
+    bg: "#001529",         
+    card: "#002F56",       
+    accent: "#D4AF37",     
+    textMain: "#FFFFFF",
+    textSecondary: "#A6B1BB",
+    border: "#004B87"
+  };
 
   useEffect(() => {
-    loadMyItems();
+    loadInventory();
   }, []);
 
-  const loadMyItems = async () => {
+  const loadInventory = async () => {
     try {
-      // Logic: Fetching and filtering items within the owner's regional market
       const data = await dbService.getMenuItems();
       const filtered = data.filter((item) => item.ownerId === userData.uid);
       setMyItems(filtered);
     } catch (error) {
-      console.error("Promotion Logic Error:", error.message);
+      console.error("Data Retrieval Error");
     }
   };
 
-  const handleRequestPromotion = () => {
-    if (!selectedItem) {
-      Alert.alert(
-        "System Notification",
-        "Please select a product to initialize the promotion protocol.",
-      );
-      return;
+  const toggleBoost = async (item) => {
+    try {
+      const newStatus = !item.isBoosted;
+      await dbService.updateItemBoost(item.id, newStatus);
+      Alert.alert("System Sync", `${item.name} visibility status updated.`);
+      loadInventory();
+    } catch (error) {
+      Alert.alert("Update Failed", "Requires Admin Authorization.");
     }
-
-    Alert.alert(
-      "Promotion Request",
-      `Request 'Featured' status for ${selectedItem.name} in the ${region} market?`,
-      [
-        { text: "Discard", style: "cancel" },
-        {
-          text: "Confirm Request",
-          onPress: () =>
-            Alert.alert(
-              "Success",
-              "Request transmitted to Admin for regional review.",
-            ),
-        },
-      ],
-    );
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={() => setSelectedItem(item)}
-      style={[
-        styles.itemCard,
-        {
-          backgroundColor: "#0A0A0A",
-          borderColor: selectedItem?.id === item.id ? colors.primary : "#222",
-          borderWidth: selectedItem?.id === item.id ? 2 : 1,
-        },
-      ]}
-    >
+    <View style={[styles.itemCard, { backgroundColor: THEME.card, borderColor: THEME.border }]}>
       <View style={styles.cardInfo}>
-        <Text style={[styles.itemName, { color: colors.textMain }]}>
-          {item.name}
-        </Text>
-        <Text style={styles.priceTag}>
-          {item.price} {currency} {/* 👈 Dynamic Currency Sync */}
+        <Text style={[styles.itemName, { color: THEME.textMain }]}>{item.name}</Text>
+        <Text style={{ color: THEME.accent, fontSize: 12, fontWeight: "600" }}>
+          {item.price} {userData?.currencyCode || "THB"}
         </Text>
       </View>
-      {selectedItem?.id === item.id && (
-        <Text style={[styles.selectedLabel, { color: colors.primary }]}>
-          SELECTED FOR BOOST
+      
+      <TouchableOpacity 
+        onPress={() => toggleBoost(item)}
+        style={[styles.boostBtn, { backgroundColor: item.isBoosted ? THEME.accent : 'transparent' }]}
+      >
+        <Ionicons 
+          name={item.isBoosted ? "rocket" : "rocket-outline"} 
+          size={18} 
+          color={item.isBoosted ? "#000" : THEME.accent} 
+        />
+        <Text style={[styles.boostText, { color: item.isBoosted ? "#000" : THEME.accent }]}>
+          {item.isBoosted ? "ACTIVE" : "BOOST"}
         </Text>
-      )}
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#000" }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: THEME.bg }]}>
+      <StatusBar barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.secondary }]}>
-          Growth & Promotion
-        </Text>
-        <Text style={styles.subtitle}>
-          Escalate visibility in the {userData?.countryName} region.
-        </Text>
+        <Text style={[styles.title, { color: THEME.textMain }]}>Growth Center</Text>
+        <TouchableOpacity onPress={() => Alert.alert("Admin Sync", "Fetching latest rates...")}>
+          <Ionicons name="cloud-download-outline" size={24} color={THEME.accent} />
+        </TouchableOpacity>
       </View>
 
       <FlatList
         data={myItems}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ padding: 25 }}
-        ListHeaderComponent={
-          <Text style={styles.sectionLabel}>
-            TARGET MARKET: {region} INVENTORY
-          </Text>
-        }
+        contentContainerStyle={{ padding: 20 }}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            No products available for promotion in this region.
-          </Text>
+          <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>No items available for promotion.</Text>
         }
       />
 
-      <View style={styles.footer}>
-        <PremiumButton
-          title={selectedItem ? "Request Featured Status" : "Select Product"}
-          onPress={handleRequestPromotion}
-          disabled={!selectedItem}
+      <View style={[styles.footer, { borderTopColor: THEME.border }]}>
+        <Text style={styles.disclaimer}>* Pricing & tiers managed by Admin protocol</Text>
+        <PremiumButton 
+          title="INITIALIZE NEW CAMPAIGN" 
+          onPress={() => Alert.alert("Request Sent", "Admin will review your growth request.")} 
         />
       </View>
     </SafeAreaView>
@@ -138,39 +117,30 @@ export default function OwnerPromotion() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 30, paddingTop: 50 },
-  title: { fontSize: 30, fontWeight: "900", letterSpacing: 1 },
-  subtitle: { color: "#666", fontSize: 13, marginTop: 5 },
-  sectionLabel: {
-    fontSize: 10,
-    fontWeight: "bold",
-    letterSpacing: 2,
-    color: "#444",
-    marginBottom: 20,
-  },
+  header: { padding: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  title: { fontSize: 28, fontWeight: "900", letterSpacing: 1 },
   itemCard: {
-    padding: 25,
-    borderRadius: 20,
+    padding: 20,
+    borderRadius: 18,
     marginBottom: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderWidth: 1.5,
   },
   cardInfo: { flex: 1 },
-  itemName: { fontSize: 18, fontWeight: "bold" },
-  priceTag: { color: "#888", fontSize: 12, marginTop: 4, fontWeight: "bold" },
-  selectedLabel: { fontSize: 9, fontWeight: "bold", letterSpacing: 1 },
-  footer: {
-    padding: 25,
-    borderTopWidth: 0.5,
-    borderTopColor: "#222",
-    backgroundColor: "#000",
+  itemName: { fontSize: 17, fontWeight: "bold" },
+  boostBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: "#D4AF37"
   },
-  emptyText: {
-    color: "#333",
-    textAlign: "center",
-    marginTop: 50,
-    letterSpacing: 1,
-    fontSize: 12,
-  },
+  boostText: { fontSize: 9, fontWeight: '900', marginLeft: 6, letterSpacing: 1 },
+  footer: { padding: 25, borderTopWidth: 1 },
+  disclaimer: { color: "#444", fontSize: 9, textAlign: 'center', marginBottom: 15, letterSpacing: 0.5 },
+  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 12 }
 });
