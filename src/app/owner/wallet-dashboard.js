@@ -32,9 +32,9 @@ export default function OwnerWallet() {
   // Using actual fields from your AuthContext/Firebase
   const currency = userData?.currencyCode || "THB";
   const balance = userData?.walletBalance || 0;
-  
+
   // Safely mapping transactions from userData
-  const transactions = userData?.transactions || []; 
+  const transactions = userData?.transactions || [];
 
   const renderTransaction = ({ item }) => (
     <View
@@ -45,9 +45,17 @@ export default function OwnerWallet() {
     >
       <View style={styles.iconCircle}>
         <Ionicons
-          name={item.type === "CREDIT" || item.type === "IN" ? "arrow-down-circle" : "arrow-up-circle"}
+          name={
+            item.type === "CREDIT" || item.type === "IN"
+              ? "arrow-down-circle"
+              : "arrow-up-circle"
+          }
           size={24}
-          color={item.type === "CREDIT" || item.type === "IN" ? THEME.success : THEME.danger}
+          color={
+            item.type === "CREDIT" || item.type === "IN"
+              ? THEME.success
+              : THEME.danger
+          }
         />
       </View>
       <View style={{ flex: 1, marginLeft: 15 }}>
@@ -61,7 +69,12 @@ export default function OwnerWallet() {
       <Text
         style={[
           styles.ledgerAmount,
-          { color: item.type === "CREDIT" || item.type === "IN" ? THEME.success : THEME.danger },
+          {
+            color:
+              item.type === "CREDIT" || item.type === "IN"
+                ? THEME.success
+                : THEME.danger,
+          },
         ]}
       >
         {item.type === "CREDIT" || item.type === "IN" ? "+" : "-"}
@@ -73,11 +86,11 @@ export default function OwnerWallet() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bg }}>
       <StatusBar barStyle="light-content" />
-      
+
       {/* Back Button Added for Functionality */}
-      <TouchableOpacity 
-        onPress={() => router.back()} 
-        style={{paddingHorizontal: 20, paddingTop: 10}}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={{ paddingHorizontal: 20, paddingTop: 10 }}
       >
         <Ionicons name="chevron-back" size={28} color={THEME.gold} />
       </TouchableOpacity>
@@ -90,7 +103,9 @@ export default function OwnerWallet() {
           <View style={[styles.balanceBox, { borderColor: THEME.gold }]}>
             <Text style={styles.totalLabel}>CURRENT SETTLEMENT BALANCE</Text>
             <Text style={[styles.mainAmount, { color: "#FFF" }]}>
-              {Number(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}{" "}
+              {Number(balance).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              })}{" "}
               <Text style={{ color: THEME.gold }}>{currency}</Text>
             </Text>
           </View>
@@ -124,7 +139,7 @@ export default function OwnerWallet() {
             style={[styles.actionBtn, { backgroundColor: THEME.gold }]}
             onPress={() => {
               // Link to your real withdrawal or top-up screen
-              router.push("/owner/withdraw"); 
+              router.push("/owner/withdraw");
             }}
           >
             <Text style={styles.btnText}>INITIATE WITHDRAWAL</Text>
@@ -136,7 +151,12 @@ export default function OwnerWallet() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 40, paddingBottom: 40, alignItems: "center", marginTop: 10 },
+  header: {
+    paddingHorizontal: 40,
+    paddingBottom: 40,
+    alignItems: "center",
+    marginTop: 10,
+  },
   marketTitle: {
     fontSize: 10,
     fontWeight: "900",
