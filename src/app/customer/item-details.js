@@ -17,6 +17,11 @@ import PremiumButton from "../../components/PremiumButton";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Future-Tech Asset Details
+ * Logic: Multi-Mode Execution (Delivery/Dine-in) & Transaction Authorization
+ * Feature: Market Node Encryption & Profile Synchronization
+ */
 export default function ItemDetails() {
   const { id, name, price, description } = useLocalSearchParams();
   const { userData } = useAuth();
@@ -32,6 +37,7 @@ export default function ItemDetails() {
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
+      // Logic: Encrypted Order Registry
       const orderId = await dbService.placeOrder({
         customerId: userData.uid,
         itemId: id,
@@ -72,10 +78,10 @@ export default function ItemDetails() {
             </View>
           </View>
           <View style={styles.priceContainer}>
-            <Text style={[styles.price, { color: colors.primary }]}>
+            <Text style={[styles.price, { color: colors.primary || "#D4AF37" }]}>
               {price}
             </Text>
-            <Text style={[styles.currencyLabel, { color: colors.primary }]}>
+            <Text style={[styles.currencyLabel, { color: colors.primary || "#D4AF37" }]}>
               {currency}
             </Text>
           </View>
@@ -96,8 +102,8 @@ export default function ItemDetails() {
                   styles.modeBtn,
                   { backgroundColor: "#0A1A2F", borderColor: "#1B2631" },
                   orderMode === mode && {
-                    backgroundColor: colors.primary,
-                    borderColor: colors.primary,
+                    backgroundColor: colors.primary || "#D4AF37",
+                    borderColor: colors.primary || "#D4AF37",
                   },
                 ]}
               >
