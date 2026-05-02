@@ -30,10 +30,7 @@ export default function AddressSetup() {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "PERMISSION DENIED",
-          "LOCATION ACCESS IS CRITICAL FOR LOGISTICS PRECISION.",
-        );
+        Alert.alert("ACCESS DENIED", "LOCATION PERMISSION IS REQUIRED FOR GLOBAL LOGISTICS.");
         return;
       }
 
@@ -58,7 +55,7 @@ export default function AddressSetup() {
         });
       }
     } catch (error) {
-      Alert.alert("GPS ERROR", "UNABLE TO SYNC WITH REGIONAL SATELLITES.");
+      Alert.alert("SYNC ERROR", "UNABLE TO CONNECT WITH LOCAL SATELLITES.");
     } finally {
       setLoading(false);
     }
@@ -70,44 +67,29 @@ export default function AddressSetup() {
       await updateProfile({ location: address });
       router.replace("/(customer)/home");
     } catch (error) {
-      Alert.alert("SYNC FAILURE", "FAILED TO UPDATE LOGISTICS PROFILE.");
+      Alert.alert("UPDATE FAILED", "COULD NOT ESTABLISH PROFILE LINK.");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <Animatable.View
-        animation="fadeInUp"
-        duration={800}
-        style={styles.content}
-      >
-        <View style={styles.iconHeader}>
-          <MaterialCommunityIcons name="target" size={40} color="#D4AF37" />
+      <Animatable.View animation="fadeInUp" style={styles.content}>
+        
+        <View style={styles.iconBox}>
+          <MaterialCommunityIcons name="map-marker-radius-outline" size={40} color="#FF3B30" />
         </View>
 
-        <Text style={styles.title}>LOGISTICS PRECISION</Text>
-        <Text style={styles.subtitle}>
-          ALIGNING YOUR PROFILE WITH THE {country.toUpperCase()} NODE.
-        </Text>
+        <Text style={styles.title}>LOGISTICS NODE</Text>
+        <Text style={styles.subtitle}>ESTABLISHING CONNECTION POINT: {country.toUpperCase()}</Text>
 
-        <View style={styles.addressDisplay}>
-          <Text style={styles.addressLabel}>DETECTED COORDINATES:</Text>
+        <View style={styles.displayCard}>
+          <Text style={styles.label}>COORDINATES DETECTED:</Text>
           <Text style={styles.addressText}>
             {address
               ? `${address.house} ${address.street}, ${address.city}`.toUpperCase()
-              : "WAITING FOR ENCRYPTED GPS SIGNAL..."}
+              : "SEARCHING FOR ENCRYPTED SIGNAL..."}
           </Text>
-          {address && (
-            <View style={styles.verifiedBadge}>
-              <MaterialCommunityIcons
-                name="check-decagram"
-                size={12}
-                color="#D4AF37"
-              />
-              <Text style={styles.verifiedText}>STATION VERIFIED</Text>
-            </View>
-          )}
         </View>
 
         <PremiumButton
@@ -117,12 +99,8 @@ export default function AddressSetup() {
         />
 
         {address && (
-          <TouchableOpacity
-            onPress={finalizeSetup}
-            style={styles.confirmBtn}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.confirmText}>CONFIRM & ESTABLISH LINK</Text>
+          <TouchableOpacity onPress={finalizeSetup} style={styles.confirmBtn}>
+            <Text style={styles.confirmText}>CONFIRM & PROCEED</Text>
           </TouchableOpacity>
         )}
       </Animatable.View>
@@ -131,65 +109,14 @@ export default function AddressSetup() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    padding: 30,
-  },
+  container: { flex: 1, backgroundColor: "#020B18", justifyContent: "center", padding: 30 },
   content: { width: "100%", alignItems: "center" },
-  iconHeader: { marginBottom: 20 },
-  title: {
-    fontSize: 22,
-    fontWeight: "900",
-    letterSpacing: 4,
-    color: "#FFF",
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 8,
-    textAlign: "center",
-    marginTop: 12,
-    letterSpacing: 2,
-    color: "#444",
-    fontWeight: "bold",
-  },
-  addressDisplay: {
-    width: "100%",
-    marginVertical: 45,
-    padding: 30,
-    borderRadius: 25,
-    backgroundColor: "#0A0A0A",
-    borderWidth: 1,
-    borderColor: "#111",
-  },
-  addressLabel: {
-    fontSize: 8,
-    fontWeight: "900",
-    marginBottom: 15,
-    letterSpacing: 2,
-    color: "#D4AF37",
-  },
-  addressText: {
-    color: "#FFF",
-    fontSize: 14,
-    fontWeight: "300",
-    lineHeight: 24,
-    letterSpacing: 0.5,
-  },
-  verifiedBadge: { flexDirection: "row", alignItems: "center", marginTop: 20 },
-  verifiedText: {
-    color: "#D4AF37",
-    fontSize: 8,
-    fontWeight: "900",
-    marginLeft: 6,
-    letterSpacing: 1,
-  },
-  confirmBtn: { marginTop: 30, paddingVertical: 10 },
-  confirmText: {
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 2,
-    color: "#D4AF37",
-  },
+  iconBox: { marginBottom: 25 },
+  title: { fontSize: 22, fontWeight: "900", letterSpacing: 4, color: "#FFF" },
+  subtitle: { fontSize: 8, color: "#5D6D7E", marginTop: 10, letterSpacing: 1.5, fontWeight: "bold" },
+  displayCard: { width: "100%", marginVertical: 40, padding: 30, backgroundColor: "#0A1A2F", borderRadius: 20, borderWidth: 1, borderColor: "#1B2631" },
+  label: { fontSize: 8, fontWeight: "900", color: "#D4AF37", marginBottom: 15, letterSpacing: 1 },
+  addressText: { color: "#FFF", fontSize: 13, fontWeight: "300", lineHeight: 22, letterSpacing: 0.5 },
+  confirmBtn: { marginTop: 30 },
+  confirmText: { fontSize: 10, fontWeight: "900", color: "#D4AF37", letterSpacing: 2 }
 });
