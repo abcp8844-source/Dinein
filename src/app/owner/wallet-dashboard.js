@@ -17,11 +17,11 @@ export default function OwnerWallet() {
   const { userData } = useAuth();
 
   const THEME = {
-    bg: "#020B18", 
-    card: "#051121", 
-    gold: "#D4AF37", 
-    goldLight: "#F1D592", 
-    border: "#1A2A3A", 
+    bg: "#020B18",
+    card: "#051121",
+    gold: "#D4AF37",
+    goldLight: "#F1D592",
+    border: "#1A2A3A",
     success: "#00FF00",
     danger: "#FF3B30",
   };
@@ -57,7 +57,8 @@ export default function OwnerWallet() {
           { color: item.type === "IN" ? THEME.success : THEME.danger },
         ]}
       >
-        {item.type === "IN" ? "+" : "-"}{item.amount}
+        {item.type === "IN" ? "+" : "-"}
+        {item.amount}
       </Text>
     </View>
   );
@@ -66,7 +67,6 @@ export default function OwnerWallet() {
     <SafeAreaView style={{ flex: 1, backgroundColor: THEME.bg }}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        
         <Animatable.View animation="fadeIn" style={styles.header}>
           <Text style={[styles.marketTitle, { color: THEME.gold }]}>
             EXECUTIVE REVENUE NODE
@@ -106,7 +106,9 @@ export default function OwnerWallet() {
         <View style={styles.actionRow}>
           <TouchableOpacity
             style={[styles.actionBtn, { backgroundColor: THEME.gold }]}
-            onPress={() => {/* Real withdrawal logic link */}}
+            onPress={() => {
+              /* Real withdrawal logic link */
+            }}
           >
             <Text style={styles.btnText}>INITIATE WITHDRAWAL</Text>
           </TouchableOpacity>
