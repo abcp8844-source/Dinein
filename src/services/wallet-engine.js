@@ -57,11 +57,15 @@ export const WalletEngine = {
    * Strictly isolated within the verified country node.
    */
   processOrderPayment: async (transactionData) => {
-    const { customerId, ownerId, amount, currency, countryCode } = transactionData;
+    const { customerId, ownerId, amount, currency, countryCode } =
+      transactionData;
     const refId = `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     try {
-      const transactionRef = collection(db, `markets/${countryCode}/transactions`);
+      const transactionRef = collection(
+        db,
+        `markets/${countryCode}/transactions`,
+      );
 
       const settlementRecord = {
         refId,
@@ -99,4 +103,3 @@ export const WalletEngine = {
     }).format(value);
   },
 };
-
