@@ -48,8 +48,8 @@ export default function Wallet() {
 
   /**
    * 🛡️ SECURED GATEWAY MAPPING
-   * Verified for 20 Core Markets: Thailand, China, Singapore, Turkey, US, UK, UAE, Saudi Arabia, 
-   * Japan, South Korea, Germany, France, Italy, Canada, Malaysia, Indonesia, Vietnam, Hong Kong, 
+   * Verified for 20 Core Markets: Thailand, China, Singapore, Turkey, US, UK, UAE, Saudi Arabia,
+   * Japan, South Korea, Germany, France, Italy, Canada, Malaysia, Indonesia, Vietnam, Hong Kong,
    * Australia, and Switzerland.
    */
   const getGlobalPaymentMethods = () => {
@@ -88,11 +88,16 @@ export default function Wallet() {
         contentContainerStyle={{ padding: 25 }}
       >
         <Animatable.View animation="fadeInDown" style={styles.headerArea}>
-          <Text style={[styles.headerLabel, { color: colors.primary || "#D4AF37" }]}>
+          <Text
+            style={[styles.headerLabel, { color: colors.primary || "#D4AF37" }]}
+          >
             LIQUIDITY HUB
           </Text>
           <View
-            style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]}
+            style={[
+              styles.goldLine,
+              { backgroundColor: colors.primary || "#D4AF37" },
+            ]}
           />
         </Animatable.View>
 
@@ -114,7 +119,12 @@ export default function Wallet() {
               <Text style={styles.balanceAmount}>
                 {balance.toLocaleString()}
               </Text>
-              <Text style={[styles.currencyCode, { color: colors.primary || "#D4AF37" }]}>
+              <Text
+                style={[
+                  styles.currencyCode,
+                  { color: colors.primary || "#D4AF37" },
+                ]}
+              >
                 {currency}
               </Text>
             </View>
@@ -141,7 +151,12 @@ export default function Wallet() {
                 />
                 <Text style={styles.methodName}>{method}</Text>
               </View>
-              <Text style={[styles.linkText, { color: colors.primary || "#D4AF37" }]}>
+              <Text
+                style={[
+                  styles.linkText,
+                  { color: colors.primary || "#D4AF37" },
+                ]}
+              >
                 SECURE LINK
               </Text>
             </TouchableOpacity>
