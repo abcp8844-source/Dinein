@@ -3,13 +3,25 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
 
 /**
  * EXECUTIVE AI SERVICE - DINING TABLE PROJECT
- * Operational Context: 20 Locked Markets
+ * Operational Context: 20 Locked Markets (Verified from image)
  */
 export const aiService = {
-  generateResponse: async (userPrompt, systemContext) => {
+  generateResponse: async (userPrompt, userData) => {
     if (!GEMINI_API_KEY) {
-      return "Critical Error: API Key missing in environment.";
+      return "Configuration Error: API Key missing.";
     }
+
+    // System instruction strictly based on the 20-country list
+    const systemInstruction = `
+      Identity: Official Assistant for "Dining Table" App.
+      Operational Markets: Thailand, China, Singapore, Turkey, US, UK, UAE, Saudi Arabia, Japan, South Korea, Germany, France, Italy, Canada, Malaysia, Indonesia, Vietnam, Hong Kong, Australia, Switzerland.
+      
+      Operational Rules:
+      1. Role Recognition: Current User is a ${userData?.role || 'Customer'}.
+      2. Scope: Only discuss Food Orders, Digital Wallet, and Shop Management within the app.
+      3. Language: Detect user input language and respond in the same language.
+      4. Privacy: Do not expose internal server paths or financial admin logs.
+    `;
 
     try {
       const response = await fetch(API_URL, {
@@ -22,15 +34,15 @@ export const aiService = {
             {
               parts: [
                 {
-                  text: `${systemContext}\n\nUSER INPUT: ${userPrompt}`,
+                  text: `${systemInstruction}\n\nUSER INPUT: ${userPrompt}`,
                 },
               ],
             },
           ],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 250, // Slightly increased for clarity
-            topP: 0.9,
+            temperature: 0.5,
+            maxOutputTokens: 350,
+            topP: 0.8,
           },
         }),
       });
@@ -40,10 +52,11 @@ export const aiService = {
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         return data.candidates[0].content.parts[0].text.trim();
       } else {
-        return "Service unavailable. Please reach out to Admin support.";
+        return "System busy. Please contact Admin support.";
       }
     } catch (error) {
-      return "Network interruption. Please verify connectivity and retry.";
+      console.error("AI Service Network Error:", error);
+      return "Connection failure. Please retry.";
     }
   },
 };
