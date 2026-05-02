@@ -3,13 +3,19 @@ import { useEffect } from "react";
 import { StatusBar, LogBox } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+// Core Context Synchronization
 import { AuthProvider, useAuth } from "./../context/AuthContext";
 import { ThemeProvider } from "./../context/ThemeContext";
 import { CartProvider } from "./../context/CartContext";
 import { LocationProvider } from "./../context/LocationContext";
 
+// Suppressing unnecessary development logs
 LogBox.ignoreAllLogs();
 
+/**
+ * ROOT NAVIGATION COMPONENT
+ * Handles: Authentication redirects and Role-Based Access Control (RBAC)
+ */
 function RootLayoutNav() {
   const { user, userData, loading } = useAuth();
   const segments = useSegments();
@@ -18,26 +24,32 @@ function RootLayoutNav() {
   useEffect(() => {
     if (loading) return;
 
+    // Segment Identification for Routing
     const inAuthGroup = segments[0] === "(auth)";
     const inAdminGroup = segments[0] === "(admin)";
     const inOwnerGroup = segments[0] === "(owner)";
 
-    // 1. If not logged in, force to login screen
+    // 1. GUEST GATEKEEPER: Redirect to Login if not authenticated
     if (!user) {
       if (!inAuthGroup) router.replace("/(auth)/login");
-    }
-    // 2. If logged in, check roles and direct to correct dashboard
+    } 
+    // 2. ROLE-BASED ACCESS CONTROL (RBAC)
     else if (user && userData) {
+      
+      // ADMIN ACCESS: Direct to Global Dashboard & Financial Nodes
       if (userData.role === "admin") {
-        // Master Admin Route
         if (!inAdminGroup) router.replace("/(admin)/dashboard");
-      } else if (userData.role === "owner") {
-        // Owner Wallet/Home Route
+      } 
+      
+      // OWNER ACCESS: Direct to Shop Management & Local Wallet
+      else if (userData.role === "owner") {
         if (!inOwnerGroup) router.replace("/(owner)/owner-wallet");
-      } else {
-        // Customer Home Route
+      } 
+      
+      // CUSTOMER ACCESS: Direct to Tabs (Includes SupportScreen)
+      else {
         if (inAdminGroup || inOwnerGroup || inAuthGroup) {
-          router.replace("/(customer)/home");
+          router.replace("/(tabs)");
         }
       }
     }
@@ -47,18 +59,41 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: "#000" },
-        animation: "fade",
+        contentStyle: { backgroundColor: "#020B18" }, // Brand Midnight Navy
+        animation: "fade_from_bottom",
       }}
     >
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(admin)" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="(owner)" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="(customer)" options={{ gestureEnabled: false }} />
+      {/* AUTHENTICATION STACK */}
+      <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+
+      {/* ADMIN INFRASTRUCTURE */}
+      <Stack.Screen 
+        name="(admin)" 
+        options={{ 
+          gestureEnabled: false,
+          headerShown: false 
+        }} 
+      />
+
+      {/* OWNER MANAGEMENT NODES */}
+      <Stack.Screen 
+        name="(owner)" 
+        options={{ gestureEnabled: false }} 
+      />
+
+      {/* CUSTOMER TABS & SUPPORT SCREEN */}
+      <Stack.Screen 
+        name="(tabs)" 
+        options={{ gestureEnabled: false }} 
+      />
     </Stack>
   );
 }
 
+/**
+ * MAIN APP ENTRY POINT
+ * Wraps all providers with Global Theme and Auth State.
+ */
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
@@ -66,7 +101,8 @@ export default function RootLayout() {
         <LocationProvider>
           <ThemeProvider>
             <CartProvider>
-              <StatusBar barStyle="light-content" backgroundColor="#000000" />
+              {/* UI/UX: Status Bar Branding */}
+              <StatusBar barStyle="light-content" backgroundColor="#020B18" />
               <RootLayoutNav />
             </CartProvider>
           </ThemeProvider>
