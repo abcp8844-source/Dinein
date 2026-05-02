@@ -55,43 +55,100 @@ export default function Wallet() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 25 }}>
-        
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 25 }}
+      >
         <Animatable.View animation="fadeInDown" style={styles.headerArea}>
-          <Text style={[styles.headerLabel, { color: colors.primary || "#D4AF37" }]}>
+          <Text
+            style={[styles.headerLabel, { color: colors.primary || "#D4AF37" }]}
+          >
             LIQUIDITY HUB
           </Text>
-          <View style={[styles.goldLine, { backgroundColor: colors.primary || "#D4AF37" }]} />
+          <View
+            style={[
+              styles.goldLine,
+              { backgroundColor: colors.primary || "#D4AF37" },
+            ]}
+          />
         </Animatable.View>
 
-        <Animatable.View animation="zoomIn" style={[styles.balanceCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+        <Animatable.View
+          animation="zoomIn"
+          style={[
+            styles.balanceCard,
+            { backgroundColor: "#051121", borderColor: "#0A1A2F" },
+          ]}
+        >
           <Text style={styles.balanceTitle}>SECURE ASSET BALANCE</Text>
           {authLoading ? (
-            <ActivityIndicator color={colors.primary || "#D4AF37"} style={{ marginVertical: 20 }} />
+            <ActivityIndicator
+              color={colors.primary || "#D4AF37"}
+              style={{ marginVertical: 20 }}
+            />
           ) : (
             <View style={styles.amountRow}>
-              <Text style={styles.balanceAmount}>{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
-              <Text style={[styles.currencyCode, { color: colors.primary || "#D4AF37" }]}>{currency}</Text>
+              <Text style={styles.balanceAmount}>
+                {balance.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
+              </Text>
+              <Text
+                style={[
+                  styles.currencyCode,
+                  { color: colors.primary || "#D4AF37" },
+                ]}
+              >
+                {currency}
+              </Text>
             </View>
           )}
         </Animatable.View>
 
-        <Animatable.View animation="fadeInUp" delay={400} style={styles.gatewaySection}>
-          <Text style={styles.sectionTitle}>LOCAL GATEWAYS ACTIVE ({country.toUpperCase()})</Text>
+        <Animatable.View
+          animation="fadeInUp"
+          delay={400}
+          style={styles.gatewaySection}
+        >
+          <Text style={styles.sectionTitle}>
+            LOCAL GATEWAYS ACTIVE ({country.toUpperCase()})
+          </Text>
           {getGlobalPaymentMethods().map((method, index) => (
-            <TouchableOpacity key={index} style={[styles.methodItem, { borderBottomColor: "#0A1A2F" }]} activeOpacity={0.7}>
+            <TouchableOpacity
+              key={index}
+              style={[styles.methodItem, { borderBottomColor: "#0A1A2F" }]}
+              activeOpacity={0.7}
+            >
               <View style={styles.methodMain}>
-                <MaterialCommunityIcons name="shield-check" size={18} color={colors.primary || "#D4AF37"} />
+                <MaterialCommunityIcons
+                  name="shield-check"
+                  size={18}
+                  color={colors.primary || "#D4AF37"}
+                />
                 <Text style={styles.methodName}>{method}</Text>
               </View>
-              <Text style={[styles.linkText, { color: colors.primary || "#D4AF37" }]}>SECURE LINK</Text>
+              <Text
+                style={[
+                  styles.linkText,
+                  { color: colors.primary || "#D4AF37" },
+                ]}
+              >
+                SECURE LINK
+              </Text>
             </TouchableOpacity>
           ))}
         </Animatable.View>
 
         <Animatable.View animation="fadeInUp" delay={600} style={styles.footer}>
-          <PremiumButton title="TOP UP WALLET" onPress={() => { /* Link to Real Payment Processor */ }} />
-          <Text style={styles.safetyDisclaimer}>ENCRYPTED SETTLEMENTS FOR {country.toUpperCase()}.</Text>
+          <PremiumButton
+            title="TOP UP WALLET"
+            onPress={() => {
+              /* Link to Real Payment Processor */
+            }}
+          />
+          <Text style={styles.safetyDisclaimer}>
+            ENCRYPTED SETTLEMENTS FOR {country.toUpperCase()}.
+          </Text>
         </Animatable.View>
       </ScrollView>
     </SafeAreaView>
