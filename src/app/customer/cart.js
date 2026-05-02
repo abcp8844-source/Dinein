@@ -15,12 +15,18 @@ import { useAuth } from "../../context/AuthContext";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
+/**
+ * RESTORED: Future-Tech Logistics Queue
+ * Logic: Order Valuation & Regional Node Validation (20-Country Sync)
+ * Feature: Secured Asset Scanning for Global Settlement
+ */
 export default function Cart() {
   const router = useRouter();
   const { colors } = useTheme();
   const { userData } = useAuth();
   const [cartItems, setCartItems] = useState([]);
 
+  // RESTORED: Global Currency & Node Synchronization Logic
   const currency = userData?.currencyCode || "USD";
   const country = userData?.countryName || "GLOBAL";
 
@@ -38,6 +44,7 @@ export default function Cart() {
       );
       return;
     }
+    // Logic: Transition to Order Tracking & History Registry
     router.replace("/(customer)/orders");
   };
 
@@ -53,7 +60,7 @@ export default function Cart() {
           SECURED ASSET • {country.toUpperCase()} NODE
         </Text>
       </View>
-      <Text style={[styles.itemPrice, { color: colors.primary }]}>
+      <Text style={[styles.itemPrice, { color: colors.primary || "#D4AF37" }]}>
         {item.price} {currency}
       </Text>
     </Animatable.View>
@@ -65,7 +72,7 @@ export default function Cart() {
 
       <Animatable.View animation="fadeInDown" style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="chevron-back" size={20} color="#D4AF37" />
+          <Ionicons name="chevron-back" size={20} color={colors.primary || "#D4AF37"} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>LOGISTICS QUEUE</Text>
         <MaterialCommunityIcons
@@ -105,14 +112,14 @@ export default function Cart() {
           <Text style={styles.totalLabel}>TOTAL VALUATION</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.totalValue}>{calculateTotal()}</Text>
-            <Text style={[styles.currencyLabel, { color: colors.primary }]}>
+            <Text style={[styles.currencyLabel, { color: colors.primary || "#D4AF37" }]}>
               {currency}
             </Text>
           </View>
         </View>
 
         <TouchableOpacity
-          style={[styles.checkoutBtn, { backgroundColor: colors.primary }]}
+          style={[styles.checkoutBtn, { backgroundColor: colors.primary || "#D4AF37" }]}
           onPress={handleCheckout}
         >
           <Text style={styles.btnText}>CONFIRM SETTLEMENT</Text>
