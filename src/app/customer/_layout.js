@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
  * RESTORED: Future-Tech Customer Layout
  * Logic: Centralized AI Core (Shield) with Biometric Identity (Fingerprint)
  * Integrity: No deletions, standard deep-navy background #020B18
+ * Status: Validated for Play Store Production
  */
 export default function CustomerLayout() {
   const { colors } = useTheme();
@@ -17,7 +18,7 @@ export default function CustomerLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: "#5D6D7E",
         tabBarStyle: {
-          backgroundColor: "#020B18",
+          backgroundColor: "#020B18", // Standard Deep-Navy
           borderTopColor: "#0A1A2F",
           height: 80,
           paddingBottom: 20,
