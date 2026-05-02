@@ -9,10 +9,9 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../theme/ThemeContext";
 
-// 🛡️ Strategic 15 Market Anchor
 const GLOBAL_MARKETS = [
   { id: "USA", name: "United States", currency: "USD", localIdName: "SSN" },
   { id: "CHN", name: "China", currency: "CNY", localIdName: "Resident ID" },
@@ -46,14 +45,12 @@ export default function Register() {
   const { register } = useAuth();
   const router = useRouter();
 
-  // Basic States
-  const [role, setRole] = useState("customer"); // 'customer' or 'owner'
+  const [role, setRole] = useState("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(GLOBAL_MARKETS[7]); // Default Thailand
+  const [selectedCountry, setSelectedCountry] = useState(GLOBAL_MARKETS[7]);
 
-  // Owner Smart Detection States
-  const [verificationType, setVerificationType] = useState("local"); // 'local' or 'passport'
+  const [verificationType, setVerificationType] = useState("local");
   const [idNumber, setIdNumber] = useState("");
   const [passportOrigin, setPassportOrigin] = useState("");
 
@@ -72,7 +69,6 @@ export default function Register() {
     }
 
     try {
-      // 🚀 Injecting Logic: Detecting origin vs target market
       const registrationData = {
         market: selectedCountry.name,
         iso: selectedCountry.id,
@@ -80,7 +76,6 @@ export default function Register() {
         verification: {
           method: verificationType,
           id: idNumber,
-          // Detects if it's a global passport or local ID
           origin:
             verificationType === "passport"
               ? passportOrigin
@@ -103,7 +98,6 @@ export default function Register() {
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      {/* --- Header Section --- */}
       <View style={styles.header}>
         <View style={styles.logoBox}>
           <Text style={styles.logoText}>F&B</Text>
@@ -111,7 +105,6 @@ export default function Register() {
         <Text style={styles.tagline}>GLOBAL DINING NETWORK</Text>
       </View>
 
-      {/* --- Role Selection Tabs --- */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           onPress={() => setRole("customer")}
@@ -138,9 +131,7 @@ export default function Register() {
         </TouchableOpacity>
       </View>
 
-      {/* --- Form Section --- */}
       <View style={styles.form}>
-        {/* Market Selection (Horizontal List) */}
         <Text style={styles.inputLabel}>OPERATIONAL REGION</Text>
         <ScrollView
           horizontal
@@ -186,7 +177,6 @@ export default function Register() {
           onChangeText={setPassword}
         />
 
-        {/* --- Dynamic Owner Detection Panel --- */}
         {role === "owner" && (
           <View style={styles.ownerPanel}>
             <Text style={styles.inputLabel}>VERIFICATION DOCUMENT</Text>
@@ -228,15 +218,14 @@ export default function Register() {
             {verificationType === "passport" && (
               <TextInput
                 style={styles.input}
-                placeholder="Passport Issuing Country (e.g. Pakistan, India, UK)"
+                placeholder="Passport Issuing Country"
                 placeholderTextColor="#666"
                 value={passportOrigin}
                 onChangeText={setPassportOrigin}
               />
             )}
             <Text style={styles.hint}>
-              * System will record origin for ${selectedCountry.name} market
-              access.
+              * System will record origin for {selectedCountry.name} market access.
             </Text>
           </View>
         )}
@@ -252,12 +241,12 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: "#800000", padding: 30 },
+  container: { flexGrow: 1, backgroundColor: "#0A111F", padding: 30 },
   header: { alignItems: "center", marginTop: 40, marginBottom: 30 },
   logoBox: {
     width: 80,
     height: 80,
-    backgroundColor: "#600",
+    backgroundColor: "#161E2E",
     borderRadius: 12,
     borderWidth: 2,
     borderColor: "#D4AF37",
@@ -276,11 +265,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 30,
     borderBottomWidth: 1,
-    borderBottomColor: "#600",
+    borderBottomColor: "#1F2937",
   },
   tab: { flex: 1, paddingVertical: 15, alignItems: "center" },
   activeTab: { borderBottomWidth: 3, borderBottomColor: "#D4AF37" },
-  tabText: { color: "#A68D5F", fontSize: 11, fontWeight: "bold" },
+  tabText: { color: "#A0AEC0", fontSize: 11, fontWeight: "bold" },
   form: { width: "100%" },
   inputLabel: {
     color: "#D4AF37",
@@ -308,7 +297,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   ownerPanel: {
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -334,7 +323,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   submitBtnText: {
-    color: "#600",
+    color: "#0A111F",
     fontWeight: "900",
     letterSpacing: 1,
     fontSize: 13,
