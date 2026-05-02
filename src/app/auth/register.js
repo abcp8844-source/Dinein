@@ -225,7 +225,8 @@ export default function Register() {
               />
             )}
             <Text style={styles.hint}>
-              * System will record origin for {selectedCountry.name} market access.
+              * System will record origin for {selectedCountry.name} market
+              access.
             </Text>
           </View>
         )}
