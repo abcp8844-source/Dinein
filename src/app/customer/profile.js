@@ -18,14 +18,14 @@ import * as Animatable from "react-native-animatable";
  * RESTORED: Customer Profile & Session Registry
  * Logic: User Identity Sync & Financial Asset Overview
  * Feature: Secured Node Session Termination & Navigation Logic
- * Integrity: Complete restoration of original navigation routes and aesthetic nodes.
+ * Integrity: Deep-Navy #020B18 | Real Working Environment
  */
 export default function CustomerProfile() {
   const { userData, logout } = useAuth();
   const { colors } = useTheme();
   const router = useRouter();
 
-  // RESTORED: Optimized Routes synchronized with core folder structure
+  // REAL LOGIC: Mapping routes to existing system nodes
   const menuOptions = [
     {
       id: "1",
@@ -41,22 +41,32 @@ export default function CustomerProfile() {
     },
     {
       id: "3",
-      title: "AI Assistant",
-      icon: "robot-outline",
-      route: "/(customer)/ai-assistant",
+      title: "Cuisine Selection",
+      icon: "book-open-variant",
+      route: "/(customer)/menu",
     },
     {
       id: "4",
-      title: "Global Menu",
-      icon: "book-open-variant",
-      route: "/(customer)/menu-view",
+      title: "Active Cart",
+      icon: "cart-outline",
+      route: "/(customer)/cart",
     },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.replace("/auth/login"); // Secure redirect after session kill
+    } catch (error) {
+      console.error("SESSION_KILL_ERROR:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         {/* --- PROFILE HEADER: Identity Verification Node --- */}
         <Animatable.View animation="fadeIn" style={styles.header}>
           <View
@@ -76,14 +86,14 @@ export default function CustomerProfile() {
             </View>
           </View>
           <Text style={styles.userName}>
-            {userData?.name?.toUpperCase() || "GLOBAL CITIZEN"}
+            {userData?.fullName?.toUpperCase() || userData?.name?.toUpperCase() || "UNREGISTERED USER"}
           </Text>
           <Text style={[styles.userRegion, { color: "#5D6D7E" }]}>
-            📍 {userData?.location?.city?.toUpperCase() || "SYNCING REGION..."}
+            📍 {userData?.countryName?.toUpperCase() || "SYNCING GLOBAL NODE..."}
           </Text>
         </Animatable.View>
 
-        {/* --- STATS ROW: Asset & Logistics Status --- */}
+        {/* --- STATS ROW: Asset & Logistics Status (Real Data Binding) --- */}
         <View
           style={[
             styles.statsContainer,
@@ -100,7 +110,7 @@ export default function CustomerProfile() {
             >
               {userData?.walletBalance || "0.00"}{" "}
               <Text style={styles.currency}>
-                {userData?.currencyCode || "THB"}
+                {userData?.currencyCode || "USD"}
               </Text>
             </Text>
           </TouchableOpacity>
@@ -143,13 +153,13 @@ export default function CustomerProfile() {
         {/* --- SESSION CONTROL: Security Termination --- */}
         <TouchableOpacity
           style={[styles.logoutBtn, { borderColor: "#1A0505" }]}
-          onPress={logout}
+          onPress={handleLogout}
         >
           <Text style={styles.logoutText}>TERMINATE SESSION</Text>
         </TouchableOpacity>
 
         <Text style={styles.versionText}>
-          AB&CP PREMIUM v1.0.4 | SECURED NODE
+          SECURED GLOBAL NODE v1.0.4 | ENCRYPTION ACTIVE
         </Text>
       </ScrollView>
     </SafeAreaView>
