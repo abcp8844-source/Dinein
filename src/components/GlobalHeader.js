@@ -9,45 +9,56 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { MARKET_REGISTRY } from "../constants/market-registry";
 
+/**
+ * GLOBAL HEADER COMPONENT
+ * Handles: Multi-country regional switching and language localization.
+ * Integrated with: AuthContext for global state synchronization.
+ */
 export default function GlobalHeader() {
-  const { marketISO, appLang, updateGlobalPreference } = useAuth();
+  const { userData, updateGlobalPreference } = useAuth();
+  
+  // Logic: Identify current market from registry based on user's ISO code
   const currentMarket =
-    MARKET_REGISTRY.find((m) => m.iso === marketISO) || MARKET_REGISTRY[0];
+    MARKET_REGISTRY.find((m) => m.iso === userData?.isoCode) || MARKET_REGISTRY[0];
 
   return (
     <View style={styles.headerBody}>
-      {/* LANGUAGE SELECTOR (Available everywhere) */}
+      {/* UPPER SECTION: BRANDING & LOCALIZATION */}
       <View style={styles.topSection}>
         <View style={styles.branding}>
           <Text style={styles.flagLarge}>{currentMarket.flag}</Text>
-          <Text style={styles.brandTitle}>DINING TABLE</Text>
+          <View>
+            <Text style={styles.brandTitle}>AB&CP OFFICIAL</Text>
+            <Text style={styles.regionName}>{currentMarket.name.toUpperCase()}</Text>
+          </View>
         </View>
 
         <TouchableOpacity
           style={styles.langTrigger}
           onPress={() =>
             updateGlobalPreference({
-              preferredLang: appLang === "EN" ? currentMarket.langCode : "EN",
+              preferredLang: userData?.appLang === "EN" ? currentMarket.langCode : "EN",
             })
           }
         >
-          <Text style={styles.langLabel}>SWITCH LANGUAGE</Text>
-          <Text style={styles.langText}>
-            {appLang === "EN"
-              ? "ENGLISH"
-              : currentMarket.nativeLang.toUpperCase()}
+          <Text style={styles.langLabel}>SYSTEM LANGUAGE</Text>
+          <Text style={styles.langValue}>
+            {userData?.appLang === "EN" ? "ENGLISH" : "LOCALIZED"}
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* MARKET SELECTOR BAR (For selection) */}
+      {/* LOWER SECTION: MARKET SELECTOR (20 COUNTRIES) */}
       <View style={styles.marketBar}>
-        <Text style={styles.barLabel}>SELECT OPERATIONAL REGION</Text>
+        <Text style={styles.barLabel}>OPERATIONAL NODES</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {MARKET_REGISTRY.map((item) => (
             <TouchableOpacity
               key={item.iso}
-              style={[styles.node, marketISO === item.iso && styles.activeNode]}
+              style={[
+                styles.node, 
+                userData?.isoCode === item.iso && styles.activeNode
+              ]}
               onPress={() =>
                 updateGlobalPreference({
                   isoCode: item.iso,
@@ -60,7 +71,7 @@ export default function GlobalHeader() {
               <Text
                 style={[
                   styles.nodeIso,
-                  marketISO === item.iso && { color: "#D4AF37" },
+                  userData?.isoCode === item.iso && { color: "#D4AF37" },
                 ]}
               >
                 {item.iso}
@@ -76,24 +87,31 @@ export default function GlobalHeader() {
 const styles = StyleSheet.create({
   headerBody: {
     backgroundColor: "#020B18",
-    paddingTop: 10,
+    paddingTop: 45,
     borderBottomWidth: 1,
-    borderBottomColor: "#1A2A3A",
+    borderBottomColor: "#1B2631",
   },
   topSection: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom: 15,
+    marginBottom: 20,
   },
   branding: { flexDirection: "row", alignItems: "center" },
-  flagLarge: { fontSize: 24, marginRight: 10 },
+  flagLarge: { fontSize: 28, marginRight: 12 },
   brandTitle: {
     color: "#FFF",
-    fontSize: 14,
-    fontWeight: "200",
-    letterSpacing: 4,
+    fontSize: 13,
+    fontWeight: "900",
+    letterSpacing: 3,
+  },
+  regionName: {
+    color: "#D4AF37",
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 1,
+    marginTop: 2,
   },
   langTrigger: { alignItems: "flex-end" },
   langLabel: {
@@ -102,28 +120,28 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     letterSpacing: 1,
   },
-  langText: {
+  langValue: {
     color: "#D4AF37",
     fontSize: 10,
     fontWeight: "bold",
-    marginTop: 2,
+    marginTop: 3,
   },
-  marketBar: { paddingLeft: 20, marginBottom: 10 },
+  marketBar: { paddingLeft: 20, marginBottom: 15 },
   barLabel: {
     color: "#5D6D7E",
     fontSize: 7,
     fontWeight: "900",
-    marginBottom: 10,
-    letterSpacing: 1,
+    marginBottom: 12,
+    letterSpacing: 1.5,
   },
   node: {
     alignItems: "center",
-    marginRight: 22,
-    paddingBottom: 8,
+    marginRight: 25,
+    paddingBottom: 10,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
   },
   activeNode: { borderBottomColor: "#D4AF37" },
-  nodeFlag: { fontSize: 18, marginBottom: 4 },
+  nodeFlag: { fontSize: 20, marginBottom: 5 },
   nodeIso: { color: "#FFF", fontSize: 10, fontWeight: "900" },
 });
