@@ -4,10 +4,14 @@ import { collection, getDocs, updateDoc, doc, query, where } from "firebase/fire
 import { db } from "../../firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+/**
+ * ADMIN TERMINAL: User Management & Suspension Node
+ * Logic: Real-time status toggle for customer accounts.
+ */
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
 
-  // کسٹمرز کا ڈیٹا لوڈ کرنے کا فنکشن
+  // Fetch all users with 'customer' role
   const fetchCustomers = async () => {
     try {
       const q = query(collection(db, "users"), where("role", "==", "customer"));
@@ -15,7 +19,7 @@ export default function ManageUsers() {
       const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
     } catch (error) {
-      console.error("Error fetching customers: ", error);
+      console.error("DATA_FETCH_ERROR:", error);
     }
   };
 
@@ -23,21 +27,21 @@ export default function ManageUsers() {
     fetchCustomers();
   }, []);
 
-  // کسٹمر کو بلاک یا ان بلاک کرنے کا فنکشن
+  // Secure toggle function for Block/Unblock
   const toggleUserStatus = async (userId, currentStatus) => {
     const newStatus = currentStatus === "active" ? "suspended" : "active";
     
     Alert.alert(
-      "تصدیق کریں",
-      `کیا آپ اس کسٹمر کو ${newStatus === "active" ? "بحال" : "بلاک"} کرنا چاہتے ہیں؟`,
+      "AUTHORITY CONFIRMATION",
+      `Are you sure you want to ${newStatus.toUpperCase()} this user?`,
       [
-        { text: "کینسل", style: "cancel" },
+        { text: "CANCEL", style: "cancel" },
         { 
-          text: "ہاں، کر دو", 
+          text: "CONFIRM", 
           onPress: async () => {
             const userRef = doc(db, "users", userId);
             await updateDoc(userRef, { status: newStatus });
-            fetchCustomers(); // لسٹ کو تازہ (Refresh) کریں
+            fetchCustomers(); // Refresh the node list
           } 
         }
       ]
@@ -52,10 +56,10 @@ export default function ManageUsers() {
         renderItem={({ item }) => (
           <View style={styles.userCard}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.userName}>{item.name || "Unknown User"}</Text>
+              <Text style={styles.userName}>{item.name || "UNNAMED USER"}</Text>
               <Text style={styles.userEmail}>{item.email}</Text>
               <Text style={[styles.statusText, { color: item.status === "active" ? "#4CAF50" : "#FF3B30" }]}>
-                حالت: {item.status === "active" ? "Active" : "Blocked"}
+                STATUS: {item.status?.toUpperCase() || "ACTIVE"}
               </Text>
             </View>
             
@@ -88,8 +92,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1B2631'
   },
-  userName: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-  userEmail: { color: "#5D6D7E", fontSize: 12, marginTop: 2 },
-  statusText: { fontSize: 11, fontWeight: "900", marginTop: 5, textTransform: 'uppercase' },
+  userName: { color: "#FFF", fontSize: 15, fontWeight: "900", letterSpacing: 0.5 },
+  userEmail: { color: "#5D6D7E", fontSize: 11, marginTop: 2 },
+  statusText: { fontSize: 10, fontWeight: "900", marginTop: 5, letterSpacing: 1 },
   actionBtn: { padding: 12, borderRadius: 10, marginLeft: 10 }
 });
