@@ -43,27 +43,27 @@ export default function Wallet() {
   // 🛡️ LOCKED 20 COUNTRIES SYSTEM (AS PER IMAGE)
   const getGlobalPaymentMethods = () => {
     const methods = {
-      "Thailand": ["PROMPTPAY QR", "TRUEMONEY"],
-      "China": ["ALIPAY", "WECHAT PAY"],
-      "Singapore": ["PAYNOW", "GRABPAY"],
-      "Turkey": ["PARAM", "PAPARA"],
+      Thailand: ["PROMPTPAY QR", "TRUEMONEY"],
+      China: ["ALIPAY", "WECHAT PAY"],
+      Singapore: ["PAYNOW", "GRABPAY"],
+      Turkey: ["PARAM", "PAPARA"],
       "United States": ["APPLE PAY", "STRIPE"],
       "United Kingdom": ["REVOLUT", "BARCLAYS"],
       "United Arab Emirates": ["APPLE PAY", "ETISALAT"],
       "Saudi Arabia": ["MADA", "STC PAY"],
-      "Japan": ["LINE PAY", "PAYPAY"],
+      Japan: ["LINE PAY", "PAYPAY"],
       "South Korea": ["KAKAO PAY", "NAVER PAY"],
-      "Germany": ["GIROPAY", "SOFORT"],
-      "France": ["CARTE BANCAIRE"],
-      "Italy": ["POSTEPAY", "SATISPAY"],
-      "Canada": ["INTERAC", "APPLE PAY"],
-      "Malaysia": ["DUITNOW", "TOUCH N GO"],
-      "Indonesia": ["GOPAY", "OVO"],
-      "Vietnam": ["MOMO", "ZALOPAY"],
+      Germany: ["GIROPAY", "SOFORT"],
+      France: ["CARTE BANCAIRE"],
+      Italy: ["POSTEPAY", "SATISPAY"],
+      Canada: ["INTERAC", "APPLE PAY"],
+      Malaysia: ["DUITNOW", "TOUCH N GO"],
+      Indonesia: ["GOPAY", "OVO"],
+      Vietnam: ["MOMO", "ZALOPAY"],
       "Hong Kong": ["OCTOPUS", "FPS"],
-      "Australia": ["AFTERPAY", "POLI"],
-      "Switzerland": ["TWINT"],
-      "Global": ["VISA/MASTERCARD", "SECURE GATEWAY"],
+      Australia: ["AFTERPAY", "POLI"],
+      Switzerland: ["TWINT"],
+      Global: ["VISA/MASTERCARD", "SECURE GATEWAY"],
     };
 
     return methods[country] || methods["Global"];
@@ -72,34 +72,67 @@ export default function Wallet() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "#020B18" }]}>
       <StatusBar barStyle="light-content" />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 25 }}>
-        
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 25 }}
+      >
         <Animatable.View animation="fadeInDown" style={styles.headerArea}>
-          <Text style={[styles.headerLabel, { color: colors.primary }]}>LIQUIDITY HUB</Text>
-          <View style={[styles.goldLine, { backgroundColor: colors.primary }]} />
+          <Text style={[styles.headerLabel, { color: colors.primary }]}>
+            LIQUIDITY HUB
+          </Text>
+          <View
+            style={[styles.goldLine, { backgroundColor: colors.primary }]}
+          />
         </Animatable.View>
 
-        <Animatable.View animation="zoomIn" style={[styles.balanceCard, { backgroundColor: "#051121", borderColor: "#0A1A2F" }]}>
+        <Animatable.View
+          animation="zoomIn"
+          style={[
+            styles.balanceCard,
+            { backgroundColor: "#051121", borderColor: "#0A1A2F" },
+          ]}
+        >
           <Text style={styles.balanceTitle}>SECURE ASSET BALANCE</Text>
           {loading ? (
-            <ActivityIndicator color={colors.primary} style={{ marginVertical: 20 }} />
+            <ActivityIndicator
+              color={colors.primary}
+              style={{ marginVertical: 20 }}
+            />
           ) : (
             <View style={styles.amountRow}>
-              <Text style={styles.balanceAmount}>{balance.toLocaleString()}</Text>
-              <Text style={[styles.currencyCode, { color: colors.primary }]}>{currency}</Text>
+              <Text style={styles.balanceAmount}>
+                {balance.toLocaleString()}
+              </Text>
+              <Text style={[styles.currencyCode, { color: colors.primary }]}>
+                {currency}
+              </Text>
             </View>
           )}
         </Animatable.View>
 
-        <Animatable.View animation="fadeInUp" delay={400} style={styles.gatewaySection}>
+        <Animatable.View
+          animation="fadeInUp"
+          delay={400}
+          style={styles.gatewaySection}
+        >
           <Text style={styles.sectionTitle}>LOCAL GATEWAYS ACTIVE</Text>
           {getGlobalPaymentMethods().map((method, index) => (
-            <TouchableOpacity key={index} style={[styles.methodItem, { borderBottomColor: "#0A1A2F" }]} activeOpacity={0.7}>
+            <TouchableOpacity
+              key={index}
+              style={[styles.methodItem, { borderBottomColor: "#0A1A2F" }]}
+              activeOpacity={0.7}
+            >
               <View style={styles.methodMain}>
-                <MaterialCommunityIcons name="shield-check" size={18} color={colors.primary} />
+                <MaterialCommunityIcons
+                  name="shield-check"
+                  size={18}
+                  color={colors.primary}
+                />
                 <Text style={styles.methodName}>{method}</Text>
               </View>
-              <Text style={[styles.linkText, { color: colors.primary }]}>SECURE LINK</Text>
+              <Text style={[styles.linkText, { color: colors.primary }]}>
+                SECURE LINK
+              </Text>
             </TouchableOpacity>
           ))}
         </Animatable.View>
@@ -120,17 +153,53 @@ const styles = StyleSheet.create({
   headerArea: { marginTop: 30, marginBottom: 40, alignItems: "center" },
   headerLabel: { fontSize: 11, fontWeight: "900", letterSpacing: 4 },
   goldLine: { width: 40, height: 2, marginTop: 10 },
-  balanceCard: { padding: 35, borderRadius: 30, borderWidth: 1, alignItems: "center" },
-  balanceTitle: { color: "#5D6D7E", fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 15 },
+  balanceCard: {
+    padding: 35,
+    borderRadius: 30,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  balanceTitle: {
+    color: "#5D6D7E",
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    marginBottom: 15,
+  },
   amountRow: { flexDirection: "row", alignItems: "baseline" },
   balanceAmount: { color: "#FFF", fontSize: 45, fontWeight: "200" },
   currencyCode: { fontSize: 16, fontWeight: "900", marginLeft: 10 },
   gatewaySection: { marginTop: 40 },
-  sectionTitle: { color: "#2C3E50", fontSize: 9, fontWeight: "900", letterSpacing: 2, marginBottom: 20 },
-  methodItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 22, borderBottomWidth: 1 },
+  sectionTitle: {
+    color: "#2C3E50",
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 2,
+    marginBottom: 20,
+  },
+  methodItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 22,
+    borderBottomWidth: 1,
+  },
   methodMain: { flexDirection: "row", alignItems: "center" },
-  methodName: { color: "#FFF", fontSize: 11, fontWeight: "700", marginLeft: 12, letterSpacing: 1 },
+  methodName: {
+    color: "#FFF",
+    fontSize: 11,
+    fontWeight: "700",
+    marginLeft: 12,
+    letterSpacing: 1,
+  },
   linkText: { fontSize: 9, fontWeight: "900" },
   footer: { marginTop: 50, alignItems: "center" },
-  safetyDisclaimer: { color: "#1B2631", fontSize: 8, fontWeight: "900", textAlign: "center", marginTop: 25, letterSpacing: 1 },
+  safetyDisclaimer: {
+    color: "#1B2631",
+    fontSize: 8,
+    fontWeight: "900",
+    textAlign: "center",
+    marginTop: 25,
+    letterSpacing: 1,
+  },
 });
