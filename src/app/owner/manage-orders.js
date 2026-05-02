@@ -8,17 +8,17 @@ import {
   Alert,
   SafeAreaView,
   StatusBar,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { db } from "../../services/firebaseConfig"; // Direct Firebase Import
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  doc, 
-  updateDoc, 
-  orderBy 
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  updateDoc,
+  orderBy,
 } from "firebase/firestore"; // Added Firestore Methods
 import { useAuth } from "../../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -48,20 +48,24 @@ export default function ManageOrders() {
     const q = query(
       ordersRef,
       where("ownerId", "==", userData.uid), // Pulling real owner orders
-      orderBy("createdAt", "desc") // Latest orders first
+      orderBy("createdAt", "desc"), // Latest orders first
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const allOrders = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setOrders(allOrders);
-      setLoading(false);
-    }, (error) => {
-      console.error("Real-time Sync Error:", error);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const allOrders = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setOrders(allOrders);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Real-time Sync Error:", error);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe(); // Cleanup on unmount
   }, [userData]);
@@ -69,12 +73,15 @@ export default function ManageOrders() {
   const updateStatus = async (orderId, status) => {
     try {
       const orderRef = doc(db, "orders", orderId);
-      await updateDoc(orderRef, { 
+      await updateDoc(orderRef, {
         status: status,
-        updatedAt: new Date().toISOString() 
+        updatedAt: new Date().toISOString(),
       });
-      
-      Alert.alert("Success", `Order status updated to: ${status.toUpperCase()}`);
+
+      Alert.alert(
+        "Success",
+        `Order status updated to: ${status.toUpperCase()}`,
+      );
     } catch (error) {
       Alert.alert("System Error", "Failed to update order status.");
       console.error(error);
@@ -82,27 +89,41 @@ export default function ManageOrders() {
   };
 
   const renderOrder = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: THEME.card, borderColor: THEME.border }]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: THEME.card, borderColor: THEME.border },
+      ]}
+    >
       <View style={styles.cardHeader}>
-        <Text style={[styles.itemTitle, { color: THEME.textMain }]}>{item.itemName}</Text>
+        <Text style={[styles.itemTitle, { color: THEME.textMain }]}>
+          {item.itemName}
+        </Text>
         <Text style={[styles.priceTag, { color: THEME.accent }]}>
           {item.price} {item.currency || "THB"}
         </Text>
       </View>
 
       <View style={[styles.addressBox, { backgroundColor: THEME.addressBox }]}>
-        <Text style={[styles.addressLabel, { color: THEME.accent }]}>DELIVERY TO:</Text>
+        <Text style={[styles.addressLabel, { color: THEME.accent }]}>
+          DELIVERY TO:
+        </Text>
         <Text style={[styles.addressText, { color: THEME.textMain }]}>
           📍 {item.customerLocation?.street || "No Street Provided"}
         </Text>
         <Text style={[styles.cityText, { color: THEME.textSecondary }]}>
-          {item.customerLocation?.city || "Unknown City"}, {item.customerLocation?.country || "N/A"}
+          {item.customerLocation?.city || "Unknown City"},{" "}
+          {item.customerLocation?.country || "N/A"}
         </Text>
       </View>
 
       <View style={styles.statusRow}>
-        <Text style={{ color: THEME.textSecondary, fontSize: 12 }}>Current Status:</Text>
-        <Text style={[styles.statusText, { color: THEME.accent }]}>{item.status.toUpperCase()}</Text>
+        <Text style={{ color: THEME.textSecondary, fontSize: 12 }}>
+          Current Status:
+        </Text>
+        <Text style={[styles.statusText, { color: THEME.accent }]}>
+          {item.status.toUpperCase()}
+        </Text>
       </View>
 
       {item.status === "pending" && (
@@ -132,11 +153,17 @@ export default function ManageOrders() {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={28} color={THEME.textMain} />
         </TouchableOpacity>
-        <Text style={[styles.headerText, { color: THEME.textMain }]}>Incoming Orders</Text>
+        <Text style={[styles.headerText, { color: THEME.textMain }]}>
+          Incoming Orders
+        </Text>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color={THEME.accent} style={{ marginTop: 50 }} />
+        <ActivityIndicator
+          size="large"
+          color={THEME.accent}
+          style={{ marginTop: 50 }}
+        />
       ) : (
         <FlatList
           data={orders}
@@ -144,7 +171,9 @@ export default function ManageOrders() {
           renderItem={renderOrder}
           contentContainerStyle={{ padding: 20 }}
           ListEmptyComponent={
-            <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>No active orders found.</Text>
+            <Text style={[styles.emptyText, { color: THEME.textSecondary }]}>
+              No active orders found.
+            </Text>
           }
         />
       )}
@@ -157,17 +186,30 @@ const styles = StyleSheet.create({
   topHeader: { padding: 25, flexDirection: "row", alignItems: "center" },
   headerText: { fontSize: 24, fontWeight: "900", marginLeft: 15 },
   card: { padding: 20, borderRadius: 20, borderWidth: 1.5, marginBottom: 20 },
-  cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
   itemTitle: { fontSize: 18, fontWeight: "bold" },
   priceTag: { fontSize: 16, fontWeight: "900" },
   addressBox: { padding: 12, borderRadius: 12, marginBottom: 15 },
   addressLabel: { fontSize: 8, fontWeight: "bold", marginBottom: 4 },
   addressText: { fontSize: 13, fontWeight: "600" },
   cityText: { fontSize: 11 },
-  statusRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20 },
+  statusRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
   statusText: { fontWeight: "900", fontSize: 12 },
   btnRow: { flexDirection: "row", justifyContent: "space-between" },
-  actionBtn: { paddingVertical: 12, borderRadius: 12, flex: 0.47, alignItems: "center" },
+  actionBtn: {
+    paddingVertical: 12,
+    borderRadius: 12,
+    flex: 0.47,
+    alignItems: "center",
+  },
   btnText: { color: "#FFF", fontSize: 12, fontWeight: "bold" },
   emptyText: { textAlign: "center", marginTop: 50 },
 });
