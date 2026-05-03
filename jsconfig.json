@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
-  }
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-native"
+  },
+  "exclude": ["node_modules", ".expo", "babel.config.js", "metro.config.js"]
 }
