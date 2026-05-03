@@ -2,7 +2,17 @@ const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
 
-// Ensure smooth asset loading for Android Preview Build
-config.resolver.sourceExts.push("js", "json", "ts", "tsx", "jsx");
+const { transformer, resolver } = config;
+
+config.transformer = {
+  ...transformer,
+  babelTransformerPath: require.resolve("react-native-svg-transformer"),
+};
+
+config.resolver = {
+  ...resolver,
+  assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
+  sourceExts: [...resolver.sourceExts, "svg", "jsx", "js", "json", "ts", "tsx"],
+};
 
 module.exports = config;
