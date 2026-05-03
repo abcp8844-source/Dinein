@@ -9,7 +9,8 @@ import {
   Alert,
 } from "react-native";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+// Only the path below is corrected to reach src/services/firebaseConfig
+import { db } from "../../services/firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function ManageFinances() {
