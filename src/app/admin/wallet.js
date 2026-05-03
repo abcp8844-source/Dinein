@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+// Corrected the path to access src/services/firebaseConfig
+import { db } from "../../services/firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /**
