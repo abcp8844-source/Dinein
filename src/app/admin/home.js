@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+import { db } from "../../services/firebaseConfig";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -16,7 +16,6 @@ export default function AdminHome() {
   const router = useRouter();
   const [stats, setStats] = useState({ users: 0, owners: 0, tickets: 0 });
 
-  // Real-time synchronization for dashboard metrics
   useEffect(() => {
     const fetchGlobalStats = async () => {
       const usersSnap = await getDocs(collection(db, "users"));
