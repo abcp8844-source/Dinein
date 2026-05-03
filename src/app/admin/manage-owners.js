@@ -15,7 +15,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+import { db } from "../../services/firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function ManageOwners() {
@@ -55,6 +55,7 @@ export default function ManageOwners() {
     <View style={styles.container}>
       <FlatList
         data={owners}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View>
