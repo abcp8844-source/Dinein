@@ -16,7 +16,8 @@ import {
   doc,
   orderBy,
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+// Corrected the path to access src/services/firebaseConfig
+import { db } from "../../services/firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /**
